@@ -1,0 +1,233 @@
+# 构建与部署工作流
+# 构建 Docker 镜像推送到 GHCR，通过 SSH 部署到服务器
+#
+# 触发条件:
+#   1. Check Quality 成功后自动触发 (workflow_run)
+#   2. 推送 v* tag 时触发 (发版)
+#   3. 手动触发 (workflow_dispatch)
+#
+# 配置步骤:
+#   在 GitHub 仓库 Settings -> Secrets and variables -> Actions 中添加:
+#     - DEPLOY_SERVER_HOST: 服务器 IP 或域名
+#     - DEPLOY_SERVER_USER: SSH 用户名
+#     - DEPLOY_SERVER_PATH: 部署目标路径
+#     - DEPLOY_SSH_PRIVATE_KEY: SSH 私钥 (完整内容，包括 BEGIN/END)
+#     - DEPLOY_HOST_PORT: (可选) 服务端口，默认 80
+
+name: Build and Deploy
+
+on:
+  workflow_run:
+    workflows: ["Check Quality"]
+    branches: [main, master, 'release/**']
+    types: [completed]
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: '是否部署到服务器'
+        required: true
+        default: true
+        type: boolean
+
+concurrency:
+  group: build-${{ github.event.workflow_run.head_branch || github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+# github.repository may contain uppercase letters (e.g. sunweijieMJ/organova-website)
+# but Docker requires lowercase image names, so we normalize it in the prepare step.
+
+jobs:
+  # ==================== 构建并推送到 GHCR ====================
+  build:
+    name: Build & Push
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+      git_hash: ${{ steps.info.outputs.git_hash }}
+      build_time: ${{ steps.info.outputs.build_time }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Normalize image name
+        id: repo
+        run: echo "image_name=${IMAGE_NAME,,}" >> "$GITHUB_OUTPUT"
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+
+      - name: Generate build info
+        id: info
+        run: |
+          echo "git_hash=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "build_time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.repo.outputs.image_name }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push (app)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          target: runner
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Extract nginx metadata
+        id: nginx-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.repo.outputs.image_name }}-nginx
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push (nginx)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          target: nginx
+          tags: ${{ steps.nginx-meta.outputs.tags }}
+          labels: ${{ steps.nginx-meta.outputs.labels }}
+
+  # ==================== 部署到服务器 ====================
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'true') ||
+      github.event_name == 'workflow_run' ||
+      github.event_name == 'push'
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout (for deploy scripts)
+        uses: actions/checkout@v6
+
+      - name: Normalize image name
+        id: repo
+        run: echo "image_name=${IMAGE_NAME,,}" >> "$GITHUB_OUTPUT"
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+
+      - name: Check secrets
+        run: |
+          has_error=0
+          for secret_name in DEPLOY_SERVER_HOST DEPLOY_SERVER_USER DEPLOY_SERVER_PATH DEPLOY_SSH_PRIVATE_KEY; do
+            eval "val=\${$secret_name:-}"
+            if [[ -z "$val" ]]; then
+              echo "::error::缺少 ${secret_name} secret"
+              has_error=1
+            fi
+          done
+          if [[ $has_error -eq 1 ]]; then
+            echo "请在 Settings -> Secrets and variables -> Actions 中配置以上 secrets"
+            exit 1
+          fi
+        env:
+          DEPLOY_SERVER_HOST: ${{ secrets.DEPLOY_SERVER_HOST }}
+          DEPLOY_SERVER_USER: ${{ secrets.DEPLOY_SERVER_USER }}
+          DEPLOY_SERVER_PATH: ${{ secrets.DEPLOY_SERVER_PATH }}
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+
+      - name: Sync deploy files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+          username: ${{ secrets.DEPLOY_SERVER_USER }}
+          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          source: "manage.sh,docker-compose.yml,nginx.conf,.env.example"
+          target: ${{ secrets.DEPLOY_SERVER_PATH }}
+          overwrite: true
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+          username: ${{ secrets.DEPLOY_SERVER_USER }}
+          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            DEPLOY_PATH="${{ secrets.DEPLOY_SERVER_PATH }}"
+            IMAGE_APP="${{ env.REGISTRY }}/${{ steps.repo.outputs.image_name }}:${{ needs.build.outputs.git_hash }}"
+            IMAGE_NGINX="${{ env.REGISTRY }}/${{ steps.repo.outputs.image_name }}-nginx:${{ needs.build.outputs.git_hash }}"
+
+            cd "${DEPLOY_PATH}"
+            chmod +x ./manage.sh
+
+            # 登录 GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u "${{ github.actor }}" --password-stdin
+
+            # 通过 manage.sh 完成拉取、部署、健康检查
+            ./manage.sh pull-deploy "${IMAGE_APP}" "${IMAGE_NGINX}"
+
+  # ==================== 通知 ====================
+  notify:
+    name: Notify
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Summary
+        run: |
+          {
+            echo "# 部署结果"
+            echo ""
+            echo "| 项目 | 状态 |"
+            echo "|------|------|"
+            echo "| 构建 & 推送 | ${{ needs.build.result }} |"
+            echo "| 部署 | ${{ needs.deploy.result || 'skipped' }} |"
+            echo ""
+            IMAGE_NAME_LOWER="${IMAGE_NAME,,}"
+            if [[ "${{ needs.build.result }}" == "success" ]]; then
+              echo "**镜像**: \`${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}:${{ needs.build.outputs.git_hash }}\`"
+              echo "**构建时间**: ${{ needs.build.outputs.build_time }}"
+            fi
+            if [[ "${{ needs.deploy.result }}" == "success" ]]; then
+              echo "**服务器**: \`${{ secrets.DEPLOY_SERVER_HOST }}\`"
+              echo "**健康检查**: 通过"
+            fi
+            if [[ "${{ needs.deploy.result }}" == "failure" ]]; then
+              echo ""
+              echo "> **部署失败** — 请检查 Deploy job 日志获取详细错误信息"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
