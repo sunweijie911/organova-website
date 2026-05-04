@@ -162,7 +162,6 @@ export default function AdminCaseStudiesView() {
       width: 60,
       render: (v: string | null) =>
         v ? (
-          // biome-ignore lint/performance/noImgElement: admin image preview
           <img
             alt=""
             src={v}

@@ -153,7 +153,6 @@ export default function AboutView() {
                         type="button"
                       >
                         {m.photo ? (
-                          // biome-ignore lint/performance/noImgElement: dynamic member photo
                           <img
                             alt={m.name}
                             className={styles.memberPhoto}
@@ -172,7 +171,6 @@ export default function AboutView() {
                         {activeMember === m.id && m.fullBio && (
                           <div
                             className="rich-text"
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                             dangerouslySetInnerHTML={{ __html: m.fullBio }}
                           />
                         )}
@@ -197,7 +195,6 @@ export default function AboutView() {
                         type="button"
                       >
                         {m.photo ? (
-                          // biome-ignore lint/performance/noImgElement: dynamic member photo
                           <img
                             alt={m.name}
                             className={styles.memberPhoto}
@@ -216,7 +213,6 @@ export default function AboutView() {
                         {activeMember === m.id && m.fullBio && (
                           <div
                             className="rich-text"
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                             dangerouslySetInnerHTML={{ __html: m.fullBio }}
                           />
                         )}

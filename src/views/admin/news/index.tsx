@@ -118,7 +118,6 @@ export default function AdminNewsView() {
       width: 72,
       render: (v: string | null) =>
         v ? (
-          // biome-ignore lint/performance/noImgElement: admin image preview
           <img
             alt=""
             src={v}

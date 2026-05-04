@@ -1,5 +1,4 @@
 // 原生深合并，替代 lodash-es/merge
-// biome-ignore lint/suspicious/noExplicitAny: generic deep merge utility
 function deepMerge<T extends Record<string, any>>(
   target: T,
   source: Partial<T>,
@@ -13,10 +12,8 @@ function deepMerge<T extends Record<string, any>>(
       !Array.isArray(sv) &&
       typeof result[key] === 'object'
     ) {
-      // biome-ignore lint/suspicious/noExplicitAny: recursive merge
       result[key] = deepMerge(result[key], sv as any);
     } else if (sv !== undefined) {
-      // biome-ignore lint/suspicious/noExplicitAny: generic assignment
       result[key] = sv as any;
     }
   }
@@ -72,7 +69,6 @@ export interface IArraySchema extends IBaseSchema {
   items: JsonSchema;
   enumType?: readonly string[];
   inputType?: 'checkbox';
-  // biome-ignore lint/suspicious/noExplicitAny: array items can be any type
   defaultValue?: readonly any[];
 }
 
@@ -116,7 +112,6 @@ export type InferValue<T> = T extends { type: infer Type }
 export function extractDefaults<T extends Record<string, JsonSchema>>(
   schema: T,
 ): { [K in keyof T]: InferValue<T[K]> } {
-  // biome-ignore lint/suspicious/noExplicitAny: intermediate accumulator
   const result: Record<string, any> = {};
   for (const [key, s] of Object.entries(schema)) {
     if (s.type === 'object') {

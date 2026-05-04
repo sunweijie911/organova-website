@@ -61,7 +61,6 @@ export default function TumorTypeDetailView() {
                 <h2 className={styles.sectionLabel}>Validated Applications</h2>
                 <div
                   className="rich-text"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                   dangerouslySetInnerHTML={{
                     __html: data.validatedApplications,
                   }}

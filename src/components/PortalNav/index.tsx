@@ -22,7 +22,6 @@ export function PortalNav({ className }: PortalNavProps) {
   return (
     <div className={`${styles.nav} ${className ?? ''}`}>
       <Link className={styles.logoLink} href="/">
-        {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
         <img
           alt="OrgaNova"
           className={styles.logoImg}

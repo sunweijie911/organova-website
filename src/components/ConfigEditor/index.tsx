@@ -141,9 +141,7 @@ function ImagePreviewUpload({
 
 interface SchemaFieldsProps {
   schema: Record<string, JsonSchema>;
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   value: Record<string, any>;
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   onChange: (value: Record<string, any>) => void;
   disabled?: boolean;
 }
@@ -154,7 +152,6 @@ function SchemaFields({
   onChange,
   disabled,
 }: SchemaFieldsProps) {
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value
   const handleFieldChange = (key: string, fieldValue: any) => {
     onChange({ ...value, [key]: fieldValue });
   };
@@ -162,9 +159,7 @@ function SchemaFields({
   const renderField = useCallback(
     (
       fieldSchema: JsonSchema,
-      // biome-ignore lint/suspicious/noExplicitAny: generic config value
       fieldValue: any,
-      // biome-ignore lint/suspicious/noExplicitAny: generic config value
       onFieldChange: (v: any) => void,
     ) => {
       switch (fieldSchema.type) {
@@ -445,7 +440,6 @@ function SchemaFields({
 
         case 'array': {
           const { items } = fieldSchema;
-          // biome-ignore lint/suspicious/noExplicitAny: generic array items
           const list = (fieldValue || []) as any[];
 
           if (
@@ -456,7 +450,6 @@ function SchemaFields({
             return (
               <Checkbox.Group
                 disabled={disabled}
-                // biome-ignore lint/suspicious/noExplicitAny: generic event handler
                 onChange={onFieldChange as any}
                 options={fieldSchema.enumType.map((v) => ({
                   value: v,
@@ -506,7 +499,6 @@ function SchemaFields({
           };
           const handleRemove = (idx: number) =>
             onFieldChange(list.filter((_, i) => i !== idx));
-          // biome-ignore lint/suspicious/noExplicitAny: generic array item
           const handleItemChange = (idx: number, v: any) => {
             const next = [...list];
             next[idx] = v;
@@ -674,9 +666,7 @@ function SchemaForm({
   disabled,
 }: {
   schema: Record<string, JsonSchema>;
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   value: Record<string, any>;
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   onChange: (value: Record<string, any>) => void;
   disabled?: boolean;
 }) {
@@ -698,9 +688,7 @@ type EditMode = 'visual' | 'code';
 
 interface ConfigEditorProps {
   schema: Record<string, JsonSchema>;
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   value: Record<string, any>;
-  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   onChange: (value: Record<string, any>) => void;
 }
 

@@ -13,7 +13,6 @@ export const pageRouter = createTRPCRouter({
       .from(systemConfig)
       .where(eq(systemConfig.key, FRONTEND_CONFIG_KEY))
       .limit(1);
-    // biome-ignore lint/suspicious/noExplicitAny: JSON config stored as any
     return (row[0]?.value ?? {}) as Record<string, any>;
   }),
 

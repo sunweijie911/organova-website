@@ -45,7 +45,6 @@ export default function TumorTypesListView() {
                 key={ct.id}
               >
                 {ct.coverImage && (
-                  // biome-ignore lint/performance/noImgElement: dynamic user image
                   <img
                     alt={ct.name}
                     className={styles.cardImg}

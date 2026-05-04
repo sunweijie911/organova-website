@@ -39,7 +39,6 @@ export default function WhatWeDo() {
           onClick={() => setExpanded(false)}
           type="button"
         >
-          {/* biome-ignore lint/performance/noImgElement: icon */}
           <img
             alt=""
             className={styles.backArrow}

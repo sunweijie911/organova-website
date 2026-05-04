@@ -85,13 +85,11 @@ export default function ContactView() {
     <div className={styles.page}>
       <section className={styles.contactSection}>
         <div className={styles.sectionLogos}>
-          {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
           <img
             alt="logo1"
             className={styles.sectionLogo}
             src="/portal/images/home/icons/logo1.svg"
           />
-          {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
           <img
             alt="logo2"
             className={styles.sectionLogo}

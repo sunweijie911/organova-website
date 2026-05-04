@@ -97,7 +97,6 @@ export default function PublicationsView() {
             {newsItems?.map((item) => (
               <div className={styles.newsItem} key={item.id}>
                 {item.coverImage && (
-                  // biome-ignore lint/performance/noImgElement: dynamic user image
                   <img
                     alt={item.title}
                     className={styles.newsImg}
@@ -119,7 +118,6 @@ export default function PublicationsView() {
                   {item.content && (
                     <div
                       className={`${styles.newsContent} rich-text`}
-                      // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                       dangerouslySetInnerHTML={{ __html: item.content }}
                     />
                   )}

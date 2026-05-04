@@ -46,7 +46,6 @@ export default function SolutionCards() {
         {CARDS.list.map((card) => (
           <div className={styles.card} key={card.title}>
             <div className={styles.iconWrapper}>
-              {/* biome-ignore lint/performance/noImgElement: static SVG icon */}
               <img alt="" className={styles.icon} src={card.icon} />
             </div>
             <div className={styles.content}>
@@ -54,7 +53,6 @@ export default function SolutionCards() {
               <p className={styles.cardDesc}>{card.description}</p>
               <Link className={styles.link} href={card.href}>
                 <span className={styles.linkText}>{card.cta}</span>
-                {/* biome-ignore lint/performance/noImgElement: static SVG icon */}
                 <img
                   alt=""
                   className={styles.linkArrow}

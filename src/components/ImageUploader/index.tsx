@@ -78,7 +78,6 @@ export function ImageUploader({
           border: '1px solid #d9d9d9',
         }}
       >
-        {/* biome-ignore lint/performance/noImgElement: 用户上传的动态图片，自部署环境下 next/image 无优化收益 */}
         <img
           alt="preview"
           src={value}

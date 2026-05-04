@@ -53,7 +53,6 @@ export default function CaseStudyDetailView() {
                 <h2 className={styles.sectionLabel}>Challenge</h2>
                 <div
                   className="rich-text"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                   dangerouslySetInnerHTML={{ __html: data.challenge }}
                 />
               </div>
@@ -63,7 +62,6 @@ export default function CaseStudyDetailView() {
                 <h2 className={styles.sectionLabel}>Approach</h2>
                 <div
                   className="rich-text"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                   dangerouslySetInnerHTML={{ __html: data.approach }}
                 />
               </div>
@@ -73,7 +71,6 @@ export default function CaseStudyDetailView() {
                 <h2 className={styles.sectionLabel}>Results</h2>
                 <div
                   className="rich-text"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                   dangerouslySetInnerHTML={{ __html: data.results }}
                 />
               </div>
@@ -83,7 +80,6 @@ export default function CaseStudyDetailView() {
                 <h2 className={styles.sectionLabel}>Implication</h2>
                 <div
                   className="rich-text"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
                   dangerouslySetInnerHTML={{ __html: data.implication }}
                 />
               </div>

@@ -8,13 +8,11 @@ export default function TrustedPartners() {
         Trusted by Global Leaders in Drug Development.
       </h2>
       <div className={styles.logos}>
-        {/* biome-ignore lint/performance/noImgElement: static partner logo */}
         <img
           alt="Eli Lilly"
           className={styles.logo1}
           src="/portal/images/home/partners/partner-lilly.png"
         />
-        {/* biome-ignore lint/performance/noImgElement: static partner logo */}
         <img
           alt="Pharmaron"
           className={styles.logo2}

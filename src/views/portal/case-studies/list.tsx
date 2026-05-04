@@ -78,7 +78,6 @@ export default function CaseStudiesListView() {
                 key={cs.id}
               >
                 {cs.coverImage && (
-                  // biome-ignore lint/performance/noImgElement: dynamic user image
                   <img
                     alt={cs.title}
                     className={styles.cardImg}

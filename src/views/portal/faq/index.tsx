@@ -25,7 +25,6 @@ function AccordionItem({
       {open && (
         <div
           className={`${styles.answer} rich-text`}
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted rich text from CMS
           dangerouslySetInnerHTML={{ __html: answer }}
         />
       )}
