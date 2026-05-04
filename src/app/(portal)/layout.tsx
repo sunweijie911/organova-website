@@ -1,5 +1,7 @@
-import { PortalFooter } from '@/shared/components/layout/portal-footer';
-import { PortalHeader } from '@/shared/components/layout/portal-header';
+import { PortalFooter } from '@/components/PortalFooter';
+import { PortalHeader } from '@/components/PortalHeader';
+import { PortalStickyNav } from '@/components/PortalStickyNav';
+import { PortalLayoutProvider } from '@/context/portal-layout-context';
 
 export default function PortalLayout({
   children,
@@ -7,10 +9,11 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <PortalLayoutProvider>
+      <PortalStickyNav />
       <PortalHeader />
-      <main className="flex-1">{children}</main>
+      <main>{children}</main>
       <PortalFooter />
-    </div>
+    </PortalLayoutProvider>
   );
 }

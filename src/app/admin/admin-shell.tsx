@@ -6,6 +6,7 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Layout, Menu, Modal, theme } from 'antd';
@@ -19,7 +20,11 @@ const { Sider, Content, Header } = Layout;
 
 const MENU_ITEMS: MenuProps['items'] = [
   { key: '/admin', icon: <DashboardOutlined />, label: '仪表板' },
-  // TODO: 在此添加更多管理菜单项
+  {
+    key: '/admin/setting/frontend',
+    icon: <SettingOutlined />,
+    label: '门户设置',
+  },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {

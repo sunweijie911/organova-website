@@ -1,0 +1,14 @@
+.wrapper {
+  position: fixed;
+  z-index: 1000;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, bottom;
+}
+
+.visible {
+  transform: translateY(0);
+}

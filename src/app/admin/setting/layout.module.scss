@@ -1,0 +1,22 @@
+.container {
+  display: grid;
+  grid-template-areas: 'nav main';
+  grid-template-columns: min-content 1fr;
+  height: 100%;
+  min-height: calc(100vh - 64px);
+}
+
+.leftNav {
+  grid-area: nav;
+  border-right: 1px solid #f0f0f0;
+}
+
+.leftNavMenu {
+  height: 100%;
+  min-width: 180px;
+}
+
+.rightMain {
+  grid-area: main;
+  overflow-y: auto;
+}

@@ -1,0 +1,151 @@
+.page {
+  padding-top: 60px;
+}
+
+.contactSection {
+  background: #fff;
+  color: #000;
+}
+
+.sectionLogos {
+  display: flex;
+  align-items: flex-end;
+  padding: 45px 48px;
+  gap: 14px;
+}
+
+.sectionLogo {
+  &:first-child {
+    width: 68px;
+    height: 50px;
+  }
+
+  &:last-child {
+    width: 176px;
+    height: 38px;
+  }
+}
+
+.contactContent {
+  padding: 200px 240px 100px;
+}
+
+.contactTitle {
+  font-family: var(--font-roboto-serif), serif;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 0;
+}
+
+.contactSubtitle {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.contentLayout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 86px;
+}
+
+.form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+
+  .infoItem {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .infoLabel {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .infoValue {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    white-space: pre-line;
+  }
+
+  .infoEmail {
+    color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    text-decoration: underline;
+  }
+}
+
+.formRow {
+  display: flex;
+  gap: 128px;
+}
+
+.formField {
+  flex: 1;
+  max-width: 456px;
+}
+
+.formFieldFull {
+  max-width: 1040px;
+}
+
+.formInput {
+  width: 100%;
+  padding: 16px 0;
+  border: none;
+  border-top: 1px dashed rgb(0 0 0 / 0.5);
+  outline: none;
+  background: transparent;
+  color: #000;
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+
+  &::placeholder {
+    color: rgb(0 0 0 / 0.4);
+  }
+
+  &:focus {
+    border-top-color: #000;
+  }
+}
+
+.formTextarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.submitBtn {
+  align-self: flex-start;
+  margin-top: 48px;
+}
+
+.successMessage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 32px;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.errorMsg {
+  color: #f00;
+  font-size: 16px;
+}

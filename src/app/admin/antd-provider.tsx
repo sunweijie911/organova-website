@@ -5,8 +5,6 @@ import zhCN from 'antd/locale/zh_CN';
 
 const theme = {
   token: {
-    colorPrimary: '#1a1a1a',
-    colorLink: '#1a1a1a',
     borderRadius: 8,
   },
 };
