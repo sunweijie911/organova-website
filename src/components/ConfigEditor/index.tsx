@@ -598,7 +598,6 @@ function SchemaFields({
           return <Input disabled value={String(fieldValue ?? '')} />;
       }
     },
-    // biome-ignore lint/correctness/useExhaustiveDependencies: SchemaFields is module-level stable
     [disabled, SchemaFields],
   );
 
