@@ -156,6 +156,7 @@ function SchemaFields({
     onChange({ ...value, [key]: fieldValue });
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: SchemaFields is a module-level function, always stable
   const renderField = useCallback(
     (
       fieldSchema: JsonSchema,
@@ -598,7 +599,7 @@ function SchemaFields({
           return <Input disabled value={String(fieldValue ?? '')} />;
       }
     },
-    [disabled, SchemaFields],
+    [disabled],
   );
 
   return (
