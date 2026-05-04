@@ -26,6 +26,7 @@ export default function AdminSettingFrontend() {
     () => mergeConfig(storedConfig ?? {}),
     [storedConfig],
   );
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   const [draft, setDraft] = useState<Record<string, any>>(savedConfig);
 
   useEffect(() => {

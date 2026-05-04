@@ -10,7 +10,7 @@ const CARDS = {
       description:
         'De-risk your pipeline with 84.43%-accurate clinical prediction.',
       cta: 'Explore Solutions',
-      href: '#',
+      href: '/pharma-solutions',
     },
     {
       icon: '/portal/images/home/icons/icon-shield.svg',
@@ -18,7 +18,7 @@ const CARDS = {
       description:
         'Test your immunotherapy in a model that actually has an immune system.',
       cta: 'Explore I-O Capabilities',
-      href: '#',
+      href: '/immuno-oncology',
     },
     {
       icon: '/portal/images/home/icons/icon-link.svg',
@@ -26,14 +26,14 @@ const CARDS = {
       description:
         'From co-discovery to co-development—we build the science together.',
       cta: 'Explore Partnerships',
-      href: '#',
+      href: '/biotech-partnerships',
     },
     {
       icon: '/portal/images/home/icons/icon-database.svg',
       title: 'Explore Our Biobank',
       description: '1,500+ models across 20+ cancer types. Find your model.',
       cta: 'Browse Tumor Types',
-      href: '#',
+      href: '/tumor-types',
     },
   ],
 };
@@ -46,6 +46,7 @@ export default function SolutionCards() {
         {CARDS.list.map((card) => (
           <div className={styles.card} key={card.title}>
             <div className={styles.iconWrapper}>
+              {/* biome-ignore lint/performance/noImgElement: static SVG icon */}
               <img alt="" className={styles.icon} src={card.icon} />
             </div>
             <div className={styles.content}>
@@ -53,6 +54,7 @@ export default function SolutionCards() {
               <p className={styles.cardDesc}>{card.description}</p>
               <Link className={styles.link} href={card.href}>
                 <span className={styles.linkText}>{card.cta}</span>
+                {/* biome-ignore lint/performance/noImgElement: static SVG icon */}
                 <img
                   alt=""
                   className={styles.linkArrow}

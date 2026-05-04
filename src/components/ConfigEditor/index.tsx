@@ -1,12 +1,13 @@
 'use client';
 
-import { json } from '@codemirror/lang-json';
-import { oneDark } from '@codemirror/theme-one-dark';
 import {
   DeleteOutlined,
   PlusOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
+import { json } from '@codemirror/lang-json';
+import { oneDark } from '@codemirror/theme-one-dark';
+import CodeMirror from '@uiw/react-codemirror';
 import {
   Button,
   Card,
@@ -28,11 +29,10 @@ import {
   Space,
   Switch,
   TimePicker,
+  theme,
   Upload,
   type UploadFile,
-  theme,
 } from 'antd';
-import CodeMirror from '@uiw/react-codemirror';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -48,7 +48,7 @@ import { LocaleList } from '@/types/system';
 
 const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
 const localeKeys = Object.keys(LocaleList).filter((k) =>
-  isNaN(Number(k)),
+  Number.isNaN(Number(k)),
 ) as LocaleKey[];
 const localeLabels: Record<string, string> = {
   'zh-CN': '中文',
@@ -141,18 +141,32 @@ function ImagePreviewUpload({
 
 interface SchemaFieldsProps {
   schema: Record<string, JsonSchema>;
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   value: Record<string, any>;
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   onChange: (value: Record<string, any>) => void;
   disabled?: boolean;
 }
 
-function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) {
+function SchemaFields({
+  schema,
+  value,
+  onChange,
+  disabled,
+}: SchemaFieldsProps) {
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value
   const handleFieldChange = (key: string, fieldValue: any) => {
     onChange({ ...value, [key]: fieldValue });
   };
 
   const renderField = useCallback(
-    (fieldSchema: JsonSchema, fieldValue: any, onFieldChange: (v: any) => void) => {
+    (
+      fieldSchema: JsonSchema,
+      // biome-ignore lint/suspicious/noExplicitAny: generic config value
+      fieldValue: any,
+      // biome-ignore lint/suspicious/noExplicitAny: generic config value
+      onFieldChange: (v: any) => void,
+    ) => {
       switch (fieldSchema.type) {
         case 'string': {
           if (fieldSchema.enumType && fieldSchema.inputType === 'radio') {
@@ -161,7 +175,10 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
                 buttonStyle="solid"
                 disabled={disabled}
                 onChange={(e) => onFieldChange(e.target.value)}
-                options={fieldSchema.enumType.map((v) => ({ value: v, label: v }))}
+                options={fieldSchema.enumType.map((v) => ({
+                  value: v,
+                  label: v,
+                }))}
                 optionType="button"
                 value={fieldValue}
               />
@@ -171,14 +188,23 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
             const i18nValue = (
               fieldValue && typeof fieldValue === 'object' ? fieldValue : {}
             ) as Record<string, string>;
-            return <I18nField disabled={disabled} onChange={onFieldChange} value={i18nValue} />;
+            return (
+              <I18nField
+                disabled={disabled}
+                onChange={onFieldChange}
+                value={i18nValue}
+              />
+            );
           }
           if (fieldSchema.enumType) {
             return (
               <Select
                 disabled={disabled}
                 onChange={onFieldChange}
-                options={fieldSchema.enumType.map((v) => ({ value: v, label: v }))}
+                options={fieldSchema.enumType.map((v) => ({
+                  value: v,
+                  label: v,
+                }))}
                 style={{ width: '100%' }}
                 value={fieldValue}
               />
@@ -226,11 +252,14 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
                 onRemove={() => onFieldChange('')}
                 onUpload={(file) => {
                   if (file.size > MAX_UPLOAD_SIZE) {
-                    void message.error(`文件大小不能超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB`);
+                    void message.error(
+                      `文件大小不能超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB`,
+                    );
                     return;
                   }
                   const reader = new FileReader();
-                  reader.onload = (e) => onFieldChange(e.target?.result as string);
+                  reader.onload = (e) =>
+                    onFieldChange(e.target?.result as string);
                   reader.readAsDataURL(file);
                 }}
               />
@@ -241,7 +270,12 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
               <div>
                 {fieldValue && (
                   <Space style={{ marginBottom: 8 }}>
-                    <span style={{ fontSize: 12, color: 'var(--ant-color-text-secondary)' }}>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: 'var(--ant-color-text-secondary)',
+                      }}
+                    >
                       已上传文件
                     </span>
                     <Button
@@ -257,18 +291,23 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
                   accept={(fieldSchema as IStringSchema).accept}
                   beforeUpload={(file) => {
                     if (file.size > MAX_UPLOAD_SIZE) {
-                      void message.error(`文件大小不能超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB`);
+                      void message.error(
+                        `文件大小不能超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB`,
+                      );
                       return false;
                     }
                     const reader = new FileReader();
-                    reader.onload = (e) => onFieldChange(e.target?.result as string);
+                    reader.onload = (e) =>
+                      onFieldChange(e.target?.result as string);
                     reader.readAsDataURL(file);
                     return false;
                   }}
                   disabled={disabled}
                   showUploadList={false}
                 >
-                  <Button disabled={disabled} icon={<UploadOutlined />}>选择文件</Button>
+                  <Button disabled={disabled} icon={<UploadOutlined />}>
+                    选择文件
+                  </Button>
                 </Upload>
               </div>
             );
@@ -320,9 +359,15 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
             return (
               <DatePicker.RangePicker
                 disabled={disabled}
-                onChange={(_, ds) => onFieldChange(ds.filter(Boolean).join(','))}
+                onChange={(_, ds) =>
+                  onFieldChange(ds.filter(Boolean).join(','))
+                }
                 style={{ width: '100%' }}
-                value={dates.length === 2 && dates[0] ? [dayjs(dates[0]), dayjs(dates[1]!)] : null}
+                value={
+                  dates.length === 2 && dates[0]
+                    ? [dayjs(dates[0]), dayjs(dates[1] ?? '')]
+                    : null
+                }
               />
             );
           }
@@ -331,10 +376,16 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
             return (
               <DatePicker.RangePicker
                 disabled={disabled}
-                onChange={(_, ds) => onFieldChange(ds.filter(Boolean).join(','))}
+                onChange={(_, ds) =>
+                  onFieldChange(ds.filter(Boolean).join(','))
+                }
                 showTime
                 style={{ width: '100%' }}
-                value={dates.length === 2 && dates[0] ? [dayjs(dates[0]), dayjs(dates[1]!)] : null}
+                value={
+                  dates.length === 2 && dates[0]
+                    ? [dayjs(dates[0]), dayjs(dates[1] ?? '')]
+                    : null
+                }
               />
             );
           }
@@ -384,18 +435,33 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
         }
 
         case 'boolean':
-          return <Switch checked={fieldValue} disabled={disabled} onChange={onFieldChange} />;
+          return (
+            <Switch
+              checked={fieldValue}
+              disabled={disabled}
+              onChange={onFieldChange}
+            />
+          );
 
         case 'array': {
           const { items } = fieldSchema;
+          // biome-ignore lint/suspicious/noExplicitAny: generic array items
           const list = (fieldValue || []) as any[];
 
-          if (items.type === 'string' && fieldSchema.enumType && fieldSchema.inputType === 'checkbox') {
+          if (
+            items.type === 'string' &&
+            fieldSchema.enumType &&
+            fieldSchema.inputType === 'checkbox'
+          ) {
             return (
               <Checkbox.Group
                 disabled={disabled}
+                // biome-ignore lint/suspicious/noExplicitAny: generic event handler
                 onChange={onFieldChange as any}
-                options={fieldSchema.enumType.map((v) => ({ value: v, label: v }))}
+                options={fieldSchema.enumType.map((v) => ({
+                  value: v,
+                  label: v,
+                }))}
                 value={list}
               />
             );
@@ -406,7 +472,10 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
                 disabled={disabled}
                 mode="multiple"
                 onChange={onFieldChange}
-                options={fieldSchema.enumType.map((v) => ({ value: v, label: v }))}
+                options={fieldSchema.enumType.map((v) => ({
+                  value: v,
+                  label: v,
+                }))}
                 style={{ width: '100%' }}
                 value={list}
               />
@@ -435,7 +504,9 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
                   : '';
             onFieldChange([...list, newItem]);
           };
-          const handleRemove = (idx: number) => onFieldChange(list.filter((_, i) => i !== idx));
+          const handleRemove = (idx: number) =>
+            onFieldChange(list.filter((_, i) => i !== idx));
+          // biome-ignore lint/suspicious/noExplicitAny: generic array item
           const handleItemChange = (idx: number, v: any) => {
             const next = [...list];
             next[idx] = v;
@@ -455,10 +526,24 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
                       step={items.step}
                       value={item}
                     />
-                    <Button danger disabled={disabled} icon={<DeleteOutlined />} onClick={() => handleRemove(idx)} size="small" />
+                    <Button
+                      danger
+                      disabled={disabled}
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleRemove(idx)}
+                      size="small"
+                    />
                   </Space>
                 ))}
-                <Button block disabled={disabled} icon={<PlusOutlined />} onClick={handleAdd} type="dashed">添加</Button>
+                <Button
+                  block
+                  disabled={disabled}
+                  icon={<PlusOutlined />}
+                  onClick={handleAdd}
+                  type="dashed"
+                >
+                  添加
+                </Button>
               </div>
             );
           }
@@ -468,16 +553,38 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
               <div>
                 {list.map((item, idx) => (
                   <Card
-                    extra={<Button danger disabled={disabled} icon={<DeleteOutlined />} onClick={() => handleRemove(idx)} size="small" type="text" />}
+                    extra={
+                      <Button
+                        danger
+                        disabled={disabled}
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleRemove(idx)}
+                        size="small"
+                        type="text"
+                      />
+                    }
                     key={idx}
                     size="small"
                     style={{ marginBottom: 8 }}
                     title={`${items.title} ${idx + 1}`}
                   >
-                    <SchemaFields disabled={disabled} onChange={(v) => handleItemChange(idx, v)} schema={items.properties} value={item || {}} />
+                    <SchemaFields
+                      disabled={disabled}
+                      onChange={(v) => handleItemChange(idx, v)}
+                      schema={items.properties}
+                      value={item || {}}
+                    />
                   </Card>
                 ))}
-                <Button block disabled={disabled} icon={<PlusOutlined />} onClick={handleAdd} type="dashed">添加{items.title}</Button>
+                <Button
+                  block
+                  disabled={disabled}
+                  icon={<PlusOutlined />}
+                  onClick={handleAdd}
+                  type="dashed"
+                >
+                  添加{items.title}
+                </Button>
               </div>
             );
           }
@@ -499,14 +606,18 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
           return <Input disabled value={String(fieldValue ?? '')} />;
       }
     },
-    [disabled],
+    // biome-ignore lint/correctness/useExhaustiveDependencies: SchemaFields is module-level stable
+    [disabled, SchemaFields],
   );
 
   return (
     <Row gutter={[16, 0]}>
       {Object.entries(schema).map(([key, fieldSchema]) => {
         const fieldValue =
-          value[key] ?? (fieldSchema.type !== 'object' ? fieldSchema.defaultValue : undefined);
+          value[key] ??
+          (fieldSchema.type !== 'object'
+            ? fieldSchema.defaultValue
+            : undefined);
         const isBlock =
           fieldSchema.type === 'object' ||
           (fieldSchema.type === 'array' && fieldSchema.items.type !== 'string');
@@ -515,13 +626,24 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
         if (isBlock) {
           return (
             <Col key={key} span={span}>
-              <Card size="small" style={{ marginBottom: 16 }} title={fieldSchema.title}>
+              <Card
+                size="small"
+                style={{ marginBottom: 16 }}
+                title={fieldSchema.title}
+              >
                 {fieldSchema.description && (
-                  <p style={{ color: 'var(--ant-color-text-tertiary)', marginBottom: 12 }}>
+                  <p
+                    style={{
+                      color: 'var(--ant-color-text-tertiary)',
+                      marginBottom: 12,
+                    }}
+                  >
                     {fieldSchema.description}
                   </p>
                 )}
-                {renderField(fieldSchema, fieldValue, (v) => handleFieldChange(key, v))}
+                {renderField(fieldSchema, fieldValue, (v) =>
+                  handleFieldChange(key, v),
+                )}
               </Card>
             </Col>
           );
@@ -529,8 +651,14 @@ function SchemaFields({ schema, value, onChange, disabled }: SchemaFieldsProps) 
 
         return (
           <Col key={key} span={span}>
-            <Form.Item label={fieldSchema.title} style={{ marginBottom: 16 }} tooltip={fieldSchema.description}>
-              {renderField(fieldSchema, fieldValue, (v) => handleFieldChange(key, v))}
+            <Form.Item
+              label={fieldSchema.title}
+              style={{ marginBottom: 16 }}
+              tooltip={fieldSchema.description}
+            >
+              {renderField(fieldSchema, fieldValue, (v) =>
+                handleFieldChange(key, v),
+              )}
             </Form.Item>
           </Col>
         );
@@ -546,13 +674,20 @@ function SchemaForm({
   disabled,
 }: {
   schema: Record<string, JsonSchema>;
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   value: Record<string, any>;
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   onChange: (value: Record<string, any>) => void;
   disabled?: boolean;
 }) {
   return (
     <Form layout="vertical" size="middle">
-      <SchemaFields disabled={disabled} onChange={onChange} schema={schema} value={value} />
+      <SchemaFields
+        disabled={disabled}
+        onChange={onChange}
+        schema={schema}
+        value={value}
+      />
     </Form>
   );
 }
@@ -563,13 +698,20 @@ type EditMode = 'visual' | 'code';
 
 interface ConfigEditorProps {
   schema: Record<string, JsonSchema>;
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   value: Record<string, any>;
+  // biome-ignore lint/suspicious/noExplicitAny: generic config value map
   onChange: (value: Record<string, any>) => void;
 }
 
-export default function ConfigEditor({ schema, value, onChange }: ConfigEditorProps) {
+export default function ConfigEditor({
+  schema,
+  value,
+  onChange,
+}: ConfigEditorProps) {
   const { token } = theme.useToken();
-  const isDark = token.colorBgBase === '#141414' || token.colorBgBase === '#000';
+  const isDark =
+    token.colorBgBase === '#141414' || token.colorBgBase === '#000';
   const [editMode, setEditMode] = useState<EditMode>('visual');
   const [jsonText, setJsonText] = useState('');
   const skipSyncRef = useRef(false);
@@ -618,7 +760,14 @@ export default function ConfigEditor({ schema, value, onChange }: ConfigEditorPr
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          marginBottom: 16,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Radio.Group
           buttonStyle="solid"
           onChange={(e) => handleModeChange(e.target.value as EditMode)}

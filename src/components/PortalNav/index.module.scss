@@ -20,14 +20,17 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 28px;
+  flex: 1;
+  justify-content: center;
 }
 
 .navItem {
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1;
+  white-space: nowrap;
 
   &:hover {
     text-decoration: underline;

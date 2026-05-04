@@ -37,9 +37,11 @@ function groupRows(fields: typeof FIELDS) {
   const rows: (typeof FIELDS)[number][][] = [];
   let i = 0;
   while (i < fields.length) {
-    const f = fields[i]!;
-    if (f.half && fields[i + 1]?.half) {
-      rows.push([f, fields[i + 1]!]);
+    const f = fields[i];
+    if (!f) break;
+    const next = fields[i + 1];
+    if (f.half && next?.half) {
+      rows.push([f, next]);
       i += 2;
     } else {
       rows.push([f]);
@@ -55,7 +57,7 @@ export default function ContactView() {
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [submitted, setSubmitted] = useState(false);
 
-  const submit = api.contact.submit.useMutation({
+  const submit = api.leads.submitContact.useMutation({
     onSuccess: () => {
       setSubmitted(true);
       setForm(INITIAL_FORM);
@@ -83,11 +85,13 @@ export default function ContactView() {
     <div className={styles.page}>
       <section className={styles.contactSection}>
         <div className={styles.sectionLogos}>
+          {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
           <img
             alt="logo1"
             className={styles.sectionLogo}
             src="/portal/images/home/icons/logo1.svg"
           />
+          {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
           <img
             alt="logo2"
             className={styles.sectionLogo}

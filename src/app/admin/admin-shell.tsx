@@ -1,12 +1,18 @@
 'use client';
 
 import {
-  DashboardOutlined,
+  DatabaseOutlined,
+  FileTextOutlined,
   GlobalOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  QuestionCircleOutlined,
   SettingOutlined,
+  TeamOutlined,
+  TrophyOutlined,
+  UnorderedListOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Layout, Menu, Modal, theme } from 'antd';
@@ -19,7 +25,15 @@ import { authClient } from '@/lib/auth-client';
 const { Sider, Content, Header } = Layout;
 
 const MENU_ITEMS: MenuProps['items'] = [
-  { key: '/admin', icon: <DashboardOutlined />, label: '仪表板' },
+  { key: '/admin/leads', icon: <UnorderedListOutlined />, label: '线索管理' },
+  { key: '/admin/case-studies', icon: <TrophyOutlined />, label: '案例研究' },
+  { key: '/admin/cancer-types', icon: <DatabaseOutlined />, label: '癌种库' },
+  { key: '/admin/publications', icon: <FileTextOutlined />, label: '出版物' },
+  { key: '/admin/news', icon: <VideoCameraOutlined />, label: 'News' },
+  { key: '/admin/resources', icon: <FileTextOutlined />, label: '资源下载' },
+  { key: '/admin/faq', icon: <QuestionCircleOutlined />, label: 'FAQ' },
+  { key: '/admin/team', icon: <TeamOutlined />, label: '团队成员' },
+  { type: 'divider' },
   {
     key: '/admin/setting/frontend',
     icon: <SettingOutlined />,

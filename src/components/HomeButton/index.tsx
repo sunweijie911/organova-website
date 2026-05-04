@@ -29,6 +29,7 @@ export function HomeButton({
     <>
       <span className={styles.text}>{children}</span>
       <span className={styles.arrowWrap}>
+        {/* biome-ignore lint/performance/noImgElement: inline decorative SVG icon */}
         <img
           alt=""
           className={styles.arrow}

@@ -34,6 +34,44 @@ function getTransporter(): Transporter {
  * 生产环境：通过 QQ 邮箱 SMTP 发送。需配置环境变量：
  *   SMTP_USER（QQ 邮箱地址）、SMTP_PASS（SMTP 授权码）
  */
+export async function sendLeadNotification(lead: {
+  source: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  company?: string | null;
+}): Promise<void> {
+  const sourceLabel =
+    lead.source === 'rfq' ? 'RFQ (询价)' : 'Contact (联系我们)';
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(
+      `[LEAD] 新线索 [${sourceLabel}] ${lead.firstName} ${lead.lastName} <${lead.email}>`,
+    );
+    return;
+  }
+  try {
+    await getTransporter().sendMail({
+      from: `"OrgaNova 网站" <${env.SMTP_USER}>`,
+      to: 'info@tricbio.com',
+      subject: `[新线索] ${sourceLabel} — ${lead.firstName} ${lead.lastName}`,
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+          <h2 style="color:#333;margin-bottom:16px;">收到新的网站线索</h2>
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <tr><td style="padding:8px;color:#666;width:100px;">来源</td><td style="padding:8px;font-weight:600;">${sourceLabel}</td></tr>
+            <tr><td style="padding:8px;color:#666;">姓名</td><td style="padding:8px;">${lead.firstName} ${lead.lastName}</td></tr>
+            <tr><td style="padding:8px;color:#666;">邮箱</td><td style="padding:8px;"><a href="mailto:${lead.email}">${lead.email}</a></td></tr>
+            ${lead.company ? `<tr><td style="padding:8px;color:#666;">公司</td><td style="padding:8px;">${lead.company}</td></tr>` : ''}
+          </table>
+          <p style="margin-top:20px;font-size:13px;color:#999;">请登录后台查看完整信息。</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error('[LEAD EMAIL] 发送失败:', err);
+  }
+}
+
 export async function sendEmailOtp(email: string, code: string): Promise<void> {
   if (process.env.NODE_ENV !== 'production') {
     console.log(`[EMAIL OTP] 邮箱: ${email} | 验证码: ${code}`);

@@ -1,0 +1,240 @@
+.page { display: flex; flex-direction: column; }
+
+.hero {
+  position: relative;
+  background: #0a0a0a;
+  padding: 160px 240px 120px;
+  overflow: hidden;
+}
+
+.heroGlow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgb(139 92 246 / 0.15) 0%, transparent 70%);
+  bottom: -200px;
+  right: 100px;
+  pointer-events: none;
+}
+
+.heroContent { position: relative; z-index: 1; max-width: 800px; }
+
+.heroTitle {
+  font-size: 56px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  line-height: 1.1;
+}
+
+.heroSubtitle {
+  font-size: 20px;
+  line-height: 1.7;
+  color: rgb(255 255 255 / 0.6);
+}
+
+.container { max-width: 1200px; margin: 0 auto; }
+.sectionWhite { background: #fff; padding: 100px 240px; }
+.sectionGray { background: #f5f5f5; padding: 100px 240px; }
+
+.sectionTitle {
+  font-size: 40px;
+  font-weight: 700;
+  color: #0a0a0a;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+}
+
+/* Story */
+.story { max-width: 800px; }
+
+.storyBlock { margin-bottom: 40px; }
+
+.storyHeading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7c3aed;
+  margin-bottom: 12px;
+}
+
+.storyBlock p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.storyExpanded {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 32px;
+  margin-bottom: 32px;
+
+  p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #4b5563;
+    margin-bottom: 20px;
+  }
+}
+
+.storyToggle {
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #7c3aed;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.7; }
+}
+
+/* Team */
+.teamGroup { margin-bottom: 56px; }
+
+.teamGroupLabel {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.memberCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 20px;
+  border: 1px solid #e8e8e8;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover { border-color: #d1d5db; box-shadow: 0 4px 16px rgb(0 0 0 / 0.06); }
+}
+
+.memberPhoto {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+
+.memberPhotoPlaceholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.memberName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin-bottom: 4px;
+}
+
+.memberTitle {
+  font-size: 13px;
+  color: #7c3aed;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.memberShort {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 48px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 72px;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: #e8e8e8;
+  }
+}
+
+.milestone {
+  display: grid;
+  grid-template-columns: 80px 20px 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.milestoneYear {
+  font-size: 14px;
+  font-weight: 700;
+  color: #7c3aed;
+  text-align: right;
+  padding-top: 2px;
+}
+
+.milestoneDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #7c3aed;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.milestoneText {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+/* CTA */
+.cta { background: #000; padding: 100px 240px; }
+
+.ctaTitle {
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 40px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 36px;
+  background: #fff;
+  color: #000;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.85; }
+}

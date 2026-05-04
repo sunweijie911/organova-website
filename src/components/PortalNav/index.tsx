@@ -4,14 +4,14 @@ import Link from 'next/link';
 import styles from './index.module.scss';
 
 const NAV_LINKS = [
-  { label: 'OUR PLATFORM', href: '#' },
-  { label: 'TUMOR TYPES', href: '#' },
-  { label: 'PHARMA SOLUTIONS', href: '#' },
-  { label: 'IMMUNO-ONCOLOGY', href: '#' },
-  { label: 'BIOTECH PARTNERSHIPS', href: '#' },
-  { label: 'CASE STUDIES', href: '#' },
-  { label: 'MEDIA CENTER', href: '#' },
-  { label: 'ABOUT', href: '/about-us' },
+  { label: 'OUR PLATFORM', href: '/platform' },
+  { label: 'TUMOR TYPES', href: '/tumor-types' },
+  { label: 'PHARMA SOLUTIONS', href: '/pharma-solutions' },
+  { label: 'IMMUNO-ONCOLOGY', href: '/immuno-oncology' },
+  { label: 'BIOTECH PARTNERSHIPS', href: '/biotech-partnerships' },
+  { label: 'CASE STUDIES', href: '/case-studies' },
+  { label: 'MEDIA CENTER', href: '/publications' },
+  { label: 'ABOUT', href: '/about' },
 ];
 
 interface PortalNavProps {
@@ -22,6 +22,7 @@ export function PortalNav({ className }: PortalNavProps) {
   return (
     <div className={`${styles.nav} ${className ?? ''}`}>
       <Link className={styles.logoLink} href="/">
+        {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
         <img
           alt="OrgaNova"
           className={styles.logoImg}

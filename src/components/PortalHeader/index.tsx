@@ -6,9 +6,9 @@ import { authClient } from '@/lib/auth-client';
 import styles from './index.module.scss';
 
 const UTILITY_LINKS = [
-  { label: 'BIOBANK DATABASE LOGIN', href: '#' },
-  { label: 'BIOSPECIMEN REQUEST', href: '#' },
-  { label: 'REQUEST A QUOTE', href: '#' },
+  { label: 'BIOBANK DATABASE LOGIN', href: '/tumor-types' },
+  { label: 'BIOSPECIMEN REQUEST', href: '/request-quote' },
+  { label: 'REQUEST A QUOTE', href: '/request-quote' },
   { label: 'CONTACT US', href: '/contact' },
 ];
 
@@ -20,7 +20,7 @@ export function PortalHeader() {
 
   return (
     <div className={styles.header}>
-      <h1 className={styles.logo} />
+      <div aria-label="OrgaNova" className={styles.logo} role="img" />
       <div className={styles.menu}>
         {UTILITY_LINKS.map((link) => (
           <Link className={styles.link} href={link.href} key={link.label}>
@@ -41,10 +41,10 @@ export function PortalHeader() {
             }
             type="button"
           >
-            退出登录
+            SIGN OUT
           </button>
         ) : (
-          <Link className={styles.link} href="/signin">
+          <Link className={styles.link} href="/login">
             LOGIN
           </Link>
         )}

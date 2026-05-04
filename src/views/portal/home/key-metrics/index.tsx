@@ -34,6 +34,7 @@ export default function KeyMetrics() {
       <div className={styles.grid}>
         {METRICS.map((m) => (
           <div className={styles.card} key={m.value}>
+            {/* biome-ignore lint/performance/noImgElement: decorative background */}
             <img alt="" className={styles.cardBg} src={m.bg} />
             <span className={styles.value}>{m.value}</span>
             <span className={styles.cardTitle}>{m.title}</span>

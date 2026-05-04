@@ -34,7 +34,12 @@ export default function WhatWeDo() {
       </div>
 
       <div className={`${styles.detail} ${expanded ? styles.visible : ''}`}>
-        <button className={styles.back} onClick={() => setExpanded(false)}>
+        <button
+          className={styles.back}
+          onClick={() => setExpanded(false)}
+          type="button"
+        >
+          {/* biome-ignore lint/performance/noImgElement: icon */}
           <img
             alt=""
             className={styles.backArrow}

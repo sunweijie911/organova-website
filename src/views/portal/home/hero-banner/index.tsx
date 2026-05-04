@@ -11,7 +11,7 @@ const HERO = {
     "Preclinical success on artificial models isn't success—it's a delayed failure. We give your pipeline \n the biological truth it needs to reach patients.",
   buttons: [
     { label: 'Discover Our Platform', href: '/platform' },
-    { label: 'Explore Case Studies', href: '#' },
+    { label: 'Explore Case Studies', href: '/case-studies' },
   ],
 };
 

@@ -1,0 +1,263 @@
+'use client';
+
+import {
+  Avatar,
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  message,
+  Select,
+  Space,
+  Switch,
+  Table,
+  Tag,
+} from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { useState } from 'react';
+import { ImageUploader } from '@/components/ImageUploader';
+import { RichTextEditor } from '@/components/RichTextEditor';
+import { api } from '@/lib/trpc/react';
+
+type Member = {
+  id: number;
+  photo: string | null;
+  name: string;
+  title: string;
+  shortBio: string | null;
+  fullBio: string | null;
+  group: string;
+  sortOrder: number;
+  isVisible: boolean;
+};
+
+export default function AdminTeamView() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editing, setEditing] = useState<Member | null>(null);
+  const [photo, setPhoto] = useState('');
+  const [fullBio, setFullBio] = useState('');
+  const [form] = Form.useForm();
+
+  const { data, isLoading, refetch } = api.team.adminList.useQuery();
+
+  const create = api.team.adminCreate.useMutation({
+    onSuccess: () => {
+      message.success('已添加');
+      setModalOpen(false);
+      void refetch();
+    },
+    onError: () => message.error('操作失败'),
+  });
+
+  const update = api.team.adminUpdate.useMutation({
+    onSuccess: () => {
+      message.success('已保存');
+      setModalOpen(false);
+      void refetch();
+    },
+    onError: () => message.error('操作失败'),
+  });
+
+  const del = api.team.adminDelete.useMutation({
+    onSuccess: () => {
+      message.success('已删除');
+      void refetch();
+    },
+    onError: () => message.error('删除失败'),
+  });
+
+  const openCreate = () => {
+    setEditing(null);
+    setPhoto('');
+    setFullBio('');
+    form.resetFields();
+    form.setFieldsValue({ group: 'tricbio', isVisible: true, sortOrder: 0 });
+    setModalOpen(true);
+  };
+
+  const openEdit = (r: Member) => {
+    setEditing(r);
+    setPhoto(r.photo ?? '');
+    setFullBio(r.fullBio ?? '');
+    form.setFieldsValue(r);
+    setModalOpen(true);
+  };
+
+  const handleSubmit = (vals: Record<string, unknown>) => {
+    const payload = { ...vals, photo: photo || undefined, fullBio };
+    if (editing) {
+      update.mutate({ id: editing.id, ...payload } as Parameters<
+        typeof update.mutate
+      >[0]);
+    } else {
+      create.mutate(payload as Parameters<typeof create.mutate>[0]);
+    }
+  };
+
+  const columns: ColumnsType<Member> = [
+    {
+      title: '头像',
+      dataIndex: 'photo',
+      width: 56,
+      render: (v: string | null, r: Member) => (
+        <Avatar size={36} src={v ?? undefined}>
+          {r.name[0]}
+        </Avatar>
+      ),
+    },
+    { title: '姓名', dataIndex: 'name', width: 180 },
+    { title: '职位', dataIndex: 'title', ellipsis: true },
+    {
+      title: '团队',
+      dataIndex: 'group',
+      width: 100,
+      render: (v: string) => (
+        <Tag color={v === 'tricbio' ? 'purple' : 'blue'}>
+          {v === 'tricbio' ? 'TRiCBiO' : 'OrgaNova'}
+        </Tag>
+      ),
+    },
+    { title: '排序', dataIndex: 'sortOrder', width: 70 },
+    {
+      title: '显示',
+      dataIndex: 'isVisible',
+      width: 70,
+      render: (v: boolean, r: Member) => (
+        <Switch
+          checked={v}
+          onChange={(checked) =>
+            update.mutate({
+              ...r,
+              group: r.group as 'tricbio' | 'organova',
+              isVisible: checked,
+              photo: r.photo ?? undefined,
+              shortBio: r.shortBio ?? undefined,
+              fullBio: r.fullBio ?? undefined,
+            })
+          }
+          size="small"
+        />
+      ),
+    },
+    {
+      title: '操作',
+      width: 110,
+      render: (_, r) => (
+        <Space>
+          <Button onClick={() => openEdit(r)} size="small" type="link">
+            编辑
+          </Button>
+          <Button
+            danger
+            onClick={() =>
+              Modal.confirm({
+                title: '确认删除？',
+                content: r.name,
+                okType: 'danger',
+                onOk: () => del.mutate({ id: r.id }),
+              })
+            }
+            size="small"
+            type="link"
+          >
+            删除
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <div style={{ padding: 24 }}>
+      <div
+        style={{
+          marginBottom: 16,
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button onClick={openCreate} type="primary">
+          + 添加成员
+        </Button>
+      </div>
+
+      <Table
+        columns={columns}
+        dataSource={data ?? []}
+        loading={isLoading}
+        pagination={false}
+        rowKey="id"
+        size="middle"
+      />
+
+      <Modal
+        destroyOnClose
+        footer={null}
+        onCancel={() => setModalOpen(false)}
+        open={modalOpen}
+        title={editing ? '编辑成员' : '添加成员'}
+        width={720}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          style={{ marginTop: 16 }}
+        >
+          <Form.Item label="头像">
+            <ImageUploader
+              module="portal"
+              onChange={(url) => setPhoto(url ?? '')}
+              value={photo}
+            />
+          </Form.Item>
+          <Form.Item
+            label="姓名（含学位，如 Wei He, PhD）"
+            name="name"
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="职位" name="title" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="简短背景（卡片显示）" name="shortBio">
+            <Input.TextArea rows={2} />
+          </Form.Item>
+          <Form.Item label="完整 Bio（点击展开，富文本）">
+            <RichTextEditor
+              defaultValue={fullBio}
+              key={editing?.id ?? 'new'}
+              onChange={setFullBio}
+            />
+          </Form.Item>
+          <Form.Item label="所属团队" name="group" rules={[{ required: true }]}>
+            <Select
+              options={[
+                { value: 'tricbio', label: 'TRiCBiO (Nanjing/Shanghai)' },
+                { value: 'organova', label: 'OrgaNova (Philadelphia)' },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item label="排序（分组内）" name="sortOrder">
+            <InputNumber min={0} style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item label="显示" name="isVisible" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              block
+              htmlType="submit"
+              loading={create.isPending || update.isPending}
+              type="primary"
+            >
+              保存
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
+  );
+}
