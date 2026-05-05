@@ -164,7 +164,7 @@ function ItemsPanel({ category }: { category: Category }) {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         onCancel={() => setItemModalOpen(false)}
         open={itemModalOpen}
@@ -328,7 +328,7 @@ export default function AdminFaqView() {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         onCancel={() => setCatModalOpen(false)}
         open={catModalOpen}

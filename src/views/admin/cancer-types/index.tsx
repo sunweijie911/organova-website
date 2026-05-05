@@ -211,7 +211,7 @@ export default function AdminCancerTypesView() {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={
           <Button
             block

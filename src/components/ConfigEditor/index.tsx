@@ -130,7 +130,7 @@ function ImagePreviewUpload({
       </Upload>
       {hasValue && (
         <Image
-          preview={{ visible: previewOpen, onVisibleChange: setPreviewOpen }}
+          preview={{ open: previewOpen, onOpenChange: setPreviewOpen }}
           src={fileList[0]?.url}
           style={{ display: 'none' }}
         />

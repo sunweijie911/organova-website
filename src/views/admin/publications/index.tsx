@@ -166,7 +166,7 @@ export default function AdminPublicationsView() {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         onCancel={() => setModalOpen(false)}
         open={modalOpen}

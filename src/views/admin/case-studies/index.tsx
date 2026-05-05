@@ -265,7 +265,7 @@ export default function AdminCaseStudiesView() {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={
           <Button
             block

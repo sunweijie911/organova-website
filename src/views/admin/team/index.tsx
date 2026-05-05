@@ -192,7 +192,7 @@ export default function AdminTeamView() {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         onCancel={() => setModalOpen(false)}
         open={modalOpen}

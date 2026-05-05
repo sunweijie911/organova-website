@@ -209,7 +209,7 @@ export default function AdminNewsView() {
       />
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         onCancel={() => setModalOpen(false)}
         open={modalOpen}
