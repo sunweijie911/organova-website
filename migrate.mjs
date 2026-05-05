@@ -44,11 +44,13 @@ try {
         .map((s) => s.trim())
         .filter(Boolean);
 
-      for (const stmt of statements) {
-        await sql.unsafe(stmt);
-      }
+      await sql.begin(async (tx) => {
+        for (const stmt of statements) {
+          await tx.unsafe(stmt);
+        }
+        await tx`INSERT INTO "__drizzle_migrations" (hash, created_at) VALUES (${hash}, ${Date.now()})`;
+      });
 
-      await sql`INSERT INTO "__drizzle_migrations" (hash, created_at) VALUES (${hash}, ${Date.now()})`;
       console.log(`[migrate] Applied: ${entry.tag}`);
       applied++;
     }

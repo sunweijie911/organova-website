@@ -308,6 +308,9 @@ pull_deploy() {
     cat > build_info.sh << EOF
 APP_IMAGE="${app_image}"
 NGINX_IMAGE="${nginx_image}"
+COMMIT_HASH="${app_image##*:}"
+BUILD_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+BRANCH="unknown"
 EOF
     log_info "已更新 build_info.sh"
 

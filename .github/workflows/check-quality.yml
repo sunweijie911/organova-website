@@ -11,8 +11,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      node-modules-cache-key: ${{ steps.cache-key.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - id: cache-key
+        run: echo "value=node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: nm-cache
+        with:
+          path: node_modules
+          key: ${{ steps.cache-key.outputs.value }}
+      - if: steps.nm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
   lint:
     name: Lint
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,11 +44,18 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        id: nm-cache
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.node-modules-cache-key }}
+      - if: steps.nm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
   typecheck:
     name: Type Check
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,11 +64,18 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        id: nm-cache
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.node-modules-cache-key }}
+      - if: steps.nm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
       - run: pnpm type-check
 
   test:
     name: Unit Tests
+    needs: setup
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -64,11 +101,18 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        id: nm-cache
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.node-modules-cache-key }}
+      - if: steps.nm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
       - run: pnpm test
 
   build:
     name: Build
+    needs: setup
     runs-on: ubuntu-latest
     env:
       SKIP_ENV_VALIDATION: 1
@@ -79,5 +123,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        id: nm-cache
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.node-modules-cache-key }}
+      - if: steps.nm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
       - run: pnpm build

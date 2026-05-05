@@ -50,3 +50,7 @@ test-results/
 # tar
 *.tar
 *.tar.gz
+
+# docker build artifacts
+seed.mjs
+seed-admin.mjs

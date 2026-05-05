@@ -1,0 +1,104 @@
+# 可复用的单台服务器部署工作流
+# 被 build-deploy.yml 中的 deploy-aliyun / deploy-aws 调用
+name: Deploy to Server
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'GitHub Environment 名称（如 aliyun-production）'
+        required: true
+        type: string
+      registry:
+        description: '镜像仓库地址（如 ghcr.io）'
+        required: true
+        type: string
+      actor:
+        description: '执行部署的 GitHub 用户名'
+        required: true
+        type: string
+      image_app:
+        description: 'App 镜像完整地址（含 tag）'
+        required: true
+        type: string
+      image_nginx:
+        description: 'Nginx 镜像完整地址（含 tag）'
+        required: true
+        type: string
+      git_ref:
+        description: '用于 checkout 的 git ref'
+        required: true
+        type: string
+    secrets:
+      HOST:
+        required: true
+      USER:
+        required: true
+      DEPLOY_PATH:
+        required: true
+      SSH_KEY:
+        required: true
+      REGISTRY_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+      cancel-in-progress: false
+    environment:
+      name: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.git_ref }}
+
+      - name: Verify secrets
+        run: |
+          has_error=0
+          for var in HOST USER DEPLOY_PATH SSH_KEY REGISTRY_TOKEN; do
+            val="${!var}"
+            if [[ -z "$val" ]]; then
+              echo "::error::缺少 ${var} secret（在 ${{ inputs.environment }} Environment 中配置）"
+              has_error=1
+            fi
+          done
+          [[ $has_error -eq 1 ]] && exit 1 || true
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Sync deploy files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "manage.sh,docker-compose.yml,nginx.conf,.env.example"
+          target: ${{ secrets.DEPLOY_PATH }}
+          overwrite: true
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: REGISTRY_TOKEN,IMAGE_APP,IMAGE_NGINX
+          script: |
+            set -e
+            cd "${{ secrets.DEPLOY_PATH }}"
+            chmod +x ./manage.sh
+            echo "${REGISTRY_TOKEN}" | docker login "${{ inputs.registry }}" -u "${{ inputs.actor }}" --password-stdin
+            ./manage.sh pull-deploy "${IMAGE_APP}" "${IMAGE_NGINX}"
+        env:
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+          IMAGE_APP: ${{ inputs.image_app }}
+          IMAGE_NGINX: ${{ inputs.image_nginx }}
