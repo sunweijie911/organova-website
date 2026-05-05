@@ -8,7 +8,12 @@ if (!DATABASE_URL) {
   process.exit(0);
 }
 
-const sql = postgres(DATABASE_URL, { max: 1 });
+const RDS_CERT_PATH = '/app/certs/global-bundle.pem';
+const ssl = existsSync(RDS_CERT_PATH)
+  ? { ca: readFileSync(RDS_CERT_PATH).toString() }
+  : { rejectUnauthorized: false };
+
+const sql = postgres(DATABASE_URL, { max: 1, ssl });
 
 try {
   await sql`

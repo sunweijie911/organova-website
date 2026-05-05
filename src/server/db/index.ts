@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs';
+
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
@@ -12,7 +14,12 @@ const globalForDb = globalThis as unknown as {
   conn: postgres.Sql | undefined;
 };
 
-const conn = globalForDb.conn ?? postgres(env.DATABASE_URL);
+const RDS_CERT_PATH = '/app/certs/global-bundle.pem';
+const ssl = existsSync(RDS_CERT_PATH)
+  ? { ca: readFileSync(RDS_CERT_PATH).toString() }
+  : { rejectUnauthorized: false };
+
+const conn = globalForDb.conn ?? postgres(env.DATABASE_URL, { ssl });
 if (env.NODE_ENV !== 'production') globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });
