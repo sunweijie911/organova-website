@@ -1,0 +1,225 @@
+// 详情页正文 + 侧边栏样式
+// Figma layout_C8L6S4: column, gap 24px
+// 左栏 layout_H3RG7B: column, gap 24px, width 1440（全宽）
+// 内容卡片 layout_RI9JNZ: column, padding 24px, fill_DMLZHH → #FFFFFF, border 1px #DCDEE5, border-radius 16px
+
+.section {
+  background: #f5f5f5;
+  padding: 48px 240px 80px;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  // 左侧主内容 (约3/4宽) + 右侧侧边栏 (约1/4宽)
+  // Figma: 正文区 width 1440，侧边可推断
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+// 左侧主内容区
+// Figma layout_H3RG7B: column, gap 24px
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// 内容卡片（Challenge / Approach / Results / Implication）
+// Figma layout_RI9JNZ: padding 24px, border-radius 16px, border 1px #DCDEE5, fill_DMLZHH → #FFFFFF
+.contentCard {
+  background: #ffffff;
+  border: 1px solid #dcdee5;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.contentCardInner {
+  // Figma layout_2AQCOW: column, gap 16px, width fill
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+// 内容标签（Challenge / Approach / Results: / Implication）
+// Figma style_08VLU9: Roboto Medium 500 24px，fill_EE81AZ → #313238
+.contentLabel {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #313238;
+  margin: 0;
+  line-height: 1.4;
+}
+
+// Rich-text 内容区
+// Figma style_T2YO9S / style_QK27QM: Roboto Regular 16px, line-height 24px, fill_6I43LG → #4D4F56
+.richText {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #4d4f56;
+
+  // 内嵌富文本常见元素
+  p {
+    margin: 0 0 12px;
+    &:last-child { margin-bottom: 0; }
+  }
+
+  ul, ol {
+    padding-left: 24px;
+    margin: 0 0 12px;
+
+    li {
+      margin-bottom: 8px;
+      // Figma layout_NAXE0C 的 bullet 用小圆点
+      &::marker {
+        color: #979ba5;
+      }
+    }
+  }
+
+  // Results 小圆点样式（Figma Ellipse 1 layout_U09SMW: 8×8 fill_QB7CWN → #979BA5）
+  ul > li {
+    list-style-type: disc;
+  }
+
+  strong, b {
+    font-weight: 600;
+    color: #313238;
+  }
+
+  h3, h4 {
+    font-weight: 600;
+    color: #313238;
+    margin: 16px 0 8px;
+  }
+}
+
+// ─── 右侧侧边栏 ────────────────────────────────────────────────
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 24px;
+}
+
+// 侧边卡片（Study Details）
+// 与内容卡片样式一致
+.sideCard {
+  background: #ffffff;
+  border: 1px solid #dcdee5;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+// metadata 列表
+// Figma layout_N2W0NC: row, gap 16px, width 1392（此处在侧边栏取 column 排列）
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// metadata 单行
+// Figma layout_N2W0NC: row, align-items center, gap 16px
+.metaRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+// metadata 标签名（Model: / Drug Classes: / Readout: / Validation:）
+// Figma style_SHAHQC: Roboto Regular 18px，fill_EE81AZ → #313238
+.metaRowLabel {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #313238;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 90px;
+}
+
+// metadata 标签值列表
+// Figma layout_1XVTJ3: row, gap 10px，wrap
+.metaTagList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+// metadata 值标签
+// Figma layout_P8ZZ3S: padding 4px 16px, border-radius 16px, fill_SM3U3C → #F0F1F5
+// style_QK27QM: Roboto Regular 16px, fill_6I43LG → #4D4F56
+.metaTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 16px;
+  border-radius: 16px;
+  background: #f0f1f5;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #4d4f56;
+  white-space: nowrap;
+}
+
+// CTA 按钮区
+.ctaBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// 主 CTA 按钮
+.ctaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: #1a4c6e;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #15405c;
+  }
+}
+
+// 次要 CTA 按钮
+.ctaBtnSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid #1a4c6e;
+  color: #1a4c6e;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: #1a4c6e;
+    color: #ffffff;
+  }
+}

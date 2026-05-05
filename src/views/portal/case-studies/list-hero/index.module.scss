@@ -1,0 +1,53 @@
+// 列表页 Hero 样式
+// Figma: fill_03L884 → #1A1A1A，标题 style_KF43OW → Roboto Serif 64px，副标题 style_AF79OA → Roboto 24px
+// Hero 区域：x:240 y:401 → padding 160px 240px
+
+.hero {
+  position: relative;
+  background: #1a1a1a;
+  padding: 160px 240px 100px;
+  overflow: hidden;
+}
+
+// 右下角装饰光晕
+.glow {
+  position: absolute;
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(26, 76, 110, 0.3) 0%,
+    rgba(26, 76, 110, 0.15) 40%,
+    transparent 70%
+  );
+  bottom: -100px;
+  right: -100px;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+}
+
+// Figma style_KF43OW: Roboto Serif Regular 64px
+.title {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: #ffffff;
+  margin: 0 0 28px;
+  letter-spacing: -0.01em;
+}
+
+// Figma style_AF79OA: Roboto Regular 24px，fill_T9L4HN → #FFFFFF
+.subtitle {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 900px;
+  margin: 0;
+}

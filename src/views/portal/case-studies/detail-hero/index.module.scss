@@ -1,0 +1,87 @@
+// 详情页 Hero 样式
+// Figma layout_I2APNS: column, justify-content center, padding 24px 240px(→右侧1467px留白换算为正常padding)
+// 实际详情标题区：填充白色背景 + 底部阴影，垂直排列
+// effect_HQ32I0: box-shadow 0px 2px 4px 0px rgba(33, 46, 56, 0.15)
+
+.hero {
+  background: #ffffff;
+  box-shadow: 0px 2px 4px 0px rgba(33, 46, 56, 0.15);
+  border-bottom: 1px solid #dcdee5;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+// Back 链接
+// Figma layout_ELIJNZ: row, align-items center, gap 6px
+// style_7Q8EJJ: Roboto Regular 20px, fill_QB7CWN → #979BA5
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #979ba5;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #313238;
+  }
+
+  // SVG 图标颜色跟随父元素
+  svg {
+    flex-shrink: 0;
+    color: currentColor;
+  }
+}
+
+// 内容区（标题 + 标签）
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// 标题
+// Figma style_FRYJD7: Roboto Regular 32px, text-align center → left 显示，fill_E4LDH1 → #000000
+.title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #000000;
+  margin: 0;
+}
+
+// 标签行
+// Figma layout_1XVTJ3: row, gap 10px
+.tagRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+// 标签
+// Figma layout_P8ZZ3S: padding 4px 16px, border-radius 16px, fill_SM3U3C → #F0F1F5
+// style_QK27QM: Roboto Regular 16px, fill_6I43LG → #4D4F56
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 16px;
+  border-radius: 16px;
+  background: #f0f1f5;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #4d4f56;
+  white-space: nowrap;
+}

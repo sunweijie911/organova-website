@@ -8,10 +8,7 @@ if (!DATABASE_URL) {
   process.exit(0);
 }
 
-const ssl = DATABASE_URL.includes('sslmode=disable')
-  ? false
-  : { rejectUnauthorized: false };
-const sql = postgres(DATABASE_URL, { max: 1, ssl });
+const sql = postgres(DATABASE_URL, { max: 1 });
 
 try {
   await sql`

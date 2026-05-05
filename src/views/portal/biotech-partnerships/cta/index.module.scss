@@ -1,0 +1,45 @@
+/* CTA Section - 暗色背景，居中内容 */
+/* Figma: 黑色背景区域（footer 上方的呼吁行动区域）*/
+.section {
+  background: #000000;
+  padding: 100px 240px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+/* CTA 标题：Roboto Serif Regular，大字 */
+.title {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 52px;
+  line-height: 1.2;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* CTA 按钮：白色背景，黑色文字 */
+.button {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 36px;
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}

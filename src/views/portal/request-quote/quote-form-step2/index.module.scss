@@ -1,0 +1,153 @@
+/* Step 2 表单区域
+ * Figma: Frame 114 — 简约线条风格输入框（虚线底部）
+ * 布局: column, gap 50px，每行宽度 1440px，两列间距 128px
+ */
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+/* 两列等宽行，间距 128px（对应 Figma gap:128px） */
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 128px;
+  width: 100%;
+}
+
+/* 全宽单列行 */
+.rowFull {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  .field {
+    flex: 1;
+  }
+}
+
+/* 每个字段容器 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  flex: 1;
+}
+
+/* 线条风格输入框
+ * Figma: Vector 8 — 虚线底部 (stroke dashes: 2,2), color rgba(0,0,0,0.5)
+ * 字段文本: fontSize 24, fontFamily Roboto, fontWeight 400, color rgba(0,0,0,0.4)
+ */
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
+  border-radius: 0;
+  padding: 8px 0 12px;
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  &:focus {
+    border-bottom-color: rgba(0, 0, 0, 0.9);
+    border-bottom-style: solid;
+  }
+}
+
+/* textarea 额外样式（基础样式继承 .input） */
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+  border-bottom-style: dashed;
+  line-height: 1.5;
+}
+
+/* 错误提示 */
+.error {
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  color: #dc2626;
+  margin: 0;
+}
+
+/* 操作按钮区 — Back 在左，Submit 在右 */
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+}
+
+/* Back 按钮 — 左侧，带反向箭头
+ * Figma: x:240 y:1242, padding 20px 30px 22px, gap 28px
+ * border 1px solid #000, border-radius 2px
+ */
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 30px 22px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 2px;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  svg path {
+    stroke: currentColor;
+  }
+}
+
+/* Submit 按钮 — 右侧，带箭头
+ * Figma: x:1384 y:1242, 同样样式
+ */
+.submitBtn {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 30px 22px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 2px;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #000;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg path {
+    stroke: currentColor;
+  }
+}

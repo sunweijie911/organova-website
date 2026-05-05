@@ -1,0 +1,125 @@
+/* Our Story — About 页面故事区域 */
+/* Figma: 白色背景，y=1261 开始，内容在 x=240 起 */
+
+.section {
+  background: #fff;
+  padding: 100px 240px;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* Figma: Roboto Serif Regular 40px，白色（此处在白色背景上用深色） */
+.sectionTitle {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #000;
+  margin: 0 0 69px;
+  letter-spacing: -0.01em;
+}
+
+/* 三列故事卡片网格 */
+/* Figma: Frame 29 → column gap 69px，Frame 25/26/27 各占 fill */
+.storyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 69px;
+  margin-bottom: 60px;
+}
+
+.storyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Figma: Roboto Bold 32px */
+.blockHeading {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+/* Figma: Roboto Regular 24px */
+.blockText {
+  font-size: 24px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 展开的完整故事区域 */
+.expandedContent {
+  border-top: 1px solid #e8e8e8;
+  padding-top: 56px;
+  margin-bottom: 48px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.expandedInner {
+  max-width: 900px;
+}
+
+.expandedHeading {
+  font-size: 22px;
+  font-weight: 700;
+  color: #000;
+  margin: 40px 0 16px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.expandedText {
+  font-size: 18px;
+  font-weight: 300;
+  color: #333;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* 展开/收起按钮 */
+/* Figma: 按钮 padding 20px 30px，描边 1px 白色，Roboto Regular 20px */
+.toggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 30px;
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  font-size: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+}
+
+.btnArrow {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}

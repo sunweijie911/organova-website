@@ -1,0 +1,145 @@
+/* Step 1 表单区域
+ * Figma: Frame 115/116/117 — 白色背景，两列布局，间距 50px
+ * 下拉框: 白色背景，box-shadow 0px 4px 14px rgba(0,0,0,0.1)，padding 20px 22px 20px 16px
+ */
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  /* 对应 Figma x:240 y:765, width:1440 */
+}
+
+/* 两列等宽行，间距 50px */
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 50px;
+  width: 100%;
+}
+
+/* 全宽单列行 */
+.rowFull {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  .field {
+    flex: 1;
+  }
+}
+
+/* 每个字段容器 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+/* 字段标签 — Figma: fontSize 16, fontWeight 500, color #333 */
+.label {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 下拉框外层容器（相对定位，放置 chevron 图标） */
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* 下拉框主体 — Figma: ListBox Main
+ * fills: #FFFFFF
+ * box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.1)
+ * border-radius: 8px
+ * padding: 20px 22px 20px 16px
+ */
+.select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.1);
+  padding: 20px 48px 20px 16px;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #666;
+  cursor: pointer;
+  outline: none;
+  transition: box-shadow 0.2s;
+
+  &:focus {
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.18);
+  }
+
+  /* 选中值后文字变黑 */
+  &:not([value=""]) {
+    color: #000;
+  }
+
+  option {
+    color: #000;
+  }
+
+  option[value=""] {
+    color: #666;
+  }
+}
+
+/* Chevron 箭头图标 — 绝对定位于右侧 */
+.chevron {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+}
+
+/* 按钮操作区 — 右对齐 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+/* Next Step 按钮 — 黑底白字，带箭头
+ * Figma: 位于右下角 x:1475 y:1242
+ * padding 20px 30px 22px，gap 28px
+ * border 1px solid #000，border-radius 2px
+ */
+.nextBtn {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 30px 22px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 2px;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  svg path {
+    stroke: currentColor;
+  }
+}

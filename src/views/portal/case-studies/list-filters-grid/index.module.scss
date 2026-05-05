@@ -1,0 +1,281 @@
+// 过滤器 + 网格区块样式
+// Figma: fill_2VR5U5 → #F5F5F5 背景
+// 标题区：padding 100px 240px 48px（layout_40TR78）
+// 过滤行：padding 24px 240px（layout_GW8JKO / layout_UGW25L）
+// 卡片宽 468px，gap 18px（layout_1VSPWP），行间距 12px（layout_JEX86R）
+
+.section {
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+// 区块标题区域
+// Figma layout_40TR78: padding 100px 240px 48px, gap 10px
+.sectionHeader {
+  padding: 100px 240px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  border-bottom: 1px solid #dcdee5;
+}
+
+// Figma style_QNYTQ9: Roboto Serif Regular 64px，fill_E4LDH1 → #000000
+.sectionTitle {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 64px;
+  font-weight: 400;
+  color: #000000;
+  margin: 0;
+  line-height: 1.1;
+}
+
+// Figma style_GMUNUB: Roboto Regular 24px，fill_6I43LG → #4D4F56
+.sectionDesc {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #4d4f56;
+  margin: 0;
+  max-width: 900px;
+}
+
+// 过滤行通用样式
+// Figma: padding 24px 240px，border-bottom 1px solid #DCDEE5
+.filterRow {
+  padding: 24px 240px;
+  background: #ffffff;
+  border-bottom: 1px solid #dcdee5;
+}
+
+// 带阴影的过滤行（Application 行）
+// Figma effect_4LTA06: box-shadow 0px 2px 4px 0px rgba(44, 56, 77, 0.15)
+.filterRowShadow {
+  box-shadow: 0px 2px 4px 0px rgba(44, 56, 77, 0.15);
+}
+
+// 过滤行内容（label + tags 水平排列）
+// Figma layout_P1VARS: row, gap 36px; layout_9IIPYP: row, gap 45px
+.filterInner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 36px;
+}
+
+// 过滤标签标题
+// Figma style_QM2WWH: Roboto Regular 20px，fill_EE81AZ → #313238
+.filterLabel {
+  font-size: 20px;
+  font-weight: 400;
+  color: #313238;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// 标签列表容器
+// Figma layout_P8WJ7Q: row, gap 10px, wrap
+.tagList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+// 过滤 TAG 组件
+// Figma layout_9TO6US: padding 8px 16px, border-radius 21.5px
+// 默认态：fill_DMLZHH(#fff) + stroke fill_19IH2I(#DCDEE5)
+// 活跃态：fill_LSTP6N(#1A4C6E) 无 stroke
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 21.5px;
+  border: 1px solid #dcdee5;
+  background: #ffffff;
+  // Figma style_T7DP8X: Roboto Medium 16px，fill_EE81AZ → #313238
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #313238;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: #1a4c6e;
+    color: #1a4c6e;
+  }
+}
+
+// 活跃 TAG：深蓝底色 + 白字，无边框
+.tagActive {
+  background: #1a4c6e;
+  border-color: #1a4c6e;
+  color: #ffffff;
+
+  &:hover {
+    background: #15405c;
+    border-color: #15405c;
+    color: #ffffff;
+  }
+}
+
+// 网格外层容器
+// Figma layout_S13DTN: column, gap 24px, width 1440
+.gridWrapper {
+  padding: 24px 240px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #f5f5f5;
+}
+
+// 结果计数
+// Figma style_QM2WWH + fill_QB7CWN(#979BA5)，粗体 500
+.resultCount {
+  font-size: 20px;
+  font-weight: 400;
+  color: #979ba5;
+  margin: 0;
+
+  strong {
+    font-weight: 500;
+    color: #979ba5;
+  }
+}
+
+// 卡片网格
+// Figma layout_M96F70: column, gap 18px (行间距)
+// 每行：layout_1VSPWP: row, gap 18px，3 列
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+// 单张卡片
+// Figma layout_15AGC4: column, gap 10px, padding 24px, width 468, border-radius 16px
+// 边框：stroke fill_19IH2I(#DCDEE5) 1px
+// hover 态：effect_V1I7A0 → box-shadow 0px 4px 8px 0px rgba(99, 138, 189, 0.25)
+//           + stroke fill_LSTP6N(#1A4C6E)
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #dcdee5;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #1a4c6e;
+    box-shadow: 0px 4px 8px 0px rgba(99, 138, 189, 0.25);
+    transform: translateY(-2px);
+  }
+}
+
+// 封面图区域
+.cardCover {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f0f1f5;
+}
+
+.cardCoverImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// 卡片主体内容
+// Figma layout_GOXPLU: column, gap 24px
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+// 卡片标题
+// Figma style_YP2RNA: Roboto SemiBold 20px，fill_EE81AZ → #313238
+// hover 时标题变蓝 fill_LSTP6N → #1A4C6E
+.cardTitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #313238;
+  line-height: 1.4;
+  margin: 0;
+  transition: color 0.15s ease;
+
+  .card:hover & {
+    color: #1a4c6e;
+  }
+}
+
+// 标签行
+// Figma layout_1XVTJ3: row, gap 10px
+.cardTagRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+// 卡片内的小标签
+// Figma layout_P8ZZ3S: padding 4px 16px, border-radius 16px，fill_SM3U3C → #F0F1F5
+// Figma style_QK27QM: Roboto Regular 16px，fill_6I43LG → #4D4F56
+.cardTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 16px;
+  border-radius: 16px;
+  background: #f0f1f5;
+  font-size: 16px;
+  font-weight: 400;
+  color: #4d4f56;
+  white-space: nowrap;
+}
+
+// 摘要文本
+// Figma style_QPQD1W: Roboto Regular 16px line-height 24px，fill_6I43LG → #4D4F56
+.cardSummary {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #4d4f56;
+  margin: 0;
+  flex: 1;
+}
+
+// 阅读链接行
+// Figma layout_SY3UW8 / layout_91H1S3: row, gap 8px
+// Figma style_UOWTBP: Roboto Regular 14px line-height 20px，fill_RFCICE → #3A84FF
+.cardLink {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #3a84ff;
+  margin-top: auto;
+}
+
+// 加载 & 空状态
+.loading,
+.empty {
+  padding: 80px 0;
+  text-align: center;
+  font-size: 16px;
+  color: #979ba5;
+}

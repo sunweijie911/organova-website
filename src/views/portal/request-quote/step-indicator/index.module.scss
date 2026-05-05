@@ -1,0 +1,115 @@
+/* 步骤进度条组件
+ * Figma: Stepper — 宽度 618px, 居中于页面右侧 (x:651)
+ * 两步布局: YOUR PROGRAM → Your Contact
+ */
+.stepper {
+  display: flex;
+  flex-direction: row;
+  width: 618px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* 每个步骤的水平指示行 */
+.stepRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+/* 左侧填充区（第一步左侧为空） */
+.colLeft {
+  flex: 1;
+}
+
+/* 右侧填充区（最后一步右侧为空） */
+.colRight {
+  flex: 1;
+}
+
+/* 左侧填充（第二步用来接收第一步右侧的连接线） */
+.colLeftFill {
+  flex: 1;
+}
+
+/* 步骤圆圈指示器 */
+.indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+/* 默认状态：空心圆 */
+.indicatorDefault {
+  border: 1.5px solid #e0e0e7;
+  background: transparent;
+  color: #e0e0e7;
+}
+
+/* 活跃状态：黑色实心圆 */
+.indicatorActive {
+  background: #000;
+  border: none;
+}
+
+/* 已完成状态：黑色实心圆，显示对勾 */
+.indicatorDone {
+  background: #000;
+  border: none;
+  color: #fff;
+}
+
+/* 活跃时内部小圆点 */
+.activeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* 步骤之间的连接线 */
+.connectorLine {
+  flex: 1;
+  height: 2px;
+  background: #e0e0e7;
+  transition: background 0.3s;
+}
+
+/* 已完成的连接线变黑 */
+.connectorLineDone {
+  background: #000;
+}
+
+/* 步骤文字标签 */
+.stepLabel {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: center;
+  transition: color 0.3s;
+}
+
+/* 默认状态：灰色 */
+.stepLabelDefault {
+  color: #898f8f;
+}
+
+/* 活跃状态：黑色 */
+.stepLabelActive {
+  color: #000;
+}

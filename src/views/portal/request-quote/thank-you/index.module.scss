@@ -1,0 +1,40 @@
+/* Thank You 页面 — 深色背景，居中展示 */
+.section {
+  background: #000;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  padding: 160px 240px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 700px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* 感谢标题 — 与 Hero 标题风格一致 */
+.title {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 64px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.17;
+  margin: 0;
+}
+
+.message {
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin: 0;
+}

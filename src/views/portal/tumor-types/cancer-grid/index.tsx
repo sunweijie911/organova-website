@@ -3,15 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { api } from '@/lib/trpc/react';
+import { parseFormats } from '../utils';
 import styles from './index.module.scss';
-
-function parseFormats(formats?: string | null): string[] {
-  if (!formats) return [];
-  return formats
-    .split(/[,;|]/)
-    .map((f) => f.trim())
-    .filter(Boolean);
-}
 
 export default function CancerGrid() {
   const { data, isLoading } = api.cancerTypes.list.useQuery();

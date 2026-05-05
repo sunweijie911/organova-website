@@ -1,0 +1,95 @@
+/* Resources 区域样式
+ * Figma: Frame 66，row，gap:18px，3张卡片
+ * 整体在 Frame 84 中，位置 x:240 y:719
+ * 卡片：width 468px，padding 24px，border 1px #DCDEE5，border-radius 16px
+ * 内容：column，gap:24px（cardBody vs footer），内部 gap:16px（title）和 10px（footer行）
+ */
+
+.section {
+  background: #fff;
+  padding: 80px 240px;
+  /* 上方如果紧接 publications-list 则上 padding 可调整，此处保持一致 */
+}
+
+.inner {
+  max-width: 1440px;
+}
+
+/* 3列卡片网格：对应 Figma Frame 66，row，gap:18px */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+/* 单张卡片：白色背景，1px 边框 #DCDEE5，圆角 16px，padding 24px */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #dcdee5;
+  border-radius: 16px;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.06);
+  }
+}
+
+/* 卡片主体（title + desc） */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* 卡片标题：Roboto SemiBold 600，20px，颜色 #313238 */
+.cardTitle {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #313238;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* 描述：Roboto Regular 400，16px，line-height 24px，颜色 #4D4F56 */
+.cardDesc {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4d4f56;
+  margin: 0;
+}
+
+/* 卡片底部：CTA 按钮所在行 */
+.cardFooter {
+  display: flex;
+  align-items: center;
+}
+
+/* CTA 链接：Roboto Regular 14px，line-height 20px，颜色 #3A84FF，带右箭头，gap:4px */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #3a84ff;
+  text-decoration: none;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.75;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}

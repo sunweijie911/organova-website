@@ -1,121 +1,40 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
 import { api } from '@/lib/trpc/react';
-import styles from './list.module.scss';
+import ListFiltersGrid from './list-filters-grid';
+import ListHero from './list-hero';
 
+// 列表页入口组件：只负责状态管理和数据请求，渲染交给各 section 组件
 export default function CaseStudiesListView() {
+  // 过滤器状态
   const [cancerType, setCancerType] = useState('All');
   const [application, setApplication] = useState('All');
 
+  // 获取过滤选项
   const { data: options } = api.caseStudies.filterOptions.useQuery();
+
+  // 根据当前过滤器获取列表数据
   const { data, isLoading } = api.caseStudies.list.useQuery({
     cancerType,
     application,
   });
 
   return (
-    <div className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.heroGlow} />
-        <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>
-            From Biological Question to Clinical Insight.
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Explore real-world examples of how our platform is helping partners
-            overcome their toughest preclinical challenges.
-          </p>
-        </div>
-      </section>
+    <>
+      {/* Hero 区域：标题 + 副标题 */}
+      <ListHero />
 
-      <section className={styles.content}>
-        <div className={styles.container}>
-          {/* Filters */}
-          {options && (
-            <div className={styles.filters}>
-              <div className={styles.filterGroup}>
-                <span className={styles.filterLabel}>Cancer Type</span>
-                <div className={styles.filterPills}>
-                  {options.cancerTypes.map((t) => (
-                    <button
-                      className={`${styles.pill} ${cancerType === t ? styles.pillActive : ''}`}
-                      key={t}
-                      onClick={() => setCancerType(t)}
-                      type="button"
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className={styles.filterGroup}>
-                <span className={styles.filterLabel}>Application</span>
-                <div className={styles.filterPills}>
-                  {options.applications.map((a) => (
-                    <button
-                      className={`${styles.pill} ${application === a ? styles.pillActive : ''}`}
-                      key={a}
-                      onClick={() => setApplication(a)}
-                      type="button"
-                    >
-                      {a}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Grid */}
-          {isLoading && <div className={styles.loading}>Loading...</div>}
-          <div className={styles.grid}>
-            {data?.map((cs) => (
-              <Link
-                className={styles.card}
-                href={`/case-studies/${cs.slug}`}
-                key={cs.id}
-              >
-                {cs.coverImage && (
-                  <img
-                    alt={cs.title}
-                    className={styles.cardImg}
-                    src={cs.coverImage}
-                  />
-                )}
-                <div className={styles.cardBody}>
-                  <div className={styles.cardTags}>
-                    {cs.cancerTypeTags.slice(0, 2).map((t) => (
-                      <span className={styles.tag} key={t}>
-                        {t}
-                      </span>
-                    ))}
-                    {cs.applicationTags.slice(0, 1).map((t) => (
-                      <span
-                        className={`${styles.tag} ${styles.tagApp}`}
-                        key={t}
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <h3 className={styles.cardTitle}>{cs.title}</h3>
-                  {cs.summary && (
-                    <p className={styles.cardSummary}>{cs.summary}</p>
-                  )}
-                  <span className={styles.cardLink}>Read Case Study →</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-          {!isLoading && data?.length === 0 && (
-            <div className={styles.empty}>
-              No case studies match the selected filters.
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
+      {/* 过滤器 + 卡片网格区域 */}
+      <ListFiltersGrid
+        application={application}
+        cancerType={cancerType}
+        data={data}
+        isLoading={isLoading}
+        onApplicationChange={setApplication}
+        onCancerTypeChange={setCancerType}
+        options={options}
+      />
+    </>
   );
 }

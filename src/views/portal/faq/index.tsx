@@ -2,73 +2,30 @@
 
 import { useState } from 'react';
 import { api } from '@/lib/trpc/react';
-import styles from './index.module.scss';
+import FaqContent from './faq-content';
+import HeroBanner from './hero-banner';
 
-function AccordionItem({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={`${styles.item} ${open ? styles.itemOpen : ''}`}>
-      <button
-        className={styles.question}
-        onClick={() => setOpen((v) => !v)}
-        type="button"
-      >
-        <span>{question}</span>
-        <span className={styles.chevron}>{open ? '−' : '+'}</span>
-      </button>
-      {open && (
-        <div
-          className={`${styles.answer} rich-text`}
-          dangerouslySetInnerHTML={{ __html: answer }}
-        />
-      )}
-    </div>
-  );
-}
+// FAQ 默认激活分类
+const DEFAULT_CATEGORY = 'About Our Technology';
 
 export default function FaqView() {
+  const [activeCategory, setActiveCategory] = useState(DEFAULT_CATEGORY);
   const { data, isLoading } = api.faq.listWithItems.useQuery();
 
   return (
-    <div className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>Your Questions, Answered.</h1>
-          <p className={styles.heroSubtitle}>
-            Everything you need to know about our platform, services, and
-            partnerships.
-          </p>
-        </div>
-      </section>
+    <>
+      {/* Hero 区域：标题 + 分类导航 tab */}
+      <HeroBanner
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
 
-      <section className={styles.content}>
-        <div className={styles.container}>
-          {isLoading && <div className={styles.loading}>Loading...</div>}
-          {data?.map((category) => (
-            <div className={styles.category} key={category.id}>
-              <h2 className={styles.categoryTitle}>{category.name}</h2>
-              <div className={styles.items}>
-                {category.items.map((item) => (
-                  <AccordionItem
-                    answer={item.answer}
-                    key={item.id}
-                    question={item.question}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-          {!isLoading && (!data || data.length === 0) && (
-            <p className={styles.empty}>No FAQ entries yet.</p>
-          )}
-        </div>
-      </section>
-    </div>
+      {/* FAQ 内容区：accordion 列表 */}
+      <FaqContent
+        activeCategory={activeCategory}
+        data={data}
+        isLoading={isLoading}
+      />
+    </>
   );
 }

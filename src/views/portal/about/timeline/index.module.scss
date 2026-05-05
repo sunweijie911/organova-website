@@ -1,0 +1,141 @@
+/* Timeline — 里程碑时间线区域 */
+/* Figma: 黑色背景，节点横向排列，位置从 y=4945 开始 */
+
+.section {
+  background: #000;
+  padding: 100px 240px 120px;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* Figma: Roboto Serif Regular 40px，白色 */
+.sectionTitle {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #fff;
+  margin: 0 0 80px;
+}
+
+/* 时间线主体 */
+.timeline {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+/* 水平连接线 */
+/* Figma: Vector 29 是一条从左到右的渐变淡出线 */
+.line {
+  position: absolute;
+  top: 8px; /* 对齐圆点中心 */
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  pointer-events: none;
+}
+
+/* 单个里程碑节点 */
+/* Figma: Frame 91-97 各自宽度 132px，gap 15px，column */
+.node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 0;
+}
+
+/* 当前节点（2025）样式 */
+.nodeCurrent {
+  .marker {
+    /* 整体上移以配合方形标记 */
+  }
+}
+
+/* 标记容器 */
+.marker {
+  display: flex;
+  align-items: center;
+  height: 16px;
+}
+
+/* 普通圆点 — Figma: Ellipse 2，16×16，描边 #fff 1px，填充黑色 */
+.circleDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #000;
+  border: 1px solid #fff;
+  flex-shrink: 0;
+}
+
+/* 当前方块 — Figma: Rectangle 57，16×16，描边 #fff 1px，填充黑色 */
+.squareDot {
+  width: 16px;
+  height: 16px;
+  background: #000;
+  border: 1px solid #fff;
+  flex-shrink: 0;
+}
+
+/* 节点文字区 */
+/* Figma: Frame 90 — column gap 12px */
+.nodeContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 普通年份 — Figma: Roboto Bold 16px */
+.year {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+/* 当前节点年份 — Figma: Roboto Bold 32px */
+.yearCurrent {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+/* 普通标签 — Figma: Roboto Light 14px */
+.label {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+}
+
+/* 当前节点标签 — Figma: Roboto Regular 20px */
+.labelCurrent {
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.4;
+}
+
+/* 注释文字 — Figma: 2014 节点下方有一行小字 */
+.annotation {
+  margin-top: 48px;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.6;
+  max-width: 800px;
+  padding-left: 0;
+  /* 对应 Figma 中 x=548，大约在第二个节点下方 */
+  padding-left: calc(100% / 7 + 16px);
+}

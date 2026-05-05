@@ -1,0 +1,56 @@
+/* Hero Banner - 深色背景，顶部图片 + 渐变遮罩 */
+.hero {
+  position: relative;
+  width: 100%;
+  /* Figma: 1920x1079, hero section */
+  min-height: calc(100vh - 60px);
+  background: #0a0a0a;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+/* 径向渐变遮罩：从中心半透明黑色到边缘深黑 */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 内容区域：左侧 240px 留白，底部 401px（相对于页面顶部） */
+/* Figma: x=240, y=401, width=1200 */
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 0 240px 120px;
+  max-width: 1440px;
+  width: 100%;
+}
+
+/* 主标题: Roboto Serif Regular 64px，白色 */
+.title {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 1.15;
+  color: #ffffff;
+  margin-bottom: 80px;
+  white-space: pre-line;
+  letter-spacing: -0.01em;
+}
+
+/* 副标题: Roboto Regular 24px，白色 */
+.subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #ffffff;
+  max-width: 800px;
+}
