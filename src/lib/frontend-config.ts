@@ -130,11 +130,8 @@ import { frontendConfigSchema } from '@/constants/frontend-config';
 export const defaultFrontendConfig = extractDefaults(frontendConfigSchema);
 export type FrontendConfig = typeof defaultFrontendConfig;
 
-export let config: FrontendConfig = { ...defaultFrontendConfig };
-
 export function mergeConfig(
   customConfig: Partial<FrontendConfig> = {},
 ): FrontendConfig {
-  config = deepMerge(defaultFrontendConfig as FrontendConfig, customConfig);
-  return config;
+  return deepMerge(defaultFrontendConfig as FrontendConfig, customConfig);
 }

@@ -1,14 +1,13 @@
-import { mkdir, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
 import { auth } from '@/server/better-auth';
 import { getClientIp } from '@/server/services/get-client-ip';
 import { uploadLimiter } from '@/server/services/rate-limiter';
+import { uploadFile } from '@/server/services/storage';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_MODULES = ['posts', 'pages', 'avatars', 'misc'] as const;
 
 // 通过文件头魔术字节判断真实格式，不依赖客户端提供的 MIME type
 function detectImageType(buffer: Buffer): { ext: string; mime: string } | null {
@@ -73,7 +72,6 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // 用魔术字节检测真实文件类型
     const detected = detectImageType(buffer);
     if (!detected) {
       return NextResponse.json(
@@ -82,22 +80,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const ALLOWED_BUCKETS = ['posts', 'pages', 'avatars', 'misc'] as const;
     const url = new URL(request.url);
-    const bucketParam = url.searchParams.get('bucket') ?? 'misc';
-    const module = ALLOWED_BUCKETS.includes(
-      bucketParam as (typeof ALLOWED_BUCKETS)[number],
+    const moduleParam = url.searchParams.get('module') ?? 'misc';
+    const module = ALLOWED_MODULES.includes(
+      moduleParam as (typeof ALLOWED_MODULES)[number],
     )
-      ? bucketParam
+      ? moduleParam
       : 'misc';
 
     const fileName = `${Date.now()}-${nanoid()}.${detected.ext}`;
-    const uploadDir = join(process.cwd(), 'public', 'uploads', module);
+    const fileUrl = await uploadFile(module, fileName, buffer, detected.mime);
 
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(join(uploadDir, fileName), buffer);
-
-    return NextResponse.json({ url: `/uploads/${module}/${fileName}` });
+    return NextResponse.json({ url: fileUrl });
   } catch {
     return NextResponse.json({ error: '上传失败，请重试' }, { status: 500 });
   }

@@ -44,7 +44,7 @@ export function PortalHeader() {
             SIGN OUT
           </button>
         ) : (
-          <Link className={styles.link} href="/login">
+          <Link className={styles.link} href="/signin">
             LOGIN
           </Link>
         )}

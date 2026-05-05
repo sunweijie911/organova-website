@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { news } from '@/server/db/schema';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
@@ -17,14 +17,18 @@ export const newsRouter = createTRPCRouter({
   list: publicProcedure
     .input(z.object({ year: z.number().int().optional() }))
     .query(async ({ input, ctx }) => {
-      const rows = await ctx.db
+      return ctx.db
         .select()
         .from(news)
-        .where(eq(news.isPublished, true))
+        .where(
+          input.year
+            ? and(
+                eq(news.isPublished, true),
+                sql<boolean>`extract(year from ${news.publishedAt})::int = ${input.year}`,
+              )
+            : eq(news.isPublished, true),
+        )
         .orderBy(desc(news.publishedAt));
-
-      if (!input.year) return rows;
-      return rows.filter((r) => r.publishedAt.getFullYear() === input.year);
     }),
 
   availableYears: publicProcedure.query(async ({ ctx }) => {

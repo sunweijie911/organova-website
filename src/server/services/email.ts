@@ -28,11 +28,8 @@ function getTransporter(): Transporter {
 }
 
 /**
- * 发送邮箱验证码。
- *
- * 开发环境：打印到控制台。
- * 生产环境：通过 QQ 邮箱 SMTP 发送。需配置环境变量：
- *   SMTP_USER（QQ 邮箱地址）、SMTP_PASS（SMTP 授权码）
+ * 发送线索通知邮件。
+ * 开发环境打印到控制台；生产环境通过 SMTP 发送（见 .env.example SMTP 配置）。
  */
 export async function sendLeadNotification(lead: {
   source: string;

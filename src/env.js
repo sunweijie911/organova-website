@@ -32,12 +32,30 @@ export const env = createEnv({
     RATE_LIMIT_GLOBAL_IP: z.string().default('60/60000'),
     RATE_LIMIT_AUTH_IP: z.string().default('5/60000'),
     RATE_LIMIT_CONTACT: z.string().default('3/60000'),
+
+    // 文件存储：local | oss | s3
+    STORAGE_PROVIDER: z.enum(['local', 'oss', 's3']).default('local'),
+    // 阿里云 OSS（STORAGE_PROVIDER=oss 时必填）
+    OSS_REGION: z.string().optional(),
+    OSS_ACCESS_KEY_ID: z.string().optional(),
+    OSS_ACCESS_KEY_SECRET: z.string().optional(),
+    OSS_BUCKET: z.string().optional(),
+    OSS_BASE_URL: z.string().optional(), // CDN 或自定义域名，不填则用默认 bucket 域名
+    // AWS S3（STORAGE_PROVIDER=s3 时必填）
+    S3_REGION: z.string().optional(),
+    S3_ACCESS_KEY_ID: z.string().optional(),
+    S3_SECRET_ACCESS_KEY: z.string().optional(),
+    S3_BUCKET: z.string().optional(),
+    S3_ENDPOINT: z.string().optional(), // 兼容其他 S3 协议服务时填写
+    S3_BASE_URL: z.string().optional(), // CDN 或自定义域名
   },
 
   client: {
     NEXT_PUBLIC_SITE_NAME: z.string().default('Organova'),
     // 登录方式: email-password | email-otp
-    NEXT_PUBLIC_AUTH_METHOD: z.string().default('email-otp'),
+    NEXT_PUBLIC_AUTH_METHOD: z
+      .enum(['email-otp', 'email-password'])
+      .default('email-otp'),
   },
 
   runtimeEnv: {
@@ -54,6 +72,18 @@ export const env = createEnv({
     RATE_LIMIT_GLOBAL_IP: stripQuotes(process.env.RATE_LIMIT_GLOBAL_IP),
     RATE_LIMIT_AUTH_IP: stripQuotes(process.env.RATE_LIMIT_AUTH_IP),
     RATE_LIMIT_CONTACT: stripQuotes(process.env.RATE_LIMIT_CONTACT),
+    STORAGE_PROVIDER: stripQuotes(process.env.STORAGE_PROVIDER),
+    OSS_REGION: stripQuotes(process.env.OSS_REGION),
+    OSS_ACCESS_KEY_ID: stripQuotes(process.env.OSS_ACCESS_KEY_ID),
+    OSS_ACCESS_KEY_SECRET: stripQuotes(process.env.OSS_ACCESS_KEY_SECRET),
+    OSS_BUCKET: stripQuotes(process.env.OSS_BUCKET),
+    OSS_BASE_URL: stripQuotes(process.env.OSS_BASE_URL),
+    S3_REGION: stripQuotes(process.env.S3_REGION),
+    S3_ACCESS_KEY_ID: stripQuotes(process.env.S3_ACCESS_KEY_ID),
+    S3_SECRET_ACCESS_KEY: stripQuotes(process.env.S3_SECRET_ACCESS_KEY),
+    S3_BUCKET: stripQuotes(process.env.S3_BUCKET),
+    S3_ENDPOINT: stripQuotes(process.env.S3_ENDPOINT),
+    S3_BASE_URL: stripQuotes(process.env.S3_BASE_URL),
     NEXT_PUBLIC_SITE_NAME: stripQuotes(process.env.NEXT_PUBLIC_SITE_NAME),
     NEXT_PUBLIC_AUTH_METHOD: stripQuotes(process.env.NEXT_PUBLIC_AUTH_METHOD),
   },
