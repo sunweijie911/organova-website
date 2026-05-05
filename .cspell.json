@@ -140,7 +140,8 @@
     "PHARMA",
     "Pharmaron",
     "synergize",
-    "TME"
+    "TME",
+    "sslmode"
   ],
   "patterns": [
     {
