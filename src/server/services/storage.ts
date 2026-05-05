@@ -59,7 +59,10 @@ async function uploadToS3(
   const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
   const client = new S3Client({
     region,
-    credentials: { accessKeyId, secretAccessKey },
+    // 未提供 Access Key 时不传 credentials，自动使用 IAM Role（EC2/ECS 环境）
+    ...(accessKeyId && secretAccessKey
+      ? { credentials: { accessKeyId, secretAccessKey } }
+      : {}),
     ...(endpoint ? { endpoint } : {}),
     // 使用自定义 endpoint 时强制 path-style，兼容 MinIO 等服务
     forcePathStyle: !!endpoint,
@@ -114,10 +117,8 @@ function requireS3Config() {
     S3_ENDPOINT,
     S3_BASE_URL,
   } = env;
-  if (!S3_REGION || !S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY || !S3_BUCKET) {
-    throw new Error(
-      'STORAGE_PROVIDER=s3 时必须配置 S3_REGION / S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY / S3_BUCKET',
-    );
+  if (!S3_REGION || !S3_BUCKET) {
+    throw new Error('STORAGE_PROVIDER=s3 时必须配置 S3_REGION / S3_BUCKET');
   }
   return {
     region: S3_REGION,
