@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePortalLayout } from '@/context/portal-layout-context';
-import { authClient } from '@/lib/auth-client';
 import styles from './index.module.scss';
 
 const UTILITY_LINKS = [
@@ -14,7 +13,6 @@ const UTILITY_LINKS = [
 
 export function PortalHeader() {
   const { layoutVisible } = usePortalLayout();
-  const { data: session } = authClient.useSession();
 
   if (!layoutVisible.header) return null;
 
@@ -27,7 +25,7 @@ export function PortalHeader() {
             {link.label}
           </Link>
         ))}
-        {session?.user ? (
+        {/* {session?.user ? (
           <button
             className={styles.authBtn}
             onClick={() =>
@@ -47,7 +45,7 @@ export function PortalHeader() {
           <Link className={styles.link} href="/signin">
             LOGIN
           </Link>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -304,10 +304,10 @@ export default function AdminLeadsView() {
         }
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
+        styles={{ wrapper: { width: 560 } }}
         title={
           selected ? `${selected.firstName} ${selected.lastName}` : '线索详情'
         }
-        width={560}
       >
         {selected && (
           <Descriptions bordered column={1} size="small">

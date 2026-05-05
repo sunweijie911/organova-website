@@ -165,7 +165,16 @@ export default function AdminNewsView() {
           </Button>
           <Button
             onClick={() =>
-              togglePublish.mutate({ id: r.id, isPublished: !r.isPublished })
+              Modal.confirm({
+                title: r.isPublished ? '确认下线？' : '确认上线？',
+                content: r.title,
+                okType: r.isPublished ? 'danger' : 'primary',
+                onOk: () =>
+                  togglePublish.mutate({
+                    id: r.id,
+                    isPublished: !r.isPublished,
+                  }),
+              })
             }
             size="small"
             type="link"

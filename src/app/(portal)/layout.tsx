@@ -12,7 +12,14 @@ export default function PortalLayout({
     <PortalLayoutProvider>
       <PortalStickyNav />
       <PortalHeader />
-      <main>{children}</main>
+      <main
+        style={{
+          paddingBottom: 'var(--sticky-nav-height, 0px)',
+          transition: 'padding-bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+      >
+        {children}
+      </main>
       <PortalFooter />
     </PortalLayoutProvider>
   );

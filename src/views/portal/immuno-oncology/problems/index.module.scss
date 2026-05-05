@@ -1,0 +1,19 @@
+.section {
+  background: #f5f5f5;
+  padding: 240px 0;
+}
+
+.inner {
+  padding: 0 241px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.title {
+  font-family: var(--font-roboto-serif), serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #000;
+  text-align: center;
+}

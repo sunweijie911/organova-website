@@ -1,0 +1,96 @@
+.solutions {
+  background: #fff;
+  padding-top: 181px;
+}
+
+.sectionTitle {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.175;
+  color: #000;
+  margin: 0 240px 60px;
+}
+
+/* ── Card ── */
+
+.cardWrap {
+  margin: 0 240px;
+}
+
+.card {
+  position: relative;
+  height: 519px;
+  border-radius: 20px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0px 16px 29px -11px rgba(0, 0, 0, 0.3);
+}
+
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.cardBody {
+  position: absolute;
+  inset: 0;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.cardText {
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* ── Tabs ── */
+
+.tabRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 56px 240px 0;
+  border-left: 1px dashed rgba(0, 0, 0, 0.3);
+  border-right: 1px dashed rgba(0, 0, 0, 0.3);
+}
+
+.tabBtn {
+  padding: 40px 0;
+  background: transparent;
+  border: none;
+  border-top: 1px dashed rgba(0, 0, 0, 0.3);
+  border-right: 1px dashed rgba(0, 0, 0, 0.3);
+  font-size: 32px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.2s;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover:not(.tabActive) {
+    color: rgba(0, 0, 0, 0.55);
+  }
+}
+
+.tabActive {
+  border-top: 1px solid #000;
+  color: #000;
+}

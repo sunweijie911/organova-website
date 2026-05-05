@@ -10,7 +10,7 @@ import { TRPCReactProvider } from '@/lib/trpc/react';
 
 const roboto = Roboto({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '600', '700'],
   style: ['normal', 'italic'],
   variable: '--font-roboto',
   display: 'swap',

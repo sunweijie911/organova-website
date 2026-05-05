@@ -1,0 +1,49 @@
+.hero {
+  position: relative;
+  min-height: 1079px;
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+  background: #000;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding: 401px 240px 0;
+}
+
+.title {
+  font-family: var(--font-roboto-serif), serif;
+  font-size: 64px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.15;
+  max-width: 1098px;
+  margin-bottom: 32px;
+}
+
+.subtitle {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.5;
+  max-width: 1255px;
+}

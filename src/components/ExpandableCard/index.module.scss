@@ -1,0 +1,123 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #c4cadb;
+  border-radius: 12px;
+  box-shadow: 0 4px 4px 0 rgba(179, 192, 202, 0.1);
+  padding: 30px 40px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cardCompact {
+  padding: 24px 40px;
+}
+
+.cardOpen {
+  border-color: #1a4c6e;
+  box-shadow: 0 4px 8px 0 rgba(179, 192, 202, 0.2);
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.iconBox {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  background: #e9f2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBoxCompact {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #313238;
+  line-height: 1.2;
+}
+
+.brief {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #979ba5;
+  line-height: 1.4;
+}
+
+.arrow {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f0f1f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+
+  img {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(7%) saturate(490%)
+      hue-rotate(185deg) brightness(92%) contrast(85%);
+  }
+}
+
+.arrowOpen {
+  background: #1a4c6e;
+
+  img {
+    filter: brightness(0) invert(1);
+  }
+}
+
+.divider {
+  height: 1px;
+  background: #d9d9d9;
+  margin: 24px 0;
+}
+
+.detail {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+  color: #313238;
+}
+
+.detailSpaced {
+  margin-top: 20px;
+}

@@ -5,17 +5,16 @@ import {
   Button,
   Form,
   Input,
-  InputNumber,
   Modal,
   message,
   Select,
   Space,
   Switch,
-  Table,
   Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { DraggableTable } from '@/components/DraggableTable';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { api } from '@/lib/trpc/react';
@@ -66,6 +65,17 @@ export default function AdminTeamView() {
     },
     onError: () => message.error('删除失败'),
   });
+
+  const updateSort = api.team.adminUpdateSort.useMutation({
+    onError: () => message.error('排序保存失败'),
+  });
+
+  const handleOrderChange = useCallback(
+    (newRows: Member[]) => {
+      updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
+    },
+    [updateSort],
+  );
 
   const openCreate = () => {
     setEditing(null);
@@ -118,7 +128,6 @@ export default function AdminTeamView() {
         </Tag>
       ),
     },
-    { title: '排序', dataIndex: 'sortOrder', width: 70 },
     {
       title: '显示',
       dataIndex: 'isVisible',
@@ -182,12 +191,12 @@ export default function AdminTeamView() {
         </Button>
       </div>
 
-      <Table
+      <DraggableTable
         columns={columns}
         dataSource={data ?? []}
         loading={isLoading}
+        onOrderChange={handleOrderChange}
         pagination={false}
-        rowKey="id"
         size="middle"
       />
 
@@ -239,9 +248,6 @@ export default function AdminTeamView() {
                 { value: 'organova', label: 'OrgaNova (Philadelphia)' },
               ]}
             />
-          </Form.Item>
-          <Form.Item label="排序（分组内）" name="sortOrder">
-            <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label="显示" name="isVisible" valuePropName="checked">
             <Switch />

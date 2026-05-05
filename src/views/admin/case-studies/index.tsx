@@ -5,42 +5,18 @@ import {
   Checkbox,
   Form,
   Input,
-  InputNumber,
   Modal,
   message,
   Space,
   Switch,
-  Table,
   Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { DraggableTable } from '@/components/DraggableTable';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { api } from '@/lib/trpc/react';
-
-const CANCER_TYPE_TAGS = [
-  'HCC/ICC',
-  'CRC',
-  'NSCLC',
-  'Gastric',
-  'Breast',
-  'RCC',
-  'GBM',
-  'GIST',
-  'Rare Tumors',
-  'Non-Oncology',
-];
-
-const APPLICATION_TAGS = [
-  'Drug Efficacy',
-  'Immunotherapy',
-  'ADC',
-  'Target Discovery',
-  'Safety & Toxicity',
-  'Disease Modeling',
-  'Special Models',
-];
 
 type CS = {
   id: number;
@@ -76,7 +52,15 @@ export default function AdminCaseStudiesView() {
   const [implication, setImplication] = useState('');
   const [form] = Form.useForm();
 
+  const [tagsModalOpen, setTagsModalOpen] = useState(false);
+  const [editCancerTags, setEditCancerTags] = useState<string[]>([]);
+  const [editAppTags, setEditAppTags] = useState<string[]>([]);
+  const [newCancerTag, setNewCancerTag] = useState('');
+  const [newAppTag, setNewAppTag] = useState('');
+
   const { data, isLoading, refetch } = api.caseStudies.adminList.useQuery();
+  const { data: filterTags, refetch: refetchTags } =
+    api.caseStudies.adminGetFilterTags.useQuery();
 
   const create = api.caseStudies.adminCreate.useMutation({
     onSuccess: () => {
@@ -108,6 +92,34 @@ export default function AdminCaseStudiesView() {
     onSuccess: () => void refetch(),
     onError: () => message.error('操作失败'),
   });
+
+  const updateSort = api.caseStudies.adminUpdateSort.useMutation({
+    onError: () => message.error('排序保存失败'),
+  });
+
+  const handleOrderChange = useCallback(
+    (newRows: CS[]) => {
+      updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
+    },
+    [updateSort],
+  );
+
+  const setFilterTags = api.caseStudies.adminSetFilterTags.useMutation({
+    onSuccess: () => {
+      message.success('标签已保存');
+      setTagsModalOpen(false);
+      void refetchTags();
+    },
+    onError: () => message.error('保存失败'),
+  });
+
+  const openTagsModal = () => {
+    setEditCancerTags(filterTags?.cancerTypeTags ?? []);
+    setEditAppTags(filterTags?.applicationTags ?? []);
+    setNewCancerTag('');
+    setNewAppTag('');
+    setTagsModalOpen(true);
+  };
 
   const openCreate = () => {
     setEditing(null);
@@ -195,7 +207,6 @@ export default function AdminCaseStudiesView() {
           </Tag>
         )),
     },
-    { title: '排序', dataIndex: 'sortOrder', width: 60 },
     {
       title: '状态',
       dataIndex: 'isPublished',
@@ -214,7 +225,16 @@ export default function AdminCaseStudiesView() {
           </Button>
           <Button
             onClick={() =>
-              togglePublish.mutate({ id: r.id, isPublished: !r.isPublished })
+              Modal.confirm({
+                title: r.isPublished ? '确认下线？' : '确认上线？',
+                content: r.title,
+                okType: r.isPublished ? 'danger' : 'primary',
+                onOk: () =>
+                  togglePublish.mutate({
+                    id: r.id,
+                    isPublished: !r.isPublished,
+                  }),
+              })
             }
             size="small"
             type="link"
@@ -248,19 +268,21 @@ export default function AdminCaseStudiesView() {
           marginBottom: 16,
           display: 'flex',
           justifyContent: 'flex-end',
+          gap: 8,
         }}
       >
+        <Button onClick={openTagsModal}>管理筛选标签</Button>
         <Button onClick={openCreate} type="primary">
           + 添加案例研究
         </Button>
       </div>
 
-      <Table
+      <DraggableTable
         columns={columns}
         dataSource={data ?? []}
         loading={isLoading}
+        onOrderChange={handleOrderChange}
         pagination={false}
-        rowKey="id"
         size="middle"
       />
 
@@ -310,13 +332,13 @@ export default function AdminCaseStudiesView() {
           </Form.Item>
           <Form.Item label="Cancer Type 标签" name="cancerTypeTags">
             <Checkbox.Group
-              options={CANCER_TYPE_TAGS}
+              options={filterTags?.cancerTypeTags ?? []}
               style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
             />
           </Form.Item>
           <Form.Item label="Application 标签" name="applicationTags">
             <Checkbox.Group
-              options={APPLICATION_TAGS}
+              options={filterTags?.applicationTags ?? []}
               style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
             />
           </Form.Item>
@@ -372,13 +394,135 @@ export default function AdminCaseStudiesView() {
           <Form.Item label="CTA 2 链接" name="cta2Url">
             <Input />
           </Form.Item>
-          <Form.Item label="排序" name="sortOrder">
-            <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
           <Form.Item label="上线" name="isPublished" valuePropName="checked">
             <Switch />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        footer={
+          <Button
+            loading={setFilterTags.isPending}
+            onClick={() =>
+              setFilterTags.mutate({
+                cancerTypeTags: editCancerTags,
+                applicationTags: editAppTags,
+              })
+            }
+            type="primary"
+          >
+            保存标签
+          </Button>
+        }
+        onCancel={() => setTagsModalOpen(false)}
+        open={tagsModalOpen}
+        title="管理筛选标签"
+        width={560}
+      >
+        <div style={{ marginTop: 16 }}>
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontWeight: 600, marginBottom: 6 }}>
+              Cancer Type 标签
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 6,
+                marginBottom: 8,
+              }}
+            >
+              {editCancerTags.map((t) => (
+                <Tag
+                  closable
+                  key={t}
+                  onClose={() =>
+                    setEditCancerTags(editCancerTags.filter((x) => x !== t))
+                  }
+                >
+                  {t}
+                </Tag>
+              ))}
+            </div>
+            <Space.Compact style={{ width: '100%' }}>
+              <Input
+                onChange={(e) => setNewCancerTag(e.target.value)}
+                onPressEnter={() => {
+                  const tag = newCancerTag.trim();
+                  if (tag && !editCancerTags.includes(tag)) {
+                    setEditCancerTags([...editCancerTags, tag]);
+                    setNewCancerTag('');
+                  }
+                }}
+                placeholder="输入新标签，回车添加"
+                value={newCancerTag}
+              />
+              <Button
+                onClick={() => {
+                  const tag = newCancerTag.trim();
+                  if (tag && !editCancerTags.includes(tag)) {
+                    setEditCancerTags([...editCancerTags, tag]);
+                    setNewCancerTag('');
+                  }
+                }}
+              >
+                添加
+              </Button>
+            </Space.Compact>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 600, marginBottom: 6 }}>
+              Application 标签
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 6,
+                marginBottom: 8,
+              }}
+            >
+              {editAppTags.map((t) => (
+                <Tag
+                  closable
+                  key={t}
+                  onClose={() =>
+                    setEditAppTags(editAppTags.filter((x) => x !== t))
+                  }
+                >
+                  {t}
+                </Tag>
+              ))}
+            </div>
+            <Space.Compact style={{ width: '100%' }}>
+              <Input
+                onChange={(e) => setNewAppTag(e.target.value)}
+                onPressEnter={() => {
+                  const tag = newAppTag.trim();
+                  if (tag && !editAppTags.includes(tag)) {
+                    setEditAppTags([...editAppTags, tag]);
+                    setNewAppTag('');
+                  }
+                }}
+                placeholder="输入新标签，回车添加"
+                value={newAppTag}
+              />
+              <Button
+                onClick={() => {
+                  const tag = newAppTag.trim();
+                  if (tag && !editAppTags.includes(tag)) {
+                    setEditAppTags([...editAppTags, tag]);
+                    setNewAppTag('');
+                  }
+                }}
+              >
+                添加
+              </Button>
+            </Space.Compact>
+          </div>
+        </div>
       </Modal>
     </div>
   );

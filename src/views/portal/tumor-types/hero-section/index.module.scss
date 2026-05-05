@@ -1,0 +1,47 @@
+.hero {
+  position: relative;
+  height: 600px;
+  padding-top: 60px; /* account for fixed portal header */
+  background: #0a0a0a;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 240px 120px;
+}
+
+.title {
+  font-family: var(--font-roboto-serif), Georgia, serif;
+  font-size: 64px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.15;
+  max-width: 900px;
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.5;
+  max-width: 900px;
+}

@@ -1,19 +1,9 @@
 'use client';
 
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  message,
-  Space,
-  Switch,
-  Table,
-  Tag,
-} from 'antd';
+import { Button, Form, Input, Modal, message, Space, Switch, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { DraggableTable } from '@/components/DraggableTable';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { api } from '@/lib/trpc/react';
@@ -78,6 +68,17 @@ export default function AdminCancerTypesView() {
     onError: () => message.error('操作失败'),
   });
 
+  const updateSort = api.cancerTypes.adminUpdateSort.useMutation({
+    onError: () => message.error('排序保存失败'),
+  });
+
+  const handleOrderChange = useCallback(
+    (newRows: CancerType[]) => {
+      updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
+    },
+    [updateSort],
+  );
+
   const openCreate = () => {
     setEditing(null);
     setCoverImage('');
@@ -141,7 +142,6 @@ export default function AdminCancerTypesView() {
     { title: '癌种名称', dataIndex: 'name', width: 220 },
     { title: 'Slug', dataIndex: 'slug', width: 180 },
     { title: '模型数量', dataIndex: 'modelCount', width: 130 },
-    { title: '排序', dataIndex: 'sortOrder', width: 60 },
     {
       title: '状态',
       dataIndex: 'isPublished',
@@ -160,7 +160,16 @@ export default function AdminCancerTypesView() {
           </Button>
           <Button
             onClick={() =>
-              togglePublish.mutate({ id: r.id, isPublished: !r.isPublished })
+              Modal.confirm({
+                title: r.isPublished ? '确认下线？' : '确认上线？',
+                content: r.name,
+                okType: r.isPublished ? 'danger' : 'primary',
+                onOk: () =>
+                  togglePublish.mutate({
+                    id: r.id,
+                    isPublished: !r.isPublished,
+                  }),
+              })
             }
             size="small"
             type="link"
@@ -201,12 +210,12 @@ export default function AdminCancerTypesView() {
         </Button>
       </div>
 
-      <Table
+      <DraggableTable
         columns={columns}
         dataSource={data ?? []}
         loading={isLoading}
+        onOrderChange={handleOrderChange}
         pagination={false}
-        rowKey="id"
         size="middle"
       />
 
@@ -294,9 +303,6 @@ export default function AdminCancerTypesView() {
           </Form.Item>
           <Form.Item label="CTA 2 链接" name="cta2Url">
             <Input placeholder="/request-quote" />
-          </Form.Item>
-          <Form.Item label="排序（数字越小越靠前）" name="sortOrder">
-            <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label="上线" name="isPublished" valuePropName="checked">
             <Switch />

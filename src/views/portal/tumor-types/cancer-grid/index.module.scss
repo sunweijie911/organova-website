@@ -1,0 +1,141 @@
+.section {
+  background: #fff;
+  padding: 100px 0 120px;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ── Intro heading block ── */
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.introTitle {
+  font-family: var(--font-roboto-serif), Georgia, serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #000;
+  text-align: center;
+  max-width: 1090px;
+}
+
+.introSub {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #979ba5;
+  text-align: center;
+  max-width: 840px;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 342px);
+  gap: 24px;
+  justify-content: center;
+}
+
+/* ── Card ── */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #dcdee5;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-decoration: none;
+  transition: box-shadow 0.2s, border-color 0.2s;
+
+  &:hover {
+    box-shadow: 0px 4px 8px 0px rgba(99, 138, 189, 0.25);
+    border-color: #457ea4;
+  }
+}
+
+.cardTop {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 68px;
+  flex: 1;
+}
+
+.cardTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardName {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #313238;
+  line-height: 1.3;
+}
+
+.tags {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  background: #f0f1f5;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #979ba5;
+  white-space: nowrap;
+}
+
+.cardCount {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #313238;
+  line-height: 1.3;
+}
+
+.cardFooter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardLink {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3a84ff;
+  line-height: 20px;
+}
+
+/* ── States ── */
+.loading,
+.empty {
+  padding: 80px;
+  text-align: center;
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 16px;
+  color: #979ba5;
+}

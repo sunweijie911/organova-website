@@ -9,10 +9,10 @@ import {
   message,
   Space,
   Switch,
-  Table,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { DraggableTable } from '@/components/DraggableTable';
 import { api } from '@/lib/trpc/react';
 
 type Pub = {
@@ -59,6 +59,17 @@ export default function AdminPublicationsView() {
     },
     onError: () => message.error('删除失败'),
   });
+
+  const updateSort = api.publications.adminUpdateSort.useMutation({
+    onError: () => message.error('排序保存失败'),
+  });
+
+  const handleOrderChange = useCallback(
+    (newRows: Pub[]) => {
+      updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
+    },
+    [updateSort],
+  );
 
   const openCreate = () => {
     setEditing(null);
@@ -156,12 +167,12 @@ export default function AdminPublicationsView() {
         </Button>
       </div>
 
-      <Table
+      <DraggableTable
         columns={columns}
         dataSource={data ?? []}
         loading={isLoading}
+        onOrderChange={handleOrderChange}
         pagination={false}
-        rowKey="id"
         size="middle"
       />
 
@@ -200,9 +211,6 @@ export default function AdminPublicationsView() {
           </Form.Item>
           <Form.Item label="DOI / 外部链接" name="doi">
             <Input />
-          </Form.Item>
-          <Form.Item label="排序（数字越小越靠前）" name="sortOrder">
-            <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label="显示" name="isVisible" valuePropName="checked">
             <Switch />
