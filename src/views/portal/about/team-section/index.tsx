@@ -1,15 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import SafeHtml from '@/components/SafeHtml';
+import type { DialogMember } from './dialog';
 import styles from './index.module.scss';
 
 /**
  * TeamSection — About 页面团队区域
- * Figma: 节点 545-6643 开始的黑色背景区域
- * 标题: "World-Class Scientists. Industry-Proven Leaders."
- * 卡片: 每行 3 个，照片 (填充) + 姓名 + 职位 + 机构
- * 点击卡片展开 fullBio (dangerouslySetInnerHTML)
+ * Figma 545-6643 起：白底黑字（白色矩形 y=2159 之后区域）
+ * 9 张卡片以 3 行 × 3 列展示，gap 列 54 行 77，照片 444×556（≈4:5）
+ * 点击卡片打开全屏弹窗（详见 ./dialog）
  */
 
 interface TeamMember {
@@ -24,66 +23,47 @@ interface TeamMember {
 interface TeamSectionProps {
   tricbio: TeamMember[];
   organova: TeamMember[];
-  activeMember: number | null;
-  onMemberClick: (id: number) => void;
+  onMemberClick: (m: DialogMember) => void;
 }
 
-/**
- * 单个成员卡片
- */
+const PLACEHOLDER_PHOTO = '/portal/images/about/team-placeholder.png';
+
 function MemberCard({
   member,
-  isActive,
-  onClick,
   org,
+  onClick,
 }: {
   member: TeamMember;
-  isActive: boolean;
-  onClick: () => void;
   org: string;
+  onClick: () => void;
 }) {
   return (
-    <button
-      className={`${styles.card} ${isActive ? styles.cardActive : ''}`}
-      onClick={onClick}
-      type="button"
-    >
-      {/* 照片区 — Figma: Rectangle 56，高度 556px，fill 铺满 */}
+    <button className={styles.card} onClick={onClick} type="button">
+      {/* 照片 — Figma: Rectangle 56，宽 444 高 556，cover */}
       <div className={styles.photoWrap}>
-        {member.photo ? (
-          <Image
-            alt={member.name}
-            className={styles.photo}
-            fill
-            sizes="444px"
-            src={member.photo}
-            style={{ objectFit: 'cover' }}
-          />
-        ) : (
-          /* 占位：姓名首字母 */
-          <div className={styles.photoPlaceholder}>
-            <span>{member.name[0]}</span>
-          </div>
-        )}
+        <Image
+          alt={member.name}
+          className={styles.photo}
+          fill
+          sizes="(max-width: 1200px) 33vw, 444px"
+          src={member.photo || PLACEHOLDER_PHOTO}
+          style={{ objectFit: 'cover' }}
+        />
       </div>
 
-      {/* 文字信息区 */}
+      {/* Frame 86 — column gap 16px */}
       <div className={styles.info}>
-        {/* Figma: Roboto Serif Regular 32px */}
+        {/* Roboto Serif Regular 32px */}
         <h3 className={styles.name}>{member.name}</h3>
 
+        {/* Frame 85 — column gap 8px */}
         <div className={styles.meta}>
-          {/* Figma: Roboto SemiBold 16px */}
+          {/* Roboto SemiBold 16px */}
           <p className={styles.title}>{member.title}</p>
-          {/* Figma: Roboto Light 14px */}
+          {/* Roboto Light 14px */}
           <p className={styles.org}>{org}</p>
         </div>
       </div>
-
-      {/* 展开时显示 fullBio */}
-      {isActive && member.fullBio && (
-        <SafeHtml className={styles.fullBio} html={member.fullBio} />
-      )}
     </button>
   );
 }
@@ -91,52 +71,37 @@ function MemberCard({
 export default function TeamSection({
   tricbio,
   organova,
-  activeMember,
   onMemberClick,
 }: TeamSectionProps) {
+  const buildClickHandler = (member: TeamMember, org: string) => () =>
+    onMemberClick({ ...member, org });
+
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        {/* Figma: Roboto Serif Regular 40px，白色 */}
+        {/* Roboto Serif Regular 40px，#000，宽 942 */}
         <h2 className={styles.sectionTitle}>
           World-Class Scientists. Industry-Proven Leaders.
         </h2>
 
-        {/* TRiCBiO 团队 */}
-        {tricbio.length > 0 && (
-          <div className={styles.teamGroup}>
-            <p className={styles.groupLabel}>TRiCBiO — Nanjing / Shanghai</p>
-            <div className={styles.grid}>
-              {tricbio.map((m) => (
-                <MemberCard
-                  isActive={activeMember === m.id}
-                  key={m.id}
-                  member={m}
-                  onClick={() => onMemberClick(m.id)}
-                  org="TRiCBiO (Nanjing/Shanghai)"
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* OrgaNova 团队 */}
-        {organova.length > 0 && (
-          <div className={styles.teamGroup}>
-            <p className={styles.groupLabel}>OrgaNova — Philadelphia</p>
-            <div className={styles.grid}>
-              {organova.map((m) => (
-                <MemberCard
-                  isActive={activeMember === m.id}
-                  key={m.id}
-                  member={m}
-                  onClick={() => onMemberClick(m.id)}
-                  org="OrgaNova (Philadelphia)"
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        <div className={styles.grid}>
+          {tricbio.map((m) => (
+            <MemberCard
+              key={m.id}
+              member={m}
+              onClick={buildClickHandler(m, 'TRiCBiO (Nanjing/Shanghai)')}
+              org="TRiCBiO (Nanjing/Shanghai)"
+            />
+          ))}
+          {organova.map((m) => (
+            <MemberCard
+              key={m.id}
+              member={m}
+              onClick={buildClickHandler(m, 'OrgaNova (Philadelphia)')}
+              org="OrgaNova (Philadelphia)"
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,0 +1,166 @@
+/* TeamMemberDialog — Figma 581-11589：1920×1080 白底全屏 */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 1);
+  z-index: 1000;
+  overflow-y: auto;
+  animation: fadeIn 0.25s ease;
+}
+
+/* 透明背板按钮 — 占满容器，捕获背景点击关闭弹窗 */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: default;
+  z-index: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 内容卡片 — 100% 铺满，padding 51px 240px（按 Figma 内容左 240，右照片右边距 1777+...） */
+.card {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  background: #fff;
+  padding: 51px 240px;
+  display: grid;
+  grid-template-columns: minmax(0, 636px) minmax(0, 543px);
+  column-gap: 109px;
+  align-items: start;
+}
+
+/* 右上 Close 按钮 — Figma: x=1777, y=51 */
+.closeBtn {
+  position: absolute;
+  top: 51px;
+  right: 240px;
+  z-index: 2;
+}
+
+/* 左侧 column flex */
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Frame 86 — 姓名/职位/机构，column gap 16，宽 444 */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 444px;
+  margin-bottom: 84px; /* y=149 起，到 y=299 短简介 */
+}
+
+/* Roboto Serif Regular 32px */
+.name {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: #000;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+}
+
+/* Frame 85 — column gap 8 */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Roboto SemiBold 16px */
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Roboto Light 14px */
+.org {
+  font-size: 14px;
+  font-weight: 300;
+  color: #000;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* 短简介 — Roboto Regular 32px，#000，宽 636 */
+.shortBio {
+  font-size: 32px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.35;
+  margin: 0 0 56px;
+  max-width: 636px;
+}
+
+/* 长简介 — Roboto Light 18px，#000 */
+.fullBio {
+  font-size: 18px;
+  font-weight: 300;
+  color: #000;
+  line-height: 1.6;
+  max-width: 636px;
+
+  p,
+  div {
+    font-size: 18px;
+    font-weight: 300;
+    color: #000;
+    line-height: 1.6;
+    margin: 0 0 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* 右侧照片 — Figma: 543×817 */
+.photoWrap {
+  position: relative;
+  width: 100%;
+  max-width: 543px;
+  aspect-ratio: 543 / 817;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.photo {
+  /* fill 模式由 next/image 处理 */
+}
+
+@media (max-width: 1100px) {
+  .card {
+    grid-template-columns: 1fr;
+    padding: 80px 40px;
+    gap: 40px;
+  }
+
+  .closeBtn {
+    top: 24px;
+    right: 24px;
+  }
+
+  .photoWrap {
+    grid-row: 1;
+    max-width: 100%;
+  }
+}

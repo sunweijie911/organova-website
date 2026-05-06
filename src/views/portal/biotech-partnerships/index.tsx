@@ -1,4 +1,3 @@
-import Cta from './cta';
 import HeroBanner from './hero-banner';
 import PartnershipTable from './partnership-table';
 
@@ -7,7 +6,6 @@ export default function BiotechPartnershipsView() {
     <>
       <HeroBanner />
       <PartnershipTable />
-      <Cta />
     </>
   );
 }

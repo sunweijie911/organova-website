@@ -1,8 +1,7 @@
+/* Hero — Figma 543:4877 顶部区域，1920x1079 */
 .hero {
   position: relative;
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
+  min-height: 1079px;
   overflow: hidden;
   background: #000;
 }
@@ -13,36 +12,47 @@
   z-index: 0;
 }
 
+/* 径向遮罩，与 Figma 同色阶 */
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.9) 100%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
   z-index: 1;
   pointer-events: none;
 }
 
+/* 内容定位：title y=401，subtitle y=628，button y=798 */
 .heroContent {
   position: relative;
   z-index: 2;
-  padding: 160px 240px;
+  padding: 401px 240px 0;
   width: 100%;
 }
 
+/* 主标题：Roboto Serif Regular 64px */
 .heroTitle {
-  font-family: var(--font-roboto-serif), serif;
+  font-family: var(--font-roboto-serif), 'Roboto Serif', Georgia, serif;
   font-weight: 400;
   font-size: 64px;
   line-height: 1.17;
   color: #fff;
   max-width: 1231px;
-  margin-bottom: 32px;
+  /* 标题底部到副标题顶部 152px */
+  margin: 0 0 152px;
 }
 
+/* 副标题：Roboto Regular 24px */
 .heroSubtitle {
+  font-family: var(--font-roboto), 'Roboto', sans-serif;
   font-size: 24px;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.17;
   color: #fff;
   max-width: 1345px;
-  margin-bottom: 56px;
+  /* 副标题底部到按钮顶部 114px */
+  margin: 0 0 114px;
 }

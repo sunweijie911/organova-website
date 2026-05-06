@@ -36,11 +36,6 @@
   flex: 1;
 }
 
-/* 左侧填充（第二步用来接收第一步右侧的连接线） */
-.colLeftFill {
-  flex: 1;
-}
-
 /* 步骤圆圈指示器 */
 .indicator {
   width: 16px;
@@ -60,13 +55,14 @@
   color: #e0e0e7;
 }
 
-/* 活跃状态：黑色实心圆 */
+/* 活跃状态：黑色实心圆，内部白色圆点 */
 .indicatorActive {
   background: #000;
   border: none;
+  color: #fff;
 }
 
-/* 已完成状态：黑色实心圆，显示对勾 */
+/* 已完成状态：黑色实心圆，内部白色对勾（stroke="currentColor"） */
 .indicatorDone {
   background: #000;
   border: none;

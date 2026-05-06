@@ -1,16 +1,18 @@
-/* Hero Banner - 深色背景，顶部图片 + 渐变遮罩 */
+/* Hero — Figma 529:1209 顶部区域，1920x1079 */
 .hero {
   position: relative;
-  width: 100%;
-  /* Figma: 1920x1079, hero section */
-  min-height: calc(100vh - 60px);
-  background: #0a0a0a;
-  display: flex;
-  align-items: flex-end;
+  min-height: 1079px;
   overflow: hidden;
+  background: #000;
 }
 
-/* 径向渐变遮罩：从中心半透明黑色到边缘深黑 */
+.bg {
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+/* 径向遮罩，与 Figma 同色阶 */
 .overlay {
   position: absolute;
   inset: 0;
@@ -23,34 +25,35 @@
   z-index: 1;
 }
 
-/* 内容区域：左侧 240px 留白，底部 401px（相对于页面顶部） */
-/* Figma: x=240, y=401, width=1200 */
+/* Frame 71 at x=240, y=401, width=1200, column gap=80 */
 .content {
   position: relative;
   z-index: 2;
-  padding: 0 240px 120px;
+  padding: 401px 240px 0;
   max-width: 1440px;
   width: 100%;
 }
 
-/* 主标题: Roboto Serif Regular 64px，白色 */
+/* 主标题：Roboto Serif Regular 64px，width=1098 */
 .title {
-  font-family: 'Roboto Serif', Georgia, serif;
+  font-family: var(--font-roboto-serif), 'Roboto Serif', Georgia, serif;
   font-weight: 400;
   font-size: 64px;
-  line-height: 1.15;
-  color: #ffffff;
-  margin-bottom: 80px;
+  line-height: 1.17;
+  color: #fff;
+  max-width: 1098px;
+  /* Frame 71 column gap = 80 */
+  margin: 0 0 80px;
   white-space: pre-line;
-  letter-spacing: -0.01em;
 }
 
-/* 副标题: Roboto Regular 24px，白色 */
+/* 副标题：Roboto Regular 24px */
 .subtitle {
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-roboto), 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 24px;
   line-height: 1.5;
-  color: #ffffff;
-  max-width: 800px;
+  color: #fff;
+  max-width: 1200px;
+  margin: 0;
 }

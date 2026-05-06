@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { HomeButton } from '@/components/HomeButton';
+import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 export default function PharmaSolutionsHero() {
@@ -22,9 +22,9 @@ export default function PharmaSolutionsHero() {
           failure. We provide the biological truth needed to make confident
           go/no-go decisions.
         </p>
-        <HomeButton href="/contact" variant="dark">
+        <ArrowButton href="/contact" iconVisible="always" variant="dark">
           Discuss Your Program
-        </HomeButton>
+        </ArrowButton>
       </div>
     </section>
   );

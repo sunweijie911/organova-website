@@ -112,34 +112,3 @@
   justify-content: flex-end;
   padding-top: 8px;
 }
-
-/* Next Step 按钮 — 黑底白字，带箭头
- * Figma: 位于右下角 x:1475 y:1242
- * padding 20px 30px 22px，gap 28px
- * border 1px solid #000，border-radius 2px
- */
-.nextBtn {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 20px 30px 22px;
-  background: #fff;
-  color: #000;
-  border: 1px solid #000;
-  border-radius: 2px;
-  font-family: Roboto, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
-
-  &:hover {
-    background: #000;
-    color: #fff;
-  }
-
-  svg path {
-    stroke: currentColor;
-  }
-}

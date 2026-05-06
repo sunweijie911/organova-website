@@ -14,9 +14,9 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
         <div className={styles.stepRow}>
           {/* 左侧空白区域（让步骤居中对齐） */}
           <div className={styles.colLeft} />
-          {/* 步骤指示器圆圈 */}
+          {/* 步骤指示器圆圈 — 已填完时切到 done 态显示对勾 */}
           <div
-            className={`${styles.indicator} ${currentStep >= 1 ? styles.indicatorActive : styles.indicatorDone}`}
+            className={`${styles.indicator} ${currentStep > 1 ? styles.indicatorDone : styles.indicatorActive}`}
           >
             {currentStep > 1 ? (
               /* 已完成：对勾图标 */
@@ -56,8 +56,10 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
       {/* Step 2 */}
       <div className={styles.step}>
         <div className={styles.stepRow}>
-          {/* 左侧连接线（已在 step1 右侧渲染，这里填充） */}
-          <div className={styles.colLeftFill} />
+          {/* 左侧连接线 — Figma: Step2 Col1 是 IMAGE-SVG 连接线，与 Step1 右侧线衔接成完整一条 */}
+          <div
+            className={`${styles.connectorLine} ${currentStep > 1 ? styles.connectorLineDone : ''}`}
+          />
           {/* 步骤指示器圆圈 */}
           <div
             className={`${styles.indicator} ${currentStep >= 2 ? styles.indicatorActive : styles.indicatorDefault}`}

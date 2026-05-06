@@ -1,10 +1,9 @@
-/* CTA — 底部行动号召区域 */
-/* Figma: Frame 106，黑色背景，y=5887，padding 左 240px */
+/* CTA — Figma: 白底黑字，padding 左 240px */
 
 .section {
-  background: #000;
-  padding: 100px 240px 140px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #fff;
+  padding: 0 240px 140px;
+  color: #000;
 }
 
 .container {
@@ -15,71 +14,43 @@
   gap: 37px;
 }
 
-/* Figma: "Contact"，Roboto Bold 24px，白色 */
+/* "Contact" — Roboto Bold 24px，#000 */
 .label {
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: #000;
   letter-spacing: 0.02em;
 }
 
-/* 标题 + 装饰线 容器 */
+/* Frame 105 — row alignItems center gap 77 */
 .titleWrap {
   display: flex;
   align-items: center;
   gap: 77px;
 }
 
-/* Figma: Roboto Serif Regular 64px，白色 */
-/* layout_L94ZAE: width 693px */
+/* Roboto Serif Regular 64px，#000，宽 693 */
 .title {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 64px;
   font-weight: 400;
-  color: #fff;
+  color: #000;
   margin: 0;
   line-height: 1.15;
   max-width: 693px;
+  letter-spacing: -0.005em;
 }
 
-/* "Discovery" 斜体强调 */
+/* "Discovery" 斜体 */
 .titleItalic {
   font-style: italic;
   font-weight: 400;
 }
 
-/* Figma: Vector 3 — 短横线，56px 宽，透明度 30% */
+/* Vector 3 — 56×4，rgba(0,0,0,0.3) */
 .titleLine {
   width: 56px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
-}
-
-/* 按钮 */
-/* Figma: Botton 组件，padding 20px 30px，描边 #fff 1px，Roboto Regular 20px */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  align-self: flex-start;
-  padding: 20px 30px;
-  background: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 400;
-  text-decoration: none;
-  border-radius: 2px;
-  transition: background 0.2s, color 0.2s;
-
-  &:hover {
-    background: #fff;
-    color: #000;
-  }
-}
-
-.btnArrow {
-  display: flex;
-  align-items: center;
 }

@@ -1,4 +1,4 @@
-import { HomeButton } from '@/components/HomeButton';
+import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 export default function TrustedPartners() {
@@ -23,9 +23,9 @@ export default function TrustedPartners() {
         *Logos displayed with permission. Partner names used for reference only.
       </p>
       <h2 className={styles.subTitle}>Your Drug Deserves a Better Model.</h2>
-      <HomeButton className={styles.btn} href="/request-quote">
+      <ArrowButton className={styles.btn} href="/request-quote">
         Request a Consultation
-      </HomeButton>
+      </ArrowButton>
     </section>
   );
 }

@@ -17,15 +17,18 @@
     white-space: nowrap;
   }
 
+  /* hover 模式下：箭头默认隐藏 */
   .arrowWrap {
     display: flex;
     align-items: center;
     max-width: 0;
     margin-left: 0;
+    margin-right: 0;
     overflow: hidden;
     transition:
       max-width 0.3s ease,
       margin-left 0.3s ease,
+      margin-right 0.3s ease,
       opacity 0.2s ease;
     opacity: 0;
   }
@@ -37,13 +40,46 @@
     transition: filter 0.25s ease;
   }
 
-  &:hover {
-    .arrowWrap {
-      max-width: 50px;
-      margin-left: 16px;
-      opacity: 1;
-    }
+  /* hover 时滑入（箭头在右） */
+  &:not(.iconLeft):not(.iconAlways):hover .arrowWrap {
+    max-width: 50px;
+    margin-left: 16px;
+    opacity: 1;
   }
+
+  /* hover 时滑入（箭头在左） */
+  &.iconLeft:not(.iconAlways):hover .arrowWrap {
+    max-width: 50px;
+    margin-right: 16px;
+    opacity: 1;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* 箭头始终可见模式 — 与 Figma RFQ 按钮保持 28px gap */
+.iconAlways {
+  .arrowWrap {
+    max-width: none;
+    overflow: visible;
+    opacity: 1;
+  }
+
+  &:not(.iconLeft) .arrowWrap {
+    margin-left: 28px;
+  }
+
+  &.iconLeft .arrowWrap {
+    margin-right: 28px;
+  }
+}
+
+/* 箭头朝左（用于 Back 等反向按钮） */
+.iconLeft .arrow {
+  transform: scaleX(-1);
 }
 
 .light {
@@ -51,7 +87,7 @@
   background: transparent;
   color: #000;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #000;
     color: #fff;
 
@@ -70,7 +106,7 @@
     filter: invert(1);
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #fff;
     color: #000;
 

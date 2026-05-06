@@ -21,9 +21,12 @@ if (!hasCert && env.NODE_ENV === 'production') {
     `[db] RDS CA cert not found at ${RDS_CERT_PATH}, falling back to rejectUnauthorized:false (insecure)`,
   );
 }
-const ssl = hasCert
-  ? { ca: readFileSync(RDS_CERT_PATH).toString() }
-  : { rejectUnauthorized: false };
+const ssl =
+  env.NODE_ENV !== 'production'
+    ? false
+    : hasCert
+      ? { ca: readFileSync(RDS_CERT_PATH).toString() }
+      : { rejectUnauthorized: false };
 
 const conn = globalForDb.conn ?? postgres(env.DATABASE_URL, { ssl });
 if (env.NODE_ENV !== 'production') globalForDb.conn = conn;

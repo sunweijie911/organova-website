@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 const CANCER_TYPES = [
@@ -192,26 +193,9 @@ export default function QuoteFormStep1({
 
       {/* 提交按钮：右对齐 */}
       <div className={styles.actions}>
-        <button className={styles.nextBtn} type="submit">
-          <span>Next Step</span>
-          {/* 箭头图标 */}
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="16"
-            viewBox="0 0 26 16"
-            width="26"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 8h22M17 1l7 7-7 7"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </button>
+        <ArrowButton iconVisible="always" type="submit">
+          Next Step
+        </ArrowButton>
       </div>
     </form>
   );

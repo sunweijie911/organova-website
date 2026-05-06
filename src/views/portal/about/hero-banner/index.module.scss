@@ -1,50 +1,31 @@
-/* Hero Banner — About 页面顶部区域 */
-/* Figma: 1920×约 1050px，背景 #000，内容从 y=402 开始 */
-
 .hero {
   position: relative;
   background: #000;
-  padding: 160px 240px 220px;
+  padding: 200px 240px 250px;
   overflow: hidden;
-  min-height: 720px;
-  display: flex;
-  align-items: flex-end;
-}
-
-/* 右侧纯白色装饰矩形（Figma 中 Rectangle 11 延伸到下方白色区域） */
-.bgRect {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 60%,
-    rgba(255, 255, 255, 0.03) 100%
-  );
-  pointer-events: none;
 }
 
 .content {
   position: relative;
   z-index: 1;
-  max-width: 1080px;
+  max-width: 1440px;
 }
 
-/* Figma: Roboto Serif Regular 64px，白色 */
 .title {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 64px;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1.18;
   color: #fff;
-  margin: 0 0 36px;
-  letter-spacing: -0.01em;
+  margin: 0 0 80px;
+  max-width: 1080px;
+  letter-spacing: -0.005em;
 }
 
-/* Figma: Roboto Regular 24px，白色 */
 .subtitle {
   font-size: 24px;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #fff;
   margin: 0;
   max-width: 1345px;

@@ -1,12 +1,17 @@
 .hero {
   position: relative;
-  height: 600px;
+  height: 1079px;
   padding-top: 60px; /* account for fixed portal header */
   background: #0a0a0a;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
 }
 
 .overlay {
@@ -24,7 +29,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  padding: 0 240px 120px;
+  padding: 0 240px 395px;
 }
 
 .title {
@@ -33,8 +38,8 @@
   font-weight: 400;
   color: #fff;
   line-height: 1.15;
-  max-width: 900px;
-  margin-bottom: 24px;
+  max-width: 1231px;
+  margin-bottom: 77px;
 }
 
 .subtitle {
@@ -43,5 +48,5 @@
   font-weight: 400;
   color: #fff;
   line-height: 1.5;
-  max-width: 900px;
+  max-width: 1267px;
 }

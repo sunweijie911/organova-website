@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 export type Step2Data = {
@@ -9,7 +10,6 @@ export type Step2Data = {
   company: string;
   jobTitle: string;
   phone: string;
-  additionalNotes: string;
 };
 
 interface QuoteFormStep2Props {
@@ -18,7 +18,7 @@ interface QuoteFormStep2Props {
   isPending: boolean;
   onChange: (
     key: keyof Step2Data,
-  ) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  ) => (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBack: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }
@@ -26,9 +26,7 @@ interface QuoteFormStep2Props {
 interface LineInputProps {
   id: string;
   label: string;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
   type?: string;
@@ -138,20 +136,6 @@ export default function QuoteFormStep2({
         </div>
       </div>
 
-      {/* 第五行：Additional Notes（全宽，textarea） */}
-      <div className={styles.rowFull}>
-        <div className={styles.field}>
-          <textarea
-            className={`${styles.input} ${styles.textarea}`}
-            id="additionalNotes"
-            onChange={onChange('additionalNotes')}
-            placeholder="Additional Notes / Project Details (Optional)"
-            rows={4}
-            value={data.additionalNotes}
-          />
-        </div>
-      </div>
-
       {/* 错误提示 */}
       {isError && (
         <p className={styles.error}>Something went wrong. Please try again.</p>
@@ -159,49 +143,20 @@ export default function QuoteFormStep2({
 
       {/* 操作按钮区 */}
       <div className={styles.actions}>
-        {/* Back 按钮 — 左侧，带反向箭头 */}
-        <button className={styles.backBtn} onClick={onBack} type="button">
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="16"
-            viewBox="0 0 26 16"
-            width="26"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M25 8H3M9 1L2 8l7 7"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-            />
-          </svg>
-          <span>Back</span>
-        </button>
+        {/* Back 按钮 — 左侧，箭头朝左 */}
+        <ArrowButton
+          iconPosition="left"
+          iconVisible="always"
+          onClick={onBack}
+          type="button"
+        >
+          Back
+        </ArrowButton>
 
-        {/* Submit 按钮 — 右侧，带箭头 */}
-        <button className={styles.submitBtn} disabled={isPending} type="submit">
-          <span>{isPending ? 'Submitting...' : 'Submit Project Brief'}</span>
-          {!isPending && (
-            <svg
-              aria-hidden="true"
-              fill="none"
-              height="16"
-              viewBox="0 0 26 16"
-              width="26"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 8h22M17 1l7 7-7 7"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-              />
-            </svg>
-          )}
-        </button>
+        {/* Submit 按钮 — 右侧 */}
+        <ArrowButton disabled={isPending} iconVisible="always" type="submit">
+          {isPending ? 'Submitting...' : 'Submit Project Brief'}
+        </ArrowButton>
       </div>
     </form>
   );

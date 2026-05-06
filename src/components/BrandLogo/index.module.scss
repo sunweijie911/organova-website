@@ -1,0 +1,15 @@
+.brandLogo {
+  display: flex;
+  align-items: flex-end;
+  padding: 45px 48px;
+  gap: 14px;
+}
+
+.logo {
+  width: 258px;
+  height: 50px;
+}
+
+.logoDark {
+  filter: invert(1);
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { HomeButton } from '@/components/HomeButton';
+import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 const HERO = {
@@ -81,9 +81,9 @@ export default function HeroBanner() {
           <p className={styles.description}>{HERO.description}</p>
           <div className={styles.buttons}>
             {HERO.buttons.map((btn) => (
-              <HomeButton href={btn.href} key={btn.label} variant="dark">
+              <ArrowButton href={btn.href} key={btn.label} variant="dark">
                 {btn.label}
-              </HomeButton>
+              </ArrowButton>
             ))}
           </div>
         </div>

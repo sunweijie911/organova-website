@@ -1,8 +1,18 @@
+import Image from 'next/image';
 import styles from './index.module.scss';
 
 export default function HeroSection() {
   return (
     <section className={styles.hero}>
+      <div className={styles.bg}>
+        <Image
+          alt=""
+          fill
+          priority
+          src="/portal/images/tumor-types/hero-bg.png"
+          style={{ objectFit: 'cover', objectPosition: 'center top' }}
+        />
+      </div>
       <div className={styles.overlay} />
       <div className={styles.content}>
         <h1 className={styles.title}>

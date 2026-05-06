@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { BrandLogo } from '@/components/BrandLogo';
 import styles from './index.module.scss';
 
 export default function PlatformHero() {
@@ -14,6 +15,7 @@ export default function PlatformHero() {
         />
       </div>
       <div className={styles.overlay} />
+      <BrandLogo className={styles.brandLogo} />
       <div className={styles.content}>
         <h1 className={styles.title}>
           The World&apos;s Most Clinically-Relevant Preclinical Model.

@@ -1,9 +1,9 @@
-/* TeamSection — 团队区域 */
-/* Figma: 黑色背景 (#000)，标题在 y=2341，卡片网格在 y=2465 */
+/* TeamSection — Figma: 白底黑字，标题 y=2341，卡片网格 y=2465 */
 
 .section {
-  background: #000;
+  background: #fff;
   padding: 100px 240px;
+  color: #000;
 }
 
 .container {
@@ -11,48 +11,27 @@
   margin: 0 auto;
 }
 
-/* Figma: Roboto Serif Regular 40px，#fff */
+/* Roboto Serif Regular 40px，#000，宽 942 */
 .sectionTitle {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 40px;
   font-weight: 400;
-  color: #fff;
+  color: #000;
   margin: 0 0 77px;
   line-height: 1.2;
   max-width: 942px;
+  letter-spacing: -0.005em;
 }
 
-/* 分组间距 */
-.teamGroup {
-  margin-bottom: 77px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-/* 分组标签 */
-.groupLabel {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  margin: 0 0 32px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-/* 卡片网格 */
-/* Figma: Frame 87/88/89 各行 3 列，gap 54px */
+/* 卡片网格：3 列，列 gap 54 行 gap 77 */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 54px;
+  column-gap: 54px;
+  row-gap: 77px;
 }
 
-/* 单张卡片 */
-/* Figma: layout_FC6430 — column，gap 26px，width 444px */
+/* 单张卡片 — column gap 26px，宽 444（由网格控制） */
 .card {
   display: flex;
   flex-direction: column;
@@ -62,61 +41,41 @@
   padding: 0;
   cursor: pointer;
   text-align: left;
+  color: inherit;
+  font: inherit;
   transition: opacity 0.2s;
 
   &:hover {
-    opacity: 0.88;
+    opacity: 0.85;
   }
 }
 
-.cardActive {
-  opacity: 1;
-}
-
-/* 照片容器 */
-/* Figma: Rectangle 56，高度 556px，fill 铺满 */
+/* 照片 — Figma: 444×556 → ratio 444/556 */
 .photoWrap {
   position: relative;
   width: 100%;
   aspect-ratio: 444 / 556;
-  background: #1a1a1a;
+  background: #f0f0f0;
   overflow: hidden;
 }
 
 .photo {
-  /* next/image 的 fill 模式通过 style 控制 */
+  /* fill 模式由 next/image 处理 */
 }
 
-.photoPlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #1a1a1a;
-
-  span {
-    font-size: 80px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.2);
-    font-family: 'Roboto Serif', Georgia, serif;
-  }
-}
-
-/* 文字信息区 */
-/* Figma: Frame 86 — column gap 16px */
+/* Frame 86 — column gap 16px */
 .info {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* Figma: Roboto Serif Regular 32px，白色 */
+/* 姓名 — Roboto Serif Regular 32px */
 .name {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 32px;
   font-weight: 400;
-  color: #fff;
+  color: #000;
   margin: 0;
   line-height: 1.2;
 }
@@ -128,52 +87,20 @@
   gap: 8px;
 }
 
-/* Figma: Roboto SemiBold 16px，白色 */
+/* 职位 — Roboto SemiBold 16px */
 .title {
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
+  color: #000;
   margin: 0;
   line-height: 1.4;
 }
 
-/* Figma: Roboto Light 14px，白色 */
+/* 机构 — Roboto Light 14px */
 .org {
   font-size: 14px;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.7);
+  color: #000;
   margin: 0;
-}
-
-/* 展开的 fullBio 区域 */
-.fullBio {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding-top: 20px;
-  animation: fadeIn 0.25s ease;
-
-  p,
-  div,
-  span {
-    font-size: 15px;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.75);
-    line-height: 1.7;
-    margin: 0 0 12px;
-    text-align: left;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  line-height: 1.4;
 }

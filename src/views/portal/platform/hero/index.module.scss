@@ -19,6 +19,13 @@
   pointer-events: none;
 }
 
+.brandLogo {
+  position: absolute;
+  top: 62px;
+  left: 0;
+  z-index: 1;
+}
+
 .content {
   position: relative;
   z-index: 1;

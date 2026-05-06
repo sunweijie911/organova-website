@@ -1,6 +1,6 @@
-/* Thank You 页面 — 深色背景，居中展示 */
+/* Thank You 页面 — Figma 未设计该状态，配色与主页面保持一致（白底黑字） */
 .section {
-  background: #000;
+  background: #fff;
   min-height: calc(100vh - 120px);
   display: flex;
   align-items: center;
@@ -20,12 +20,11 @@
   justify-content: flex-start;
 }
 
-/* 感谢标题 — 与 Hero 标题风格一致 */
 .title {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 64px;
   font-weight: 400;
-  color: #fff;
+  color: #000;
   line-height: 1.17;
   margin: 0;
 }
@@ -34,7 +33,7 @@
   font-family: Roboto, sans-serif;
   font-size: 24px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
+  color: #000;
   line-height: 1.5;
   margin: 0;
 }

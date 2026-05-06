@@ -2,7 +2,6 @@
 
 import styles from './index.module.scss';
 
-/* Figma 中表格列数据 */
 const PARTNERSHIP_TYPES = [
   {
     type: 'Feasibility Study',
@@ -18,7 +17,8 @@ const PARTNERSHIP_TYPES = [
   {
     type: 'Strategic Alliance',
     get: 'A long-term collaboration with dedicated model development, co-publication rights, and priority access to our biobank.',
-    bestFor: 'Biotechs building a sustained preclinical research program.',
+    bestFor:
+      'Biotechs with novel targets or platform technologies seeking a deep scientific collaboration.',
   },
   {
     type: 'Co-Development Program',
@@ -28,7 +28,27 @@ const PARTNERSHIP_TYPES = [
   },
 ];
 
-/* Info 图标 SVG */
+function SortIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height="16"
+      viewBox="0 0 16 16"
+      width="16"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 6l4-4 4 4M4 10l4 4 4-4"
+        stroke="#9CA3AF"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
 function InfoIcon() {
   return (
     <svg
@@ -57,65 +77,45 @@ export default function PartnershipTable() {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        {/* 区块标题: Roboto Serif Regular 40px，居中 */}
-        <h2 className={styles.title}>Find the Right Collaboration Structure</h2>
+        <div className={styles.tableGroup}>
+          <h2 className={styles.title}>
+            Find the Right Collaboration Structure
+          </h2>
 
-        {/* 主表格：带阴影、圆角 16px */}
-        <div className={styles.table}>
-          {/* 表头行 */}
-          <div className={styles.headerRow}>
-            {/* 第一列宽 340px */}
-            <div className={styles.headerCell}>
-              <span className={styles.headerText}>Partnership Type</span>
+          <div className={styles.table}>
+            <div className={styles.headerRow}>
+              <div className={styles.headerCell}>
+                <span className={styles.headerText}>Partnership Type</span>
+              </div>
+              <div className={styles.headerCell}>
+                <span className={styles.headerText}>What You Get</span>
+              </div>
+              <div className={styles.headerCell}>
+                <span className={styles.headerText}>Best For</span>
+              </div>
             </div>
-            <div className={styles.headerCell}>
-              <span className={styles.headerText}>What You Get</span>
-            </div>
-            <div className={styles.headerCell}>
-              <span className={styles.headerText}>Best For</span>
-            </div>
-          </div>
 
-          {/* 数据行 */}
-          {PARTNERSHIP_TYPES.map((item) => (
-            <div className={styles.dataRow} key={item.type}>
-              {/* Partnership Type 列：Roboto Medium 16px，#4D4F56 */}
-              <div className={styles.typeCell}>
-                <div className={styles.typeCellInner}>
-                  {/* 排序图标占位 */}
-                  <span aria-hidden="true" className={styles.sortIcon}>
-                    <svg
-                      aria-hidden="true"
-                      fill="none"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      width="16"
-                    >
-                      <path
-                        d="M4 6l4-4 4 4M4 10l4 4 4-4"
-                        stroke="#9CA3AF"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                      />
-                    </svg>
-                  </span>
-                  <span className={styles.typeText}>{item.type}</span>
+            {PARTNERSHIP_TYPES.map((item) => (
+              <div className={styles.dataRow} key={item.type}>
+                <div className={styles.typeCell}>
+                  <div className={styles.typeCellInner}>
+                    <span aria-hidden="true" className={styles.sortIcon}>
+                      <SortIcon />
+                    </span>
+                    <span className={styles.typeText}>{item.type}</span>
+                  </div>
+                </div>
+                <div className={styles.descCell}>
+                  <p className={styles.descText}>{item.get}</p>
+                </div>
+                <div className={styles.descCell}>
+                  <p className={styles.descText}>{item.bestFor}</p>
                 </div>
               </div>
-              {/* What You Get 列：Roboto Regular 16px，#4D4F56 */}
-              <div className={styles.descCell}>
-                <p className={styles.descText}>{item.get}</p>
-              </div>
-              {/* Best For 列：Roboto Regular 16px，#4D4F56 */}
-              <div className={styles.descCell}>
-                <p className={styles.descText}>{item.bestFor}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Alert 提示栏：背景 #F0F6FF，边框 1px #6CAEDB，圆角 16px */}
         <div className={styles.alert}>
           <span className={styles.alertIcon}>
             <InfoIcon />

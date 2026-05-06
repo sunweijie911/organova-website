@@ -18,12 +18,12 @@ export default function ThankYou() {
               cx="32"
               cy="32"
               r="30"
-              stroke="rgba(255,255,255,0.3)"
+              stroke="rgba(0,0,0,0.3)"
               strokeWidth="2"
             />
             <path
               d="M20 32l9 9 15-18"
-              stroke="#fff"
+              stroke="#000"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2.5"

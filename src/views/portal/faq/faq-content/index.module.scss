@@ -1,7 +1,3 @@
-// FAQ 内容区
-// Figma: Frame 40，y=630，背景黑色，column 布局，gap 50px
-// 每个 item：row，gap 170px，左列 550px 问题，右列 720px 答案
-
 .section {
   background: #000;
   padding: 0 240px 160px;
@@ -11,12 +7,10 @@
   max-width: 1440px;
 }
 
-// 分类块
 .category {
   margin-bottom: 0;
 }
 
-// 分类标题（仅显示全部时展示，沿用原有视觉风格）
 .categoryTitle {
   font-size: 13px;
   font-weight: 700;
@@ -27,41 +21,30 @@
   padding-bottom: 16px;
 }
 
-// FAQ 条目列表
 .items {
   display: flex;
   flex-direction: column;
 }
 
-// 分隔线：Figma Vector，1px，rgba(255,255,255,0.8)
 .divider {
   width: 100%;
   height: 1px;
   background: rgba(255, 255, 255, 0.8);
 }
 
-// 单个 FAQ 条目：Figma layout_C4BYOS，row，gap 170px，padding 上下适当
 .item {
   display: flex;
   flex-direction: row;
   gap: 170px;
   padding: 40px 0;
   align-items: flex-start;
-
-  // 展开状态下不改变背景
-  &.itemOpen {
-    // 保持相同布局，无额外样式变化
-  }
 }
 
-// 左列：问题区域，固定宽 550px
-// Figma layout_5AY4SI，width 550
 .questionCol {
   flex: 0 0 550px;
   width: 550px;
 }
 
-// 问题按钮
 .questionBtn {
   display: flex;
   flex-direction: row;
@@ -76,7 +59,6 @@
   text-align: left;
 }
 
-// 问题文本：Figma style_V818OV，Roboto SemiBold 600，28px，白色
 .questionText {
   font-family: Roboto, sans-serif;
   font-size: 28px;
@@ -86,7 +68,6 @@
   flex: 1;
 }
 
-// 展开/收起指示符
 .indicator {
   flex-shrink: 0;
   font-family: Roboto, sans-serif;
@@ -97,8 +78,6 @@
   margin-top: 2px;
 }
 
-// 右列：答案区域，固定宽 720px
-// Figma layout_VNYUFM，width 720，style_LRHV91，16px，Regular，白色
 .answerCol {
   flex: 0 0 720px;
   width: 720px;
@@ -108,7 +87,6 @@
   color: #fff;
   line-height: 1.7;
 
-  // rich-text 内部样式
   p {
     margin: 0 0 12px;
 
@@ -138,7 +116,6 @@
   }
 }
 
-// 加载中
 .loading {
   padding: 80px 0;
   text-align: left;
@@ -146,7 +123,6 @@
   font-size: 16px;
 }
 
-// 空状态
 .empty {
   padding: 80px 0;
   text-align: left;

@@ -65,14 +65,6 @@
   }
 }
 
-/* textarea 额外样式（基础样式继承 .input） */
-.textarea {
-  resize: vertical;
-  min-height: 100px;
-  border-bottom-style: dashed;
-  line-height: 1.5;
-}
-
 /* 错误提示 */
 .error {
   font-family: Roboto, sans-serif;
@@ -81,73 +73,13 @@
   margin: 0;
 }
 
-/* 操作按钮区 — Back 在左，Submit 在右 */
+/* 操作按钮区 — Back 在左，Submit 在右
+ * Figma: Back x:240 y:1242, Submit x:1384 y:1242
+ */
 .actions {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding-top: 8px;
-}
-
-/* Back 按钮 — 左侧，带反向箭头
- * Figma: x:240 y:1242, padding 20px 30px 22px, gap 28px
- * border 1px solid #000, border-radius 2px
- */
-.backBtn {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 20px 30px 22px;
-  background: #fff;
-  color: #000;
-  border: 1px solid #000;
-  border-radius: 2px;
-  font-family: Roboto, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-
-  &:hover {
-    background: #000;
-    color: #fff;
-  }
-
-  svg path {
-    stroke: currentColor;
-  }
-}
-
-/* Submit 按钮 — 右侧，带箭头
- * Figma: x:1384 y:1242, 同样样式
- */
-.submitBtn {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 20px 30px 22px;
-  background: #fff;
-  color: #000;
-  border: 1px solid #000;
-  border-radius: 2px;
-  font-family: Roboto, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-
-  &:hover:not(:disabled) {
-    background: #000;
-    color: #fff;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  svg path {
-    stroke: currentColor;
-  }
 }

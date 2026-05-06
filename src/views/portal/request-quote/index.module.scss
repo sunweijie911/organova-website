@@ -1,35 +1,57 @@
-/* request-quote 页面外层容器 */
+/* request-quote 页面 — Figma 设计是单一白色页面（顶部 60px Top Utility Bar 除外）
+ * 布局：BrandLogo（自带 padding 45px 48px）→ content（标题/stepper/form）
+ * Figma 关键 y 坐标（相对父 frame）：
+ *   Top Utility Bar 0–60
+ *   BrandLogo  y:105 (60 utility + 45 padding)
+ *   标题       y:402
+ *   副标题     y:566
+ *   Stepper    y:683
+ *   表单       y:765
+ */
 .page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* 表单主体区
- * Figma: 白色矩形 (Rectangle 10) 从 y:58 开始，高度 1481px
- * 页面整体背景 #000，白色矩形覆盖表单区域
- */
-.formSection {
+  position: relative;
   background: #fff;
-  padding-top: 80px;
-  padding-bottom: 140px;
-  flex: 1;
+  min-height: 100vh;
+  padding: 60px 0 140px;
 }
 
-/* 步骤指示器容器
- * Figma: Steper x:651, width:618 — 相对于 1920px 页面居中右偏
- * 这里用 padding 将其定位在与 formArea 相同的水平区域内
- */
+.content {
+  padding: 0 240px;
+}
+
+/* 标题区 — Figma 标题 y:402；上方累计 60(utility) + 95(BrandLogo 45+50) = 155，故 padding-top 247 */
+.header {
+  padding-top: 247px;
+  margin-bottom: 89px;
+}
+
+/* Figma: fontSize 64, Roboto Serif 400, color #000 */
+.title {
+  font-family: 'Roboto Serif', Georgia, serif;
+  font-size: 64px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.17;
+  margin: 0 0 24px;
+}
+
+/* Figma: fontSize 24, Roboto 400, color #000 */
+.subtitle {
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.17;
+  margin: 0;
+}
+
+/* Stepper 居中 — Figma 宽 618px */
 .stepperWrapper {
   display: flex;
   justify-content: center;
-  padding: 0 240px;
   margin-bottom: 56px;
 }
 
-/* 表单内容区，与标题等左对齐
- * Figma: form fields 从 x:240 开始，宽度 1440px
- */
 .formArea {
-  padding: 0 240px;
+  /* QuoteFormStep1 / Step2 自带 column flex + gap */
 }

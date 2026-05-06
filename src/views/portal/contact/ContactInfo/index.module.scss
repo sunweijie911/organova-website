@@ -1,0 +1,31 @@
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoLabel {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.infoValue {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+  white-space: pre-line;
+}
+
+.infoEmail {
+  color: #000;
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: underline;
+}

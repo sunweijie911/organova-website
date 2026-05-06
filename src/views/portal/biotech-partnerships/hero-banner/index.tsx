@@ -1,8 +1,16 @@
+import Image from 'next/image';
 import styles from './index.module.scss';
 
 export default function HeroBanner() {
   return (
     <section className={styles.hero}>
+      <Image
+        alt=""
+        className={styles.bg}
+        fill
+        priority
+        src="/portal/images/biotech-partnerships/hero-bg-ad2606.png"
+      />
       <div className={styles.overlay} />
       <div className={styles.content}>
         <h1 className={styles.title}>

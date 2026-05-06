@@ -32,7 +32,8 @@ const TABS = [
 
 export default function PharmaSolutionsSolutions() {
   const [activeTab, setActiveTab] = useState(0);
-  const tab = TABS[activeTab]!;
+  const tab = TABS[activeTab];
+  if (!tab) return null;
 
   return (
     <section className={styles.solutions}>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { HomeButton } from '@/components/HomeButton';
+import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 const CONTENT = {
@@ -27,9 +27,9 @@ export default function WhatWeDo() {
         <div className={styles.content}>
           <h2 className={styles.title}>{CONTENT.title}</h2>
           <p className={styles.description}>{CONTENT.description}</p>
-          <HomeButton onClick={() => setExpanded(true)}>
+          <ArrowButton onClick={() => setExpanded(true)}>
             {CONTENT.cta.text}
-          </HomeButton>
+          </ArrowButton>
         </div>
       </div>
 

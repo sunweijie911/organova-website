@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { BrandLogo } from '@/components/BrandLogo';
 import { api } from '@/lib/trpc/react';
-import HeroBanner from './hero-banner';
 import styles from './index.module.scss';
 import QuoteFormStep1, { type Step1Data } from './quote-form-step1';
 import QuoteFormStep2, { type Step2Data } from './quote-form-step2';
@@ -24,7 +24,6 @@ const INITIAL_S2: Step2Data = {
   company: '',
   jobTitle: '',
   phone: '',
-  additionalNotes: '',
 };
 
 export default function RequestQuoteView() {
@@ -44,8 +43,7 @@ export default function RequestQuoteView() {
 
   /* Step 2 输入框 onChange 工厂函数 */
   const handleS2Change =
-    (k: keyof Step2Data) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    (k: keyof Step2Data) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setS2((p) => ({ ...p, [k]: e.target.value }));
 
   /* Step 1 提交 → 前往 Step 2 */
@@ -67,17 +65,25 @@ export default function RequestQuoteView() {
 
   return (
     <div className={styles.page}>
-      {/* Hero 区：深色背景，大标题 */}
-      <HeroBanner />
+      {/* 左上角品牌 logo — Figma: x:48 y:105 */}
+      <BrandLogo />
 
-      {/* 表单主体区：白色背景 */}
-      <section className={styles.formSection}>
-        {/* 步骤进度指示器 */}
+      <div className={styles.content}>
+        {/* 标题区 — Figma: 标题 y:402, 副标题 y:566 */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>Tell Us About Your Program.</h1>
+          <p className={styles.subtitle}>
+            The more detail you provide, the faster we can design a study that
+            fits your needs.
+          </p>
+        </header>
+
+        {/* 步骤指示器 — Figma: x:651, y:683, width:618 */}
         <div className={styles.stepperWrapper}>
           <StepIndicator currentStep={step} />
         </div>
 
-        {/* 表单内容区，随步骤切换 */}
+        {/* 表单区 — Figma: x:240, y:765 起 */}
         <div className={styles.formArea}>
           {step === 1 && (
             <QuoteFormStep1
@@ -97,7 +103,7 @@ export default function RequestQuoteView() {
             />
           )}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

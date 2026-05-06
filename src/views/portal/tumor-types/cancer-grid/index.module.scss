@@ -61,6 +61,20 @@
   &:hover {
     box-shadow: 0px 4px 8px 0px rgba(99, 138, 189, 0.25);
     border-color: #457ea4;
+
+    .cardName,
+    .cardCount,
+    .tag {
+      color: #1a4c6e;
+    }
+
+    .cardLink {
+      color: #1768ef;
+    }
+
+    .cardFooter {
+      gap: 8px;
+    }
   }
 }
 
@@ -84,6 +98,7 @@
   font-weight: 600;
   color: #313238;
   line-height: 1.3;
+  transition: color 0.2s;
 }
 
 .tags {
@@ -105,6 +120,7 @@
   font-weight: 700;
   color: #979ba5;
   white-space: nowrap;
+  transition: color 0.2s;
 }
 
 .cardCount {
@@ -113,6 +129,7 @@
   font-weight: 400;
   color: #313238;
   line-height: 1.3;
+  transition: color 0.2s;
 }
 
 .cardFooter {
@@ -120,6 +137,7 @@
   flex-direction: row;
   align-items: center;
   gap: 4px;
+  transition: gap 0.2s;
 }
 
 .cardLink {
@@ -128,6 +146,7 @@
   font-weight: 400;
   color: #3a84ff;
   line-height: 20px;
+  transition: color 0.2s;
 }
 
 /* ── States ── */
