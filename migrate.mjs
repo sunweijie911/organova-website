@@ -8,11 +8,7 @@ if (!DATABASE_URL) {
   process.exit(0);
 }
 
-const RDS_CERT_PATH = '/app/certs/global-bundle.pem';
-// NODE_EXTRA_CA_CERTS 追加到系统 CA 存储（不替换），比 ca: 选项更可靠
-const ssl = existsSync(RDS_CERT_PATH)
-  ? { rejectUnauthorized: true }
-  : { rejectUnauthorized: false };
+const ssl = { rejectUnauthorized: false };
 
 const sql = postgres(DATABASE_URL, { max: 1, ssl });
 

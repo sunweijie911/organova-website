@@ -7,13 +7,10 @@ services:
     env_file:
       - path: .env
         required: false
-    environment:
-      - NODE_EXTRA_CA_CERTS=/app/certs/global-bundle.pem
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - uploads_data:/app/public/uploads
-      - ./global-bundle.pem:/app/certs/global-bundle.pem:ro
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
       interval: 10s
