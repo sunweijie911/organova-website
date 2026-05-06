@@ -10,7 +10,7 @@ export default function PharmaSolutionsHero() {
         className={styles.heroBg}
         fill
         priority
-        src="/portal/images/pharma-solutions/hero-bg.png"
+        src="/assets/images/pharma-solutions/hero-bg.png"
       />
       <div className={styles.heroOverlay} />
       <div className={styles.heroContent}>

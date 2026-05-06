@@ -24,15 +24,29 @@ const robotoSerif = Roboto_Serif({
   display: 'swap',
 });
 
+const SITE_URL = process.env.BETTER_AUTH_URL ?? 'http://localhost:3000';
+const SITE_DESCRIPTION =
+  'Patient-derived organoid (PDO) platform enabling precision oncology drug discovery, efficacy testing, and translational research.';
+
 export async function generateMetadata(): Promise<Metadata> {
   const siteName = await getSiteName();
   return {
+    metadataBase: new URL(SITE_URL),
     title: {
       default: siteName,
       template: `%s | ${siteName}`,
     },
-    description: '',
+    description: SITE_DESCRIPTION,
     icons: [{ rel: 'icon', url: '/favicon.ico' }],
+    openGraph: {
+      type: 'website',
+      siteName,
+      locale: 'en_US',
+      description: SITE_DESCRIPTION,
+    },
+    twitter: {
+      card: 'summary_large_image',
+    },
   };
 }
 
@@ -42,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className={`${roboto.variable} ${robotoSerif.variable}`} lang="zh">
+    <html className={`${roboto.variable} ${robotoSerif.variable}`} lang="en">
       <body style={{ fontFamily: 'var(--font-roboto), sans-serif' }}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <Toaster position="top-center" richColors />

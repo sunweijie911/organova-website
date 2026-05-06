@@ -9,7 +9,7 @@ export default function ImmunoOncologyHero() {
           alt=""
           fill
           priority
-          src="/portal/images/immuno-oncology/hero-bg.png"
+          src="/assets/images/immuno-oncology/hero-bg.png"
           style={{ objectFit: 'cover' }}
         />
       </div>

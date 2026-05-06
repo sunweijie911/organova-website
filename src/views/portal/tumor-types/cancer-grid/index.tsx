@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
+import { SvgIcon } from '@/components/SvgIcon';
 import { api } from '@/lib/trpc/react';
 import { parseFormats } from '../utils';
 import styles from './index.module.scss';
@@ -52,12 +52,7 @@ export default function CancerGrid() {
                 </div>
                 <div className={styles.cardFooter}>
                   <span className={styles.cardLink}>Explore Models</span>
-                  <Image
-                    alt=""
-                    height={16}
-                    src="/portal/images/tumor-types/icon-arrow-right-blue.svg"
-                    width={16}
-                  />
+                  <SvgIcon color="#3A84FF" name="chevron-right" size={16} />
                 </div>
               </Link>
             );

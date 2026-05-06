@@ -9,7 +9,7 @@ export default function HeroBanner() {
         className={styles.bg}
         fill
         priority
-        src="/portal/images/biotech-partnerships/hero-bg-ad2606.png"
+        src="/assets/images/biotech-partnerships/hero-bg-ad2606.png"
       />
       <div className={styles.overlay} />
       <div className={styles.content}>

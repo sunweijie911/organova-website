@@ -25,7 +25,7 @@ export function PortalNav({ className }: PortalNavProps) {
         <img
           alt="OrgaNova"
           className={styles.logoImg}
-          src="/portal/images/home/logo.svg"
+          src="/assets/icons/logo-light.svg"
         />
       </Link>
       <nav className={styles.navList}>

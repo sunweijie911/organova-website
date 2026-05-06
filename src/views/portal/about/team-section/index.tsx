@@ -26,7 +26,7 @@ interface TeamSectionProps {
   onMemberClick: (m: DialogMember) => void;
 }
 
-const PLACEHOLDER_PHOTO = '/portal/images/about/team-placeholder.png';
+const PLACEHOLDER_PHOTO = '/assets/images/about/team-placeholder.png';
 
 function MemberCard({
   member,

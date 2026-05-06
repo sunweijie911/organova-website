@@ -9,7 +9,7 @@ export default function HeroSection() {
           alt=""
           fill
           priority
-          src="/portal/images/tumor-types/hero-bg.png"
+          src="/assets/images/tumor-types/hero-bg.png"
           style={{ objectFit: 'cover', objectPosition: 'center top' }}
         />
       </div>

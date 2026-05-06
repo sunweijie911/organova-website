@@ -71,7 +71,7 @@ export default function HeroBanner() {
           playsInline
           preload="auto"
           ref={videoRef}
-          src="/portal/video/banner.mp4"
+          src="/assets/video/banner.mp4"
         />
         <h2 className={styles.title} ref={titleRef}>
           {HERO.title}

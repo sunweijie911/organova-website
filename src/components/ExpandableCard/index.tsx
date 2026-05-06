@@ -1,11 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
+import type { IconName } from '@/components/SvgIcon';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 export interface ExpandableCardItem {
-  icon: string;
+  icon: IconName;
   title: string;
   brief?: string;
   detail?: string;
@@ -39,12 +40,7 @@ export function ExpandableCardList({ items }: ExpandableCardListProps) {
                 <div
                   className={`${styles.iconBox} ${compact ? styles.iconBoxCompact : ''}`}
                 >
-                  <Image
-                    alt=""
-                    height={compact ? 34 : 48}
-                    src={item.icon}
-                    width={compact ? 34 : 48}
-                  />
+                  <SvgIcon name={item.icon} size={compact ? 34 : 48} />
                 </div>
                 <div className={styles.text}>
                   <span className={styles.title}>{item.title}</span>
@@ -56,16 +52,7 @@ export function ExpandableCardList({ items }: ExpandableCardListProps) {
               <div
                 className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ''}`}
               >
-                <Image
-                  alt=""
-                  height={20}
-                  src={
-                    isOpen
-                      ? '/portal/images/platform/icons/icon-arrow-up.svg'
-                      : '/portal/images/platform/icons/icon-arrow-down.svg'
-                  }
-                  width={20}
-                />
+                <SvgIcon name={isOpen ? 'arrow-up' : 'arrow-down'} size={20} />
               </div>
             </button>
             {isOpen && content.length > 0 && (

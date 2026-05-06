@@ -10,7 +10,7 @@ export default function PlatformHero() {
           alt=""
           fill
           priority
-          src="/portal/images/platform/hero-bg.png"
+          src="/assets/images/platform/hero-bg.png"
           style={{ objectFit: 'cover', objectPosition: 'center top' }}
         />
       </div>

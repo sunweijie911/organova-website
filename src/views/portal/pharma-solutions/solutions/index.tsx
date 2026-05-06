@@ -45,7 +45,7 @@ export default function PharmaSolutionsSolutions() {
         <div
           className={styles.card}
           style={{
-            backgroundImage: `url('/portal/images/pharma-solutions/tab-card-bg-69f71a.png')`,
+            backgroundImage: `url('/assets/images/pharma-solutions/tab-card-bg-69f71a.png')`,
           }}
         >
           <div className={styles.cardOverlay} />

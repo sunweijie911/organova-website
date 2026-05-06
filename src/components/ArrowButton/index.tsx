@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 interface ArrowButtonProps {
@@ -41,11 +42,7 @@ export function ArrowButton({
 
   const arrow = (
     <span className={styles.arrowWrap}>
-      <img
-        alt=""
-        className={styles.arrow}
-        src="/portal/images/home/icons/icon-arrow-right.svg"
-      />
+      <SvgIcon className={styles.arrow} name="arrow-right" size={32} />
     </span>
   );
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowButton } from '@/components/ArrowButton';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 const CONTENT = {
@@ -39,11 +40,7 @@ export default function WhatWeDo() {
           onClick={() => setExpanded(false)}
           type="button"
         >
-          <img
-            alt=""
-            className={styles.backArrow}
-            src="/portal/images/home/icons/icon-arrow-right.svg"
-          />
+          <SvgIcon className={styles.backArrow} name="arrow-right" size={32} />
           <span className={styles.backText}>Back</span>
         </button>
         <p className={styles.detailText}>{CONTENT.cta.desc}</p>

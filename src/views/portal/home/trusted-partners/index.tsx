@@ -11,12 +11,12 @@ export default function TrustedPartners() {
         <img
           alt="Eli Lilly"
           className={styles.logo1}
-          src="/portal/images/home/partners/partner-lilly.png"
+          src="/assets/images/home/partners/partner-lilly.png"
         />
         <img
           alt="Pharmaron"
           className={styles.logo2}
-          src="/portal/images/home/partners/partner-2.png"
+          src="/assets/images/home/partners/partner-2.png"
         />
       </div>
       <p className={styles.disclaimer}>

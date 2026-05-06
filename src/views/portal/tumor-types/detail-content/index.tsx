@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import SafeHtml from '@/components/SafeHtml';
+import { SvgIcon } from '@/components/SvgIcon';
 import type { RouterOutputs } from '@/lib/trpc/react';
 import { parseFormats } from '../utils';
 import styles from './index.module.scss';
@@ -14,12 +14,7 @@ export default function DetailContent({ data }: { data: CancerType }) {
     <div className={styles.page}>
       <div className={styles.navBar}>
         <Link className={styles.backLink} href="/tumor-types">
-          <Image
-            alt=""
-            height={28}
-            src="/portal/images/tumor-types/icon-arrow-left-gray.svg"
-            width={28}
-          />
+          <SvgIcon color="#979BA5" name="chevron-left" size={28} />
           Back to Catalog
         </Link>
       </div>
@@ -72,23 +67,13 @@ export default function DetailContent({ data }: { data: CancerType }) {
             <div className={styles.ctaRow}>
               {data.cta1Label && data.cta1Url && (
                 <Link className={styles.ctaLink} href={data.cta1Url}>
-                  <Image
-                    alt=""
-                    height={24}
-                    src="/portal/images/tumor-types/icon-arrow-right-blue.svg"
-                    width={24}
-                  />
+                  <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                   {data.cta1Label}
                 </Link>
               )}
               {data.cta2Label && data.cta2Url && (
                 <Link className={styles.ctaLink} href={data.cta2Url}>
-                  <Image
-                    alt=""
-                    height={24}
-                    src="/portal/images/tumor-types/icon-arrow-right-blue.svg"
-                    width={24}
-                  />
+                  <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                   {data.cta2Label}
                 </Link>
               )}
