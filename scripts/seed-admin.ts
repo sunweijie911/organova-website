@@ -39,7 +39,11 @@ if (!process.env.BETTER_AUTH_SECRET) {
   process.exit(1);
 }
 
-const conn = postgres(process.env.DATABASE_URL);
+// 与 src/server/db/index.ts 保持一致的 SSL 行为：RDS 必须开启 SSL，
+// 但项目设计上不强制校验 CA（与生产 db 连接相同）。
+const conn = postgres(process.env.DATABASE_URL, {
+  ssl: { rejectUnauthorized: false },
+});
 const db = drizzle(conn, { schema: authSchema });
 
 const auth = betterAuth({
@@ -81,7 +85,10 @@ async function main() {
     ) {
       console.log(`管理员 ${email} 已存在，跳过创建`);
     } else {
-      console.error(`创建失败: ${msg}`);
+      // 输出完整错误对象（含 cause / stack），便于排查 SQL/SSL/Schema 问题
+      console.error('创建失败:', err);
+      const cause = (err as { cause?: unknown })?.cause;
+      if (cause) console.error('cause:', cause);
       process.exit(1);
     }
   } finally {

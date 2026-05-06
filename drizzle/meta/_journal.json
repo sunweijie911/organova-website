@@ -8,6 +8,13 @@
       "when": 1777882256071,
       "tag": "0000_naive_edwin_jarvis",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778141760000,
+      "tag": "0001_ensure_user_phone_columns",
+      "breakpoints": true
     }
   ]
 }
