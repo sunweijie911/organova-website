@@ -24,12 +24,6 @@ RUN mkdir -p drizzle/meta
 ENV SKIP_ENV_VALIDATION=1
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# 客户端公开变量必须在构建期注入，pnpm build 时会被烧进 JS bundle
-ARG NEXT_PUBLIC_AUTH_METHOD=email-otp
-ARG NEXT_PUBLIC_SITE_NAME=Organova
-ENV NEXT_PUBLIC_AUTH_METHOD=${NEXT_PUBLIC_AUTH_METHOD}
-ENV NEXT_PUBLIC_SITE_NAME=${NEXT_PUBLIC_SITE_NAME}
-
 RUN pnpm build
 
 # Compile seed scripts for production (no tsx in runner)

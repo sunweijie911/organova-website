@@ -33,6 +33,10 @@ export const env = createEnv({
     RATE_LIMIT_AUTH_IP: z.string().default('5/60000'),
     RATE_LIMIT_CONTACT: z.string().default('3/60000'),
 
+    // 登录方式：email-password | email-otp
+    // 运行时变量，通过服务端注入到客户端，改 .env 重启即可生效
+    AUTH_METHOD: z.enum(['email-otp', 'email-password']).default('email-otp'),
+
     // 文件存储：local | oss | s3
     STORAGE_PROVIDER: z.enum(['local', 'oss', 's3']).default('local'),
     // 阿里云 OSS（STORAGE_PROVIDER=oss 时必填）
@@ -50,13 +54,7 @@ export const env = createEnv({
     S3_BASE_URL: z.string().optional(), // CDN 或自定义域名
   },
 
-  client: {
-    NEXT_PUBLIC_SITE_NAME: z.string().default('Organova'),
-    // 登录方式: email-password | email-otp
-    NEXT_PUBLIC_AUTH_METHOD: z
-      .enum(['email-otp', 'email-password'])
-      .default('email-otp'),
-  },
+  client: {},
 
   runtimeEnv: {
     DATABASE_URL: stripQuotes(process.env.DATABASE_URL),
@@ -72,6 +70,7 @@ export const env = createEnv({
     RATE_LIMIT_GLOBAL_IP: stripQuotes(process.env.RATE_LIMIT_GLOBAL_IP),
     RATE_LIMIT_AUTH_IP: stripQuotes(process.env.RATE_LIMIT_AUTH_IP),
     RATE_LIMIT_CONTACT: stripQuotes(process.env.RATE_LIMIT_CONTACT),
+    AUTH_METHOD: stripQuotes(process.env.AUTH_METHOD),
     STORAGE_PROVIDER: stripQuotes(process.env.STORAGE_PROVIDER),
     OSS_REGION: stripQuotes(process.env.OSS_REGION),
     OSS_ACCESS_KEY_ID: stripQuotes(process.env.OSS_ACCESS_KEY_ID),
@@ -84,8 +83,6 @@ export const env = createEnv({
     S3_BUCKET: stripQuotes(process.env.S3_BUCKET),
     S3_ENDPOINT: stripQuotes(process.env.S3_ENDPOINT),
     S3_BASE_URL: stripQuotes(process.env.S3_BASE_URL),
-    NEXT_PUBLIC_SITE_NAME: stripQuotes(process.env.NEXT_PUBLIC_SITE_NAME),
-    NEXT_PUBLIC_AUTH_METHOD: stripQuotes(process.env.NEXT_PUBLIC_AUTH_METHOD),
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

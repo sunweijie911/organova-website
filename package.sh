@@ -53,15 +53,8 @@ check_requirements() {
 build_docker_images() {
     log_info "构建平台: ${platform}"
 
-    # 客户端公开变量需在 docker build 时通过 --build-arg 注入，
-    # 否则 pnpm build 烧进 JS bundle 的会是 Dockerfile ARG 默认值。
-    # 用法: NEXT_PUBLIC_AUTH_METHOD=email-password ./package.sh
-    local build_args=()
-    [ -n "${NEXT_PUBLIC_AUTH_METHOD:-}" ] && build_args+=(--build-arg "NEXT_PUBLIC_AUTH_METHOD=${NEXT_PUBLIC_AUTH_METHOD}")
-    [ -n "${NEXT_PUBLIC_SITE_NAME:-}" ] && build_args+=(--build-arg "NEXT_PUBLIC_SITE_NAME=${NEXT_PUBLIC_SITE_NAME}")
-
     log_info "Building app image (runner target)..."
-    docker build --platform "${platform}" "${build_args[@]}" -t "${appImageTag}" --target runner .
+    docker build --platform "${platform}" -t "${appImageTag}" --target runner .
 
     log_info "Building nginx image (nginx target)..."
     docker build --platform "${platform}" -t "${nginxImageTag}" --target nginx .

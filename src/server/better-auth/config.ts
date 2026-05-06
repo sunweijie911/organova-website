@@ -11,7 +11,7 @@ import { sendEmailOtp } from '@/server/services/email';
 
 const useSecureCookies = env.BETTER_AUTH_URL?.startsWith('https://') ?? false;
 
-const method = parseAuthMethod(env.NEXT_PUBLIC_AUTH_METHOD);
+const method = parseAuthMethod(env.AUTH_METHOD);
 
 const plugins: BetterAuthPlugin[] = [];
 

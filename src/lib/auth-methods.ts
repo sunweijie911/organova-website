@@ -1,9 +1,8 @@
 /**
- * 登录方式配置 — 通过 NEXT_PUBLIC_AUTH_METHOD 环境变量控制。
- * 可选值: email-password | email-otp（默认 email-otp）
+ * 登录方式类型与解析。
+ * 实际值由服务端从 env.AUTH_METHOD 读取，通过 props 注入到客户端组件，
+ * 因此不在此文件做顶层 env 读取，避免把服务端 env 暴露给客户端。
  */
-import { env } from '@/env';
-
 export type AuthMethod = 'email-password' | 'email-otp';
 
 const VALID_METHODS = new Set<AuthMethod>(['email-password', 'email-otp']);
@@ -13,9 +12,3 @@ export function parseAuthMethod(raw: string | undefined): AuthMethod {
   if (trimmed && VALID_METHODS.has(trimmed)) return trimmed;
   return 'email-otp';
 }
-
-export const authMethod: AuthMethod = parseAuthMethod(
-  env.NEXT_PUBLIC_AUTH_METHOD,
-);
-
-export const isEmailOtpEnabled = authMethod === 'email-otp';

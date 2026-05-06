@@ -5,8 +5,8 @@ import { Toaster } from 'sonner';
 import '@unocss/reset/tailwind.css';
 import '@/styles/globals.css';
 import { DebugPanel } from '@/components/DebugPanel';
-import { env } from '@/env';
 import { TRPCReactProvider } from '@/lib/trpc/react';
+import { getSiteName } from '@/server/services/config';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -24,14 +24,17 @@ const robotoSerif = Roboto_Serif({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: env.NEXT_PUBLIC_SITE_NAME,
-    template: `%s | ${env.NEXT_PUBLIC_SITE_NAME}`,
-  },
-  description: '',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName();
+  return {
+    title: {
+      default: siteName,
+      template: `%s | ${siteName}`,
+    },
+    description: '',
+    icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  };
+}
 
 export default function RootLayout({
   children,

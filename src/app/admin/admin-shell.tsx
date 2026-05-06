@@ -19,8 +19,26 @@ import { Button, Dropdown, Layout, Menu, Modal, theme } from 'antd';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { env } from '@/env';
+import { useFrontendConfig } from '@/hooks/useFrontendConfig';
 import { authClient } from '@/lib/auth-client';
+
+const SITE_NAME_FALLBACK = 'Organova';
+
+function pickSiteName(
+  title: string | Record<string, string> | undefined,
+): string {
+  if (title && typeof title === 'object') {
+    return (
+      title['zh-CN'] ||
+      title['en-US'] ||
+      Object.values(title)[0] ||
+      SITE_NAME_FALLBACK
+    );
+  }
+  return typeof title === 'string' && title.length > 0
+    ? title
+    : SITE_NAME_FALLBACK;
+}
 
 const { Sider, Content, Header } = Layout;
 
@@ -46,6 +64,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const { data: session } = authClient.useSession();
+  const frontendConfig = useFrontendConfig();
+  const siteName = pickSiteName(frontendConfig.basic?.systemTitle);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -82,9 +102,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             }}
           >
             {!collapsed && (
-              <span style={{ fontWeight: 600, fontSize: 16 }}>
-                {env.NEXT_PUBLIC_SITE_NAME}
-              </span>
+              <span style={{ fontWeight: 600, fontSize: 16 }}>{siteName}</span>
             )}
             <Button
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
