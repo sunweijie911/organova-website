@@ -8,7 +8,10 @@ if (!databaseUrl) {
   process.exit(1);
 }
 
-const conn = postgres(databaseUrl);
+// 与 src/server/db/index.ts 保持一致的 SSL 行为（RDS 强制 SSL 但不强制校验 CA）
+const conn = postgres(databaseUrl, {
+  ssl: { rejectUnauthorized: false },
+});
 const db = drizzle(conn, { schema });
 
 async function seed() {
