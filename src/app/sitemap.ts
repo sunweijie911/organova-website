@@ -34,11 +34,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     db
       .select({ slug: caseStudies.slug, updatedAt: caseStudies.updatedAt })
       .from(caseStudies)
-      .where(eq(caseStudies.isPublished, true)),
+      .where(eq(caseStudies.isPublished, true))
+      .catch(() => []),
     db
       .select({ slug: cancerTypes.slug, updatedAt: cancerTypes.updatedAt })
       .from(cancerTypes)
-      .where(eq(cancerTypes.isPublished, true)),
+      .where(eq(cancerTypes.isPublished, true))
+      .catch(() => []),
   ]);
 
   const caseStudyEntries: MetadataRoute.Sitemap = cases.map((c) => ({
