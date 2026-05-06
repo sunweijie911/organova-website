@@ -50,7 +50,7 @@ try {
         for (const stmt of statements) {
           await tx.unsafe(stmt);
         }
-        await tx`INSERT INTO "__drizzle_migrations" (hash, created_at) VALUES (${hash}, ${Date.now()})`;
+        await tx`INSERT INTO "__drizzle_migrations" (hash, created_at) VALUES (${hash}, ${Date.now()}) ON CONFLICT (hash) DO NOTHING`;
       });
 
       console.log(`[migrate] Applied: ${entry.tag}`);

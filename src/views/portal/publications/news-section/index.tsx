@@ -1,5 +1,6 @@
 'use client';
 
+import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';
 
 /**
@@ -107,9 +108,9 @@ export default function NewsSection({
                         />
                       </svg>
                     </summary>
-                    <div
+                    <SafeHtml
                       className={`${styles.richContent} rich-text`}
-                      dangerouslySetInnerHTML={{ __html: item.content }}
+                      html={item.content}
                     />
                   </details>
                 ) : (

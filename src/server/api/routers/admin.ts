@@ -159,11 +159,13 @@ export const adminRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const where = buildAuditLogWhere(input);
+      // 限制单次导出上限，避免长期运行后全表扫描导致 OOM
       return ctx.db
         .select()
         .from(adminAuditLog)
         .where(where)
-        .orderBy(desc(adminAuditLog.createdAt));
+        .orderBy(desc(adminAuditLog.createdAt))
+        .limit(10000);
     }),
 
   // ---- 审计日志清理 ----

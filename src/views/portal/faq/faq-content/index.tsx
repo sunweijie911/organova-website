@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';
 
 // 单个 FAQ 条目类型
@@ -43,10 +44,7 @@ function AccordionItem({ question, answer }: FaqItem) {
 
         {/* 右列：答案（展开时显示） */}
         {open && (
-          <div
-            className={`${styles.answerCol} rich-text`}
-            dangerouslySetInnerHTML={{ __html: answer }}
-          />
+          <SafeHtml className={`${styles.answerCol} rich-text`} html={answer} />
         )}
       </div>
     </>

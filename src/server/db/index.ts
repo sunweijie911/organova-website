@@ -15,7 +15,13 @@ const globalForDb = globalThis as unknown as {
 };
 
 const RDS_CERT_PATH = '/app/certs/global-bundle.pem';
-const ssl = existsSync(RDS_CERT_PATH)
+const hasCert = existsSync(RDS_CERT_PATH);
+if (!hasCert && env.NODE_ENV === 'production') {
+  console.warn(
+    `[db] RDS CA cert not found at ${RDS_CERT_PATH}, falling back to rejectUnauthorized:false (insecure)`,
+  );
+}
+const ssl = hasCert
   ? { ca: readFileSync(RDS_CERT_PATH).toString() }
   : { rejectUnauthorized: false };
 

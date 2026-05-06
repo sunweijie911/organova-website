@@ -4,6 +4,17 @@ import { z } from 'zod';
 import { cancerTypes } from '@/server/db/schema';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
+// PostgreSQL unique_violation
+const UNIQUE_VIOLATION = '23505';
+function isUniqueViolation(err: unknown): boolean {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'code' in err &&
+    (err as { code?: string }).code === UNIQUE_VIOLATION
+  );
+}
+
 const cancerTypeWriteSchema = z.object({
   name: z.string().min(1).max(256),
   slug: z.string().min(1).max(256),
@@ -71,41 +82,43 @@ export const cancerTypesRouter = createTRPCRouter({
   adminCreate: adminProcedure
     .input(cancerTypeWriteSchema)
     .mutation(async ({ input, ctx }) => {
-      const existing = await ctx.db
-        .select({ id: cancerTypes.id })
-        .from(cancerTypes)
-        .where(eq(cancerTypes.slug, input.slug))
-        .limit(1);
-      if (existing.length > 0) {
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: `Slug "${input.slug}" 已存在`,
-        });
+      // 直接走数据库 unique 约束，避免 select-then-insert 的 TOCTOU 竞争
+      try {
+        const [row] = await ctx.db
+          .insert(cancerTypes)
+          .values(input)
+          .returning({ id: cancerTypes.id });
+        return row;
+      } catch (err) {
+        if (isUniqueViolation(err)) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: `Slug "${input.slug}" 已存在`,
+          });
+        }
+        throw err;
       }
-      const [row] = await ctx.db
-        .insert(cancerTypes)
-        .values(input)
-        .returning({ id: cancerTypes.id });
-      return row;
     }),
 
   adminUpdate: adminProcedure
     .input(z.object({ id: z.number().int() }).merge(cancerTypeWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      const existing = await ctx.db
-        .select({ id: cancerTypes.id })
-        .from(cancerTypes)
-        .where(eq(cancerTypes.slug, data.slug))
-        .limit(1);
-      if (existing.length > 0 && existing[0]?.id !== id) {
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: `Slug "${data.slug}" 已被其他记录使用`,
-        });
+      try {
+        await ctx.db
+          .update(cancerTypes)
+          .set(data)
+          .where(eq(cancerTypes.id, id));
+        return { success: true };
+      } catch (err) {
+        if (isUniqueViolation(err)) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: `Slug "${data.slug}" 已被其他记录使用`,
+          });
+        }
+        throw err;
       }
-      await ctx.db.update(cancerTypes).set(data).where(eq(cancerTypes.id, id));
-      return { success: true };
     }),
 
   adminDelete: adminProcedure

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import SafeHtml from '@/components/SafeHtml';
 import type { RouterOutputs } from '@/lib/trpc/react';
 import { parseFormats } from '../utils';
 import styles from './index.module.scss';
@@ -51,9 +52,9 @@ export default function DetailContent({ data }: { data: CancerType }) {
           {data.validatedApplications && (
             <div className={styles.section}>
               <h2 className={styles.sectionHeading}>Validated Applications:</h2>
-              <div
+              <SafeHtml
                 className={styles.richText}
-                dangerouslySetInnerHTML={{ __html: data.validatedApplications }}
+                html={data.validatedApplications}
               />
             </div>
           )}

@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { and, asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import type { db as Db } from '@/server/db';
 import { caseStudies, systemConfig } from '@/server/db/schema';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
@@ -29,6 +30,31 @@ const DEFAULT_APPLICATION_TAGS = [
 
 const CANCER_TAGS_KEY = 'case_study_cancer_tags';
 const APP_TAGS_KEY = 'case_study_application_tags';
+
+// 从 systemConfig 加载筛选标签，缺失或类型错误时回退到默认值
+async function loadFilterTags(db: typeof Db) {
+  const [cancerRow, appRow] = await Promise.all([
+    db.query.systemConfig.findFirst({
+      where: eq(systemConfig.key, CANCER_TAGS_KEY),
+    }),
+    db.query.systemConfig.findFirst({
+      where: eq(systemConfig.key, APP_TAGS_KEY),
+    }),
+  ]);
+  const parseTags = (
+    row: { value: unknown } | undefined,
+    defaults: string[],
+  ) => {
+    const val = row?.value;
+    return Array.isArray(val) && val.every((v) => typeof v === 'string')
+      ? (val as string[])
+      : defaults;
+  };
+  return {
+    cancerTags: parseTags(cancerRow, DEFAULT_CANCER_TYPE_TAGS),
+    appTags: parseTags(appRow, DEFAULT_APPLICATION_TAGS),
+  };
+}
 
 const caseStudyWriteSchema = z.object({
   slug: z.string().min(1).max(256),
@@ -177,50 +203,18 @@ export const caseStudiesRouter = createTRPCRouter({
     }),
 
   filterOptions: publicProcedure.query(async ({ ctx }) => {
-    const [cancerRow, appRow] = await Promise.all([
-      ctx.db.query.systemConfig.findFirst({
-        where: eq(systemConfig.key, CANCER_TAGS_KEY),
-      }),
-      ctx.db.query.systemConfig.findFirst({
-        where: eq(systemConfig.key, APP_TAGS_KEY),
-      }),
-    ]);
-    const parseTags = (
-      row: { value: unknown } | undefined,
-      defaults: string[],
-    ) => {
-      const val = row?.value;
-      return Array.isArray(val) && val.every((v) => typeof v === 'string')
-        ? (val as string[])
-        : defaults;
-    };
+    const { cancerTags, appTags } = await loadFilterTags(ctx.db);
     return {
-      cancerTypes: ['All', ...parseTags(cancerRow, DEFAULT_CANCER_TYPE_TAGS)],
-      applications: ['All', ...parseTags(appRow, DEFAULT_APPLICATION_TAGS)],
+      cancerTypes: ['All', ...cancerTags],
+      applications: ['All', ...appTags],
     };
   }),
 
   adminGetFilterTags: adminProcedure.query(async ({ ctx }) => {
-    const [cancerRow, appRow] = await Promise.all([
-      ctx.db.query.systemConfig.findFirst({
-        where: eq(systemConfig.key, CANCER_TAGS_KEY),
-      }),
-      ctx.db.query.systemConfig.findFirst({
-        where: eq(systemConfig.key, APP_TAGS_KEY),
-      }),
-    ]);
-    const parseTags = (
-      row: { value: unknown } | undefined,
-      defaults: string[],
-    ) => {
-      const val = row?.value;
-      return Array.isArray(val) && val.every((v) => typeof v === 'string')
-        ? (val as string[])
-        : defaults;
-    };
+    const { cancerTags, appTags } = await loadFilterTags(ctx.db);
     return {
-      cancerTypeTags: parseTags(cancerRow, DEFAULT_CANCER_TYPE_TAGS),
-      applicationTags: parseTags(appRow, DEFAULT_APPLICATION_TAGS),
+      cancerTypeTags: cancerTags,
+      applicationTags: appTags,
     };
   }),
 

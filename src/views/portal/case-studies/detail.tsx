@@ -9,10 +9,10 @@ import DetailHero from './detail-hero';
 
 // 详情页入口组件：只负责数据请求，渲染交给各 section 组件
 export default function CaseStudyDetailView() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ slug: string }>();
 
   const { data, isLoading } = api.caseStudies.getBySlug.useQuery({
-    slug: params.id,
+    slug: params.slug,
   });
 
   // 加载状态

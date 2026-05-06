@@ -113,10 +113,10 @@ export default function ContactView() {
                 <p className={styles.contactSubtitle}>
                   Curious about our work? Get in touch.
                 </p>
-                {rows.map((row, ri) => (
+                {rows.map((row) => (
                   <div
                     className={row.length > 1 ? styles.formRow : undefined}
-                    key={ri}
+                    key={row.map((f) => f.key).join('-')}
                   >
                     {row.map((field) => (
                       <div

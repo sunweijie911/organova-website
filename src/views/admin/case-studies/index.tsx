@@ -345,28 +345,28 @@ export default function AdminCaseStudiesView() {
           <Form.Item label="Challenge（富文本）">
             <RichTextEditor
               defaultValue={challenge}
-              key={editing?.id ?? 'new'}
+              key={`challenge-${editing?.id ?? 'new'}`}
               onChange={setChallenge}
             />
           </Form.Item>
           <Form.Item label="Approach（富文本）">
             <RichTextEditor
               defaultValue={approach}
-              key={editing?.id ?? 'new'}
+              key={`approach-${editing?.id ?? 'new'}`}
               onChange={setApproach}
             />
           </Form.Item>
           <Form.Item label="Results（富文本）">
             <RichTextEditor
               defaultValue={results}
-              key={editing?.id ?? 'new'}
+              key={`results-${editing?.id ?? 'new'}`}
               onChange={setResults}
             />
           </Form.Item>
           <Form.Item label="Implication（富文本）">
             <RichTextEditor
               defaultValue={implication}
-              key={editing?.id ?? 'new'}
+              key={`implication-${editing?.id ?? 'new'}`}
               onChange={setImplication}
             />
           </Form.Item>

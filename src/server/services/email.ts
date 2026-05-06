@@ -2,6 +2,16 @@ import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 import { env } from '@/env';
 
+// HTML 转义，防止用户输入注入 HTML 邮件模板
+function esc(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 let transporter: Transporter | null = null;
 
 function getTransporter(): Transporter {
@@ -47,18 +57,19 @@ export async function sendLeadNotification(lead: {
     return;
   }
   try {
+    const fullName = `${lead.firstName} ${lead.lastName}`;
     await getTransporter().sendMail({
       from: `"OrgaNova 网站" <${env.SMTP_USER}>`,
       to: 'info@tricbio.com',
-      subject: `[新线索] ${sourceLabel} — ${lead.firstName} ${lead.lastName}`,
+      subject: `[新线索] ${sourceLabel} — ${fullName}`,
       html: `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
           <h2 style="color:#333;margin-bottom:16px;">收到新的网站线索</h2>
           <table style="width:100%;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:8px;color:#666;width:100px;">来源</td><td style="padding:8px;font-weight:600;">${sourceLabel}</td></tr>
-            <tr><td style="padding:8px;color:#666;">姓名</td><td style="padding:8px;">${lead.firstName} ${lead.lastName}</td></tr>
-            <tr><td style="padding:8px;color:#666;">邮箱</td><td style="padding:8px;"><a href="mailto:${lead.email}">${lead.email}</a></td></tr>
-            ${lead.company ? `<tr><td style="padding:8px;color:#666;">公司</td><td style="padding:8px;">${lead.company}</td></tr>` : ''}
+            <tr><td style="padding:8px;color:#666;width:100px;">来源</td><td style="padding:8px;font-weight:600;">${esc(sourceLabel)}</td></tr>
+            <tr><td style="padding:8px;color:#666;">姓名</td><td style="padding:8px;">${esc(fullName)}</td></tr>
+            <tr><td style="padding:8px;color:#666;">邮箱</td><td style="padding:8px;"><a href="mailto:${esc(lead.email)}">${esc(lead.email)}</a></td></tr>
+            ${lead.company ? `<tr><td style="padding:8px;color:#666;">公司</td><td style="padding:8px;">${esc(lead.company)}</td></tr>` : ''}
           </table>
           <p style="margin-top:20px;font-size:13px;color:#999;">请登录后台查看完整信息。</p>
         </div>
@@ -84,7 +95,7 @@ export async function sendEmailOtp(email: string, code: string): Promise<void> {
         <h2 style="color:#333;margin-bottom:16px;">登录验证码</h2>
         <p style="color:#666;margin-bottom:24px;">您的验证码为：</p>
         <div style="background:#f5f5f5;border-radius:8px;padding:16px;text-align:center;font-size:32px;letter-spacing:8px;font-weight:bold;color:#333;">
-          ${code}
+          ${esc(code)}
         </div>
         <p style="color:#999;margin-top:24px;font-size:13px;">验证码 5 分钟内有效，请勿泄露给他人。</p>
       </div>

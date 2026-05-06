@@ -5,8 +5,7 @@ import { isAdminEmail } from '@/server/services/admin-check';
 import { getClientIp } from '@/server/services/get-client-ip';
 import { authIpLimiter, globalIpLimiter } from '@/server/services/rate-limiter';
 
-const protectedPatterns = [/^\/admin(\/|$)/];
-
+// /admin/* 路径需要登录且必须是 admin 角色
 const adminPatterns = [/^\/admin(\/|$)/];
 
 function rateLimitResponse(retryAfterMs: number, message: string) {
@@ -53,9 +52,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 页面认证保护
-  const isProtected = protectedPatterns.some((p) => p.test(pathname));
-  if (isProtected) {
+  // 页面认证保护：admin 路径必须登录且为 admin 角色
+  if (adminPatterns.some((p) => p.test(pathname))) {
     const session = await auth.api.getSession({ headers: request.headers });
 
     if (!session) {
@@ -64,10 +62,8 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(signinUrl);
     }
 
-    if (adminPatterns.some((p) => p.test(pathname))) {
-      if (!isAdminEmail(session.user.email)) {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
+    if (!isAdminEmail(session.user.email)) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 

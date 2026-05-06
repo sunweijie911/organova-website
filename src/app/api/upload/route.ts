@@ -2,7 +2,6 @@ import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
 import { auth } from '@/server/better-auth';
-import { getClientIp } from '@/server/services/get-client-ip';
 import { uploadLimiter } from '@/server/services/rate-limiter';
 import { uploadFile } from '@/server/services/storage';
 
@@ -42,9 +41,12 @@ function detectImageType(buffer: Buffer): { ext: string; mime: string } | null {
 
 export async function POST(request: Request) {
   try {
-    // 优先使用 session userId 限流；未登录时降级为 IP 限流
+    // 仅登录用户可上传，未登录直接 401
     const session = await auth.api.getSession({ headers: request.headers });
-    const rateLimitKey = session?.user?.id ?? `ip:${getClientIp(request)}`;
+    if (!session?.user) {
+      return NextResponse.json({ error: '请先登录' }, { status: 401 });
+    }
+    const rateLimitKey = session.user.id;
 
     const rateCheck = uploadLimiter.check(rateLimitKey);
     if (!rateCheck.allowed) {

@@ -116,7 +116,7 @@ export const leadsRouter = createTRPCRouter({
       return { items: rows, total: countRows, page, pageSize };
     }),
 
-  // CSV 导出（无分页，最多 5000 条）
+  // CSV 导出（单次最多 1000 条；超量需配合分批接口或筛选缩量）
   adminExportAll: adminProcedure
     .input(
       z.object({
@@ -132,7 +132,7 @@ export const leadsRouter = createTRPCRouter({
         .from(leads)
         .where(where)
         .orderBy(desc(leads.createdAt))
-        .limit(5000);
+        .limit(1000);
     }),
 
   adminGet: adminProcedure
@@ -155,10 +155,14 @@ export const leadsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      await ctx.db
+      const result = await ctx.db
         .update(leads)
         .set({ status: input.status })
-        .where(eq(leads.id, input.id));
+        .where(eq(leads.id, input.id))
+        .returning({ id: leads.id });
+      if (result.length === 0) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
       return { success: true };
     }),
 });

@@ -14,6 +14,8 @@
     "softwareTerms"
   ],
   "words": [
+    "OOM",
+    "TOCTOU",
     "rsc",
     "fmt",
     "vnd",

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';
 
 interface Props {
@@ -79,9 +80,9 @@ export default function DetailBody({
             <div className={styles.contentCard}>
               <div className={styles.contentCardInner}>
                 <h2 className={styles.contentLabel}>Challenge</h2>
-                <div
+                <SafeHtml
                   className={`rich-text ${styles.richText}`}
-                  dangerouslySetInnerHTML={{ __html: challenge }}
+                  html={challenge}
                 />
               </div>
             </div>
@@ -92,9 +93,9 @@ export default function DetailBody({
             <div className={styles.contentCard}>
               <div className={styles.contentCardInner}>
                 <h2 className={styles.contentLabel}>Approach</h2>
-                <div
+                <SafeHtml
                   className={`rich-text ${styles.richText}`}
-                  dangerouslySetInnerHTML={{ __html: approach }}
+                  html={approach}
                 />
               </div>
             </div>
@@ -105,9 +106,9 @@ export default function DetailBody({
             <div className={styles.contentCard}>
               <div className={styles.contentCardInner}>
                 <h2 className={styles.contentLabel}>Results:</h2>
-                <div
+                <SafeHtml
                   className={`rich-text ${styles.richText}`}
-                  dangerouslySetInnerHTML={{ __html: results }}
+                  html={results}
                 />
               </div>
             </div>
@@ -118,9 +119,9 @@ export default function DetailBody({
             <div className={styles.contentCard}>
               <div className={styles.contentCardInner}>
                 <h2 className={styles.contentLabel}>Implication</h2>
-                <div
+                <SafeHtml
                   className={`rich-text ${styles.richText}`}
-                  dangerouslySetInnerHTML={{ __html: implication }}
+                  html={implication}
                 />
               </div>
             </div>

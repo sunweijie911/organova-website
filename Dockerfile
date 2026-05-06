@@ -1,7 +1,7 @@
 ##### BASE
 FROM node:22-alpine AS base
 ENV COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
-RUN corepack enable && corepack prepare pnpm@9.15.5 --activate
+RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 
 ##### DEPENDENCIES
 FROM base AS deps
@@ -23,6 +23,12 @@ RUN mkdir -p drizzle/meta
 
 ENV SKIP_ENV_VALIDATION=1
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# 客户端公开变量必须在构建期注入，pnpm build 时会被烧进 JS bundle
+ARG NEXT_PUBLIC_AUTH_METHOD=email-otp
+ARG NEXT_PUBLIC_SITE_NAME=Organova
+ENV NEXT_PUBLIC_AUTH_METHOD=${NEXT_PUBLIC_AUTH_METHOD}
+ENV NEXT_PUBLIC_SITE_NAME=${NEXT_PUBLIC_SITE_NAME}
 
 RUN pnpm build
 

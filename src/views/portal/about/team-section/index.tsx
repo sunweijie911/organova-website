@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';
 
 /**
@@ -81,10 +82,7 @@ function MemberCard({
 
       {/* 展开时显示 fullBio */}
       {isActive && member.fullBio && (
-        <div
-          className={styles.fullBio}
-          dangerouslySetInnerHTML={{ __html: member.fullBio }}
-        />
+        <SafeHtml className={styles.fullBio} html={member.fullBio} />
       )}
     </button>
   );

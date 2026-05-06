@@ -356,10 +356,12 @@ export default function AdminFaqView() {
 
   const selectedCat = categories?.find((c) => c.id === selectedCatId) ?? null;
 
+  // 增删/新建分类时清空 localCats，避免拖拽后保留的旧数组覆盖最新服务端数据
   const createCat = api.faq.adminCreateCategory.useMutation({
     onSuccess: (row) => {
       message.success('已添加');
       setCatModalOpen(false);
+      setLocalCats([]);
       void refetch();
       if (row) setSelectedCatId(row.id);
     },
@@ -369,6 +371,7 @@ export default function AdminFaqView() {
     onSuccess: () => {
       message.success('已保存');
       setCatModalOpen(false);
+      setLocalCats([]);
       void refetch();
     },
     onError: () => message.error('操作失败'),
@@ -376,6 +379,7 @@ export default function AdminFaqView() {
   const deleteCat = api.faq.adminDeleteCategory.useMutation({
     onSuccess: () => {
       message.success('已删除');
+      setLocalCats([]);
       void refetch();
       setSelectedCatId(null);
     },
