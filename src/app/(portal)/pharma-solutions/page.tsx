@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import PharmaSolutionsView from '@/views/portal/pharma-solutions';
+import PharmaSolutionsView from './index';
 
 export const metadata: Metadata = {
   title: 'Pharma Solutions',

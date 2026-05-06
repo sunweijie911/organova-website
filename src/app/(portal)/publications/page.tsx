@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import PublicationsView from '@/views/portal/publications';
+import PublicationsView from './index';
 
 export const metadata: Metadata = {
   title: 'Publications',

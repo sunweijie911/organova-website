@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ImmunoOncologyView from '@/views/portal/immuno-oncology';
+import ImmunoOncologyView from './index';
 
 export const metadata: Metadata = {
   title: 'Immuno-Oncology',

@@ -1,1 +1,1 @@
-export { default } from '@/views/admin/publications';
+export { default } from './index';

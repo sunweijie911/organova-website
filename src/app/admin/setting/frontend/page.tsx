@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import AdminSettingFrontend from '@/views/admin/setting/frontend';
+import AdminSettingFrontend from './frontend';
 
 export const metadata: Metadata = { title: '前端配置' };
 

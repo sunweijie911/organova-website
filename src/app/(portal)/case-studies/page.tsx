@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import CaseStudiesListView from '@/views/portal/case-studies/list';
+import CaseStudiesListView from './list';
 
 export const metadata: Metadata = {
   title: 'Case Studies',

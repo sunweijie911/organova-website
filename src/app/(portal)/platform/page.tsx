@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import PlatformView from '@/views/portal/platform';
+import PlatformView from './index';
 
 export const metadata: Metadata = {
   title: 'Our Platform',

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import RequestQuoteView from '@/views/portal/request-quote';
+import RequestQuoteView from './index';
 
 export const metadata: Metadata = {
   title: 'Request a Quote',

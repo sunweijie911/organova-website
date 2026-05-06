@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import FaqView from '@/views/portal/faq';
+import FaqView from './index';
 
 export const metadata: Metadata = {
   title: 'FAQ',

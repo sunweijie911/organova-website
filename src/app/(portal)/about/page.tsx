@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import AboutView from '@/views/portal/about';
+import AboutView from './index';
 
 export const metadata: Metadata = {
   title: 'About Us',

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ContactView from '@/views/portal/contact';
+import ContactView from './index';
 
 export const metadata: Metadata = {
   title: 'Contact Us',

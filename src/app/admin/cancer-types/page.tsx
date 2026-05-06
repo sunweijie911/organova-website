@@ -1,1 +1,1 @@
-export { default } from '@/views/admin/cancer-types';
+export { default } from './index';

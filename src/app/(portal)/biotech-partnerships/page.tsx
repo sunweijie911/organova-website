@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import BiotechPartnershipsView from '@/views/portal/biotech-partnerships';
+import BiotechPartnershipsView from './index';
 
 export const metadata: Metadata = {
   title: 'Biotech Partnerships',
