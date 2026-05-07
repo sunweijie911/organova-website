@@ -1,76 +1,76 @@
-/* Hero Banner 区域样式
- * Figma: 白色背景，内容区 x:240 y:402，宽 1216px
- * 页面总高 2732px，内容定位在 y:402 偏移处
+/* Hero Banner — Figma 545:6055
+ * 白底；内容区 x:240 y:402 宽 1216
+ * 三栏列结构：标题 64 → tab 导航 → 副标题 24
  */
 
 .hero {
   background: #fff;
-  padding-top: 120px;
-  padding-bottom: 60px;
-  padding-left: 240px;
-  padding-right: 240px;
+  padding: 0 240px 60px;
 }
 
 .inner {
   max-width: 1440px;
-  /* 内容区宽 1216px，左边距 240px */
-  width: 1216px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
-/* 主标题：Roboto Serif Regular 64px，黑色 */
+/* 主标题 Roboto Serif Regular 64 */
 .title {
   font-family: 'Roboto Serif', serif;
   font-weight: 400;
   font-size: 64px;
   color: #000;
   line-height: 1.1;
-  margin: 0 0 32px;
+  margin: 0;
   letter-spacing: -0.01em;
 }
 
-/* tab 导航：横排，间距 48px */
+/* tab 导航：横排，间距 48 */
 .tabNav {
   display: flex;
   align-items: center;
   gap: 48px;
-  margin-bottom: 40px;
 }
 
-/* 选中 tab：Roboto Medium 500 20px，下划线，黑色 */
-.tabActive {
+.tabActive,
+.tabLink {
   font-family: 'Roboto', sans-serif;
-  font-weight: 500;
   font-size: 20px;
   color: #000;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 4px;
+  transition: opacity 0.15s ease;
+}
+
+/* 选中：Medium 500 + 较粗下划线 */
+.tabActive {
+  font-weight: 500;
   text-decoration-thickness: 1.5px;
 }
 
-/* 非选中 tab：Roboto Light 300 20px，下划线，黑色 */
+/* 非选中：Light 300 + 细下划线 */
 .tabLink {
-  font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  font-size: 20px;
-  color: #000;
-  text-decoration: underline;
-  text-underline-offset: 4px;
   text-decoration-thickness: 1px;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+  opacity: 0.85;
 
   &:hover {
     opacity: 1;
   }
 }
 
-/* 描述文字：Roboto Regular 24px */
+/* 副标题 Roboto Regular 24，黑色 */
 .subtitle {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 24px;
   color: #000;
   line-height: 1.5;
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0;
 }

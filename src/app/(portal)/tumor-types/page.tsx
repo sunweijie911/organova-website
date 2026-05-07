@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import TumorTypesListView from './list';
+import TumorTypesListView from '.';
 
 export const metadata: Metadata = {
   title: 'Tumor Types',

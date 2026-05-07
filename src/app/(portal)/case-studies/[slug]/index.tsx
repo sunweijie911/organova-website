@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { api } from '@/lib/trpc/react';
-import styles from './detail.module.scss';
 import DetailBody from './detail-body';
 import DetailHero from './detail-hero';
+import styles from './index.module.scss';
 
 // 详情页入口组件：只负责数据请求，渲染交给各 section 组件
 export default function CaseStudyDetailView() {

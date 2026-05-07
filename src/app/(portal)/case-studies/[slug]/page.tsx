@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import type { Metadata } from 'next';
 import { db } from '@/server/db';
 import { caseStudies } from '@/server/db/schema';
-import CaseStudyDetailView from './detail';
+import CaseStudyDetailView from '.';
 
 export async function generateMetadata({
   params,

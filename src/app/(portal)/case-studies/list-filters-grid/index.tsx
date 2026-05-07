@@ -3,13 +3,11 @@
 import Link from 'next/link';
 import styles from './index.module.scss';
 
-// 过滤选项类型
 interface FilterOptions {
   cancerTypes: string[];
   applications: string[];
 }
 
-// 案例研究卡片数据类型（id 为 number，与 API 返回一致）
 interface CaseStudy {
   id: number;
   slug: string;
@@ -20,21 +18,24 @@ interface CaseStudy {
   applicationTags: string[];
 }
 
+interface Counts {
+  cancer: Record<string, number>;
+  app: Record<string, number>;
+}
+
 interface Props {
-  // 过滤选项
   options?: FilterOptions;
-  // 当前选中的过滤值
   cancerType: string;
   application: string;
-  // 过滤器切换回调
+  counts: Counts;
+  totalCount: number;
   onCancerTypeChange: (value: string) => void;
   onApplicationChange: (value: string) => void;
-  // 列表数据
   data?: CaseStudy[];
   isLoading?: boolean;
 }
 
-// 右箭头 SVG 图标
+// 卡片右下角箭头
 function ArrowIcon() {
   return (
     <svg
@@ -56,13 +57,54 @@ function ArrowIcon() {
   );
 }
 
-// 列表页 过滤器 + 卡片网格 区域
-// Figma 节点：581:10342（Group 9，背景 #F5F5F5）
-// 标题区：padding 100px 240px 48px；过滤行：padding 24px 240px；卡片 468px 宽，border-radius 16px
+// 单个过滤标签：根据 active / disabled 状态切换样式
+interface TagProps {
+  label: string;
+  count?: number;
+  isAll?: boolean;
+  active: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}
+
+function FilterTag({
+  label,
+  count,
+  isAll,
+  active,
+  disabled,
+  onClick,
+}: TagProps) {
+  const cls = [
+    styles.tag,
+    active && styles.tagActive,
+    disabled && styles.tagDisabled,
+  ]
+    .filter(Boolean)
+    .join(' ');
+  return (
+    <button
+      className={cls}
+      disabled={disabled && !active}
+      onClick={onClick}
+      type="button"
+    >
+      <span className={styles.tagLabel}>{label}</span>
+      {!isAll && <span className={styles.tagCount}>{count ?? 0}</span>}
+    </button>
+  );
+}
+
+// Figma 539:1770 - Group 9
+// 区块背景 #F5F5F5；标题区 padding 100px 240px 48px
+// 两行过滤器：白底 + #DCDEE5 边框 + padding 24px 240px
+// 卡片 468px 宽，border-radius 16px，#DCDEE5 边框
 export default function ListFiltersGrid({
   options,
   cancerType,
   application,
+  counts,
+  totalCount,
   onCancerTypeChange,
   onApplicationChange,
   data,
@@ -79,61 +121,69 @@ export default function ListFiltersGrid({
         </p>
       </div>
 
-      {/* Cancer Type 过滤器行 */}
       {options && (
         <>
+          {/* Cancer Type 行 */}
           <div className={styles.filterRow}>
             <div className={styles.filterInner}>
               <span className={styles.filterLabel}>Cancer Type</span>
               <div className={styles.tagList}>
-                {options.cancerTypes.map((t) => (
-                  <button
-                    className={`${styles.tag} ${cancerType === t ? styles.tagActive : ''}`}
-                    key={t}
-                    onClick={() => onCancerTypeChange(t)}
-                    type="button"
-                  >
-                    {t}
-                  </button>
-                ))}
+                {options.cancerTypes.map((t) => {
+                  const isAll = t === 'All';
+                  const c = isAll ? totalCount : (counts.cancer[t] ?? 0);
+                  return (
+                    <FilterTag
+                      active={cancerType === t}
+                      count={c}
+                      disabled={!isAll && c === 0}
+                      isAll={isAll}
+                      key={t}
+                      label={t}
+                      onClick={() => onCancerTypeChange(t)}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
 
-          {/* Application 过滤器行 */}
+          {/* Application 行（带阴影分隔） */}
           <div className={`${styles.filterRow} ${styles.filterRowShadow}`}>
             <div className={styles.filterInner}>
               <span className={styles.filterLabel}>Application</span>
               <div className={styles.tagList}>
-                {options.applications.map((a) => (
-                  <button
-                    className={`${styles.tag} ${application === a ? styles.tagActive : ''}`}
-                    key={a}
-                    onClick={() => onApplicationChange(a)}
-                    type="button"
-                  >
-                    {a}
-                  </button>
-                ))}
+                {options.applications.map((t) => {
+                  const isAll = t === 'All';
+                  const c = isAll ? totalCount : (counts.app[t] ?? 0);
+                  return (
+                    <FilterTag
+                      active={application === t}
+                      count={c}
+                      disabled={!isAll && c === 0}
+                      isAll={isAll}
+                      key={t}
+                      label={t}
+                      onClick={() => onApplicationChange(t)}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
         </>
       )}
 
-      {/* 结果数量 + 卡片网格 */}
+      {/* 卡片区 */}
       <div className={styles.gridWrapper}>
-        {/* 结果计数 */}
         <p className={styles.resultCount}>
-          Showing <strong>{data?.length ?? 0}</strong> case studies
+          Showing <strong>{data?.length ?? 0}</strong> of{' '}
+          <strong>{totalCount}</strong> case studies
         </p>
 
-        {/* 加载状态 */}
         {isLoading && (
           <div className={styles.loading}>Loading case studies...</div>
         )}
 
-        {/* 卡片网格 */}
         {!isLoading && (
           <div className={styles.grid}>
             {data?.map((cs) => (
@@ -142,32 +192,19 @@ export default function ListFiltersGrid({
                 href={`/case-studies/${cs.slug}`}
                 key={cs.id}
               >
-                {/* 封面图 */}
-                {cs.coverImage && (
-                  <div className={styles.cardCover}>
-                    <img
-                      alt={cs.title}
-                      className={styles.cardCoverImg}
-                      src={cs.coverImage}
-                    />
-                  </div>
-                )}
-
                 <div className={styles.cardBody}>
                   {/* 标题 */}
                   <h3 className={styles.cardTitle}>{cs.title}</h3>
 
-                  {/* 标签行 */}
+                  {/* 标签 chip */}
                   <div className={styles.cardTagRow}>
-                    {/* 癌症类型标签 */}
                     {cs.cancerTypeTags.slice(0, 2).map((t) => (
-                      <span className={styles.cardTag} key={t}>
+                      <span className={styles.cardChip} key={`c-${t}`}>
                         {t}
                       </span>
                     ))}
-                    {/* 应用类型标签 */}
                     {cs.applicationTags.slice(0, 1).map((t) => (
-                      <span className={styles.cardTag} key={t}>
+                      <span className={styles.cardChip} key={`a-${t}`}>
                         {t}
                       </span>
                     ))}
@@ -178,7 +215,7 @@ export default function ListFiltersGrid({
                     <p className={styles.cardSummary}>{cs.summary}</p>
                   )}
 
-                  {/* 阅读链接 */}
+                  {/* 跳转链接 */}
                   <div className={styles.cardLink}>
                     <span>Read Full Case Study</span>
                     <ArrowIcon />
@@ -189,7 +226,6 @@ export default function ListFiltersGrid({
           </div>
         )}
 
-        {/* 空状态 */}
         {!isLoading && data?.length === 0 && (
           <div className={styles.empty}>
             No case studies match the selected filters.

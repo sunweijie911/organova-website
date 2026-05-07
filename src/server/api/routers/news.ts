@@ -31,14 +31,27 @@ export const newsRouter = createTRPCRouter({
         .orderBy(desc(news.publishedAt));
     }),
 
+  getById: publicProcedure
+    .input(z.object({ id: z.number().int() }))
+    .query(async ({ input, ctx }) => {
+      const [row] = await ctx.db
+        .select()
+        .from(news)
+        .where(and(eq(news.id, input.id), eq(news.isPublished, true)))
+        .limit(1);
+      if (!row) throw new TRPCError({ code: 'NOT_FOUND' });
+      return row;
+    }),
+
   availableYears: publicProcedure.query(async ({ ctx }) => {
+    // Postgres 要求 SELECT DISTINCT 的 ORDER BY 表达式必须出现在 select 列表中，
+    // 因此 orderBy 这里必须复用 select 中带 ::int cast 的同一表达式
+    const yearExpr = sql<number>`extract(year from ${news.publishedAt})::int`;
     const rows = await ctx.db
-      .selectDistinct({
-        year: sql<number>`extract(year from ${news.publishedAt})::int`,
-      })
+      .selectDistinct({ year: yearExpr })
       .from(news)
       .where(eq(news.isPublished, true))
-      .orderBy(desc(sql`extract(year from ${news.publishedAt})`));
+      .orderBy(desc(yearExpr));
     return rows.map((r) => r.year);
   }),
 

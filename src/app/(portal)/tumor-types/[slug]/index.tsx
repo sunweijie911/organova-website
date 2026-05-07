@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { api } from '@/lib/trpc/react';
-import styles from './detail.module.scss';
 import DetailContent from './detail-content';
+import styles from './index.module.scss';
 
 export default function TumorTypeDetailView() {
   const params = useParams<{ slug: string }>();

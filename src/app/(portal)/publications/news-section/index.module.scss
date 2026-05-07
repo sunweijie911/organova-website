@@ -116,6 +116,19 @@
   margin: 0;
 }
 
+/* 标题外层链接：去除下划线 + hover 时浅蓝 */
+.itemTitleLink {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.15s ease;
+
+  &:hover .itemTitle {
+    color: #1a4c6e;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
 /* 底部区域：宽 125px，column，gap:7px */
 .itemFooter {
   width: 125px;

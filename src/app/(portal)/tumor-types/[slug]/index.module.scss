@@ -1,7 +1,6 @@
 /* Loading / not-found states for the detail route entry point */
 .loading,
 .notFound {
-  padding-top: 60px; /* account for fixed portal header */
   min-height: 400px;
   display: flex;
   align-items: center;

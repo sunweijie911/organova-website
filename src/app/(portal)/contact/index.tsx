@@ -5,17 +5,15 @@ import styles from './index.module.scss';
 
 export default function ContactView() {
   return (
-    <div className={styles.page}>
-      <section className={styles.contactSection}>
-        <BrandLogo />
-        <div className={styles.contactContent}>
-          <h1 className={styles.contactTitle}>Contact</h1>
-          <div className={styles.contentLayout}>
-            <ContactForm />
-            <ContactInfo />
-          </div>
+    <section className={styles.contactSection}>
+      <BrandLogo />
+      <div className={styles.contactContent}>
+        <h1 className={styles.contactTitle}>Contact</h1>
+        <div className={styles.contentLayout}>
+          <ContactForm />
+          <ContactInfo />
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

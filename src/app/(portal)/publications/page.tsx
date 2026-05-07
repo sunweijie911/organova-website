@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import PublicationsView from './index';
 
 export const metadata: Metadata = {
@@ -7,4 +8,10 @@ export const metadata: Metadata = {
     'Peer-reviewed publications and research papers demonstrating the clinical and scientific validation of the Organova patient-derived organoid platform.',
 };
 
-export default PublicationsView;
+export default function PublicationsPage() {
+  return (
+    <Suspense>
+      <PublicationsView />
+    </Suspense>
+  );
+}

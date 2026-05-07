@@ -1,3 +1,12 @@
+/* 占位 spacer：与 .header 等高，存在于文档流中以让出 fixed header 的位置
+ * 用纯黑背景填充自身：固定头部半透明叠加上去后，整体始终呈现纯黑——
+ * 这样不论下方页面是白底还是黑底 hero，都不会出现颜色错位，页面也不需要任何 padding-top 占位
+ */
+.spacer {
+  height: 60px;
+  background: #000;
+}
+
 .header {
   display: flex;
   position: fixed;

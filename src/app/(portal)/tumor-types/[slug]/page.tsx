@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import type { Metadata } from 'next';
 import { db } from '@/server/db';
 import { cancerTypes } from '@/server/db/schema';
-import TumorTypeDetailView from './detail';
+import TumorTypeDetailView from '.';
 
 export async function generateMetadata({
   params,

@@ -6,9 +6,6 @@ import styles from './index.module.scss';
 export default function ListHero() {
   return (
     <section className={styles.hero}>
-      {/* 右侧装饰光晕 */}
-      <div aria-hidden="true" className={styles.glow} />
-
       <div className={styles.inner}>
         <h1 className={styles.title}>
           From Biological Question to Clinical Insight.
