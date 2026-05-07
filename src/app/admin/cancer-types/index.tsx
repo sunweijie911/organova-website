@@ -81,10 +81,12 @@ export default function AdminCancerTypesView() {
   const handleSubmit = (vals: Record<string, unknown>) => {
     const payload = {
       ...vals,
-      coverImage: coverImage || undefined,
+      coverImage: coverImage || null,
       validatedApplications: validatedApps,
       // 编辑时保留原有上线状态；新增时默认为草稿
       isPublished: editing?.isPublished ?? false,
+      // 表单未注册 sortOrder，编辑时显式带回原值，避免被 zod default(0) 重置
+      sortOrder: editing?.sortOrder ?? data?.length ?? 0,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<

@@ -129,12 +129,14 @@ export default function AdminCaseStudiesView() {
   const handleSubmit = (vals: Record<string, unknown>) => {
     const payload = {
       ...vals,
-      coverImage: coverImage || undefined,
+      coverImage: coverImage || null,
       challenge,
       approach,
       results,
       implication,
       isPublished: editing?.isPublished ?? false,
+      // 表单未注册 sortOrder，编辑时显式带回原值，避免被 zod default(0) 重置
+      sortOrder: editing?.sortOrder ?? data?.length ?? 0,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<

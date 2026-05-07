@@ -2,11 +2,12 @@ import { TRPCError } from '@trpc/server';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { teamMembers } from '@/server/db/schema';
+import { assertUpdated } from '@/server/db/utils';
 import { TEAM_GROUPS } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const teamMemberWriteSchema = z.object({
-  photo: z.string().optional(),
+  photo: z.string().nullable().optional(),
   name: z.string().min(1).max(256),
   title: z.string().min(1).max(256),
   shortBio: z.string().optional(),
@@ -64,14 +65,35 @@ export const teamRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(teamMemberWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      await ctx.db.update(teamMembers).set(data).where(eq(teamMembers.id, id));
+      const result = await ctx.db
+        .update(teamMembers)
+        .set(data)
+        .where(eq(teamMembers.id, id))
+        .returning({ id: teamMembers.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(teamMembers).where(eq(teamMembers.id, input.id));
+      const result = await ctx.db
+        .delete(teamMembers)
+        .where(eq(teamMembers.id, input.id))
+        .returning({ id: teamMembers.id });
+      assertUpdated(result);
+      return { success: true };
+    }),
+
+  adminToggleVisible: adminProcedure
+    .input(z.object({ id: z.number().int(), isVisible: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const result = await ctx.db
+        .update(teamMembers)
+        .set({ isVisible: input.isVisible })
+        .where(eq(teamMembers.id, input.id))
+        .returning({ id: teamMembers.id });
+      assertUpdated(result);
       return { success: true };
     }),
 

@@ -1,7 +1,7 @@
-import { TRPCError } from '@trpc/server';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { resources } from '@/server/db/schema';
+import { assertUpdated } from '@/server/db/utils';
 import { RESOURCE_CTA_TYPES } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
@@ -10,8 +10,8 @@ const resourceWriteSchema = z.object({
   description: z.string().optional(),
   ctaLabel: z.string().max(128).optional(),
   ctaType: z.enum(RESOURCE_CTA_TYPES),
-  fileUrl: z.string().optional(),
-  externalUrl: z.string().optional(),
+  fileUrl: z.string().nullable().optional(),
+  externalUrl: z.string().nullable().optional(),
   isVisible: z.boolean(),
   sortOrder: z.number().int(),
 });
@@ -43,20 +43,35 @@ export const resourcesRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(resourceWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      const [existing] = await ctx.db
-        .select({ id: resources.id })
-        .from(resources)
+      const result = await ctx.db
+        .update(resources)
+        .set(data)
         .where(eq(resources.id, id))
-        .limit(1);
-      if (!existing) throw new TRPCError({ code: 'NOT_FOUND' });
-      await ctx.db.update(resources).set(data).where(eq(resources.id, id));
+        .returning({ id: resources.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(resources).where(eq(resources.id, input.id));
+      const result = await ctx.db
+        .delete(resources)
+        .where(eq(resources.id, input.id))
+        .returning({ id: resources.id });
+      assertUpdated(result);
+      return { success: true };
+    }),
+
+  adminToggleVisible: adminProcedure
+    .input(z.object({ id: z.number().int(), isVisible: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const result = await ctx.db
+        .update(resources)
+        .set({ isVisible: input.isVisible })
+        .where(eq(resources.id, input.id))
+        .returning({ id: resources.id });
+      assertUpdated(result);
       return { success: true };
     }),
 

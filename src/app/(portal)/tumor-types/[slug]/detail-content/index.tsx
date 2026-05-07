@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import SafeHtml from '@/components/SafeHtml';
 import { SvgIcon } from '@/components/SvgIcon';
 import type { RouterOutputs } from '@/lib/trpc/react';
@@ -6,6 +7,40 @@ import { parseFormats } from '../utils';
 import styles from './index.module.scss';
 
 type CancerType = RouterOutputs['cancerTypes']['getBySlug'];
+
+// 外链/邮件/电话用原生 a 标签 + 新窗口；站内相对路径走 Next Link 享受预取
+function isExternalUrl(url: string): boolean {
+  return /^(https?:|mailto:|tel:)/i.test(url);
+}
+
+function CtaItem({
+  url,
+  className,
+  children,
+}: {
+  url: string | null | undefined;
+  className: string | undefined;
+  children: ReactNode;
+}) {
+  if (!url) return null;
+  if (isExternalUrl(url)) {
+    return (
+      <a
+        className={className}
+        href={url}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link className={className} href={url}>
+      {children}
+    </Link>
+  );
+}
 
 export default function DetailContent({ data }: { data: CancerType }) {
   const formats = parseFormats(data.formats);
@@ -66,16 +101,16 @@ export default function DetailContent({ data }: { data: CancerType }) {
           {(data.cta1Label || data.cta2Label) && (
             <div className={styles.ctaRow}>
               {data.cta1Label && data.cta1Url && (
-                <Link className={styles.ctaLink} href={data.cta1Url}>
+                <CtaItem className={styles.ctaLink} url={data.cta1Url}>
                   <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                   {data.cta1Label}
-                </Link>
+                </CtaItem>
               )}
               {data.cta2Label && data.cta2Url && (
-                <Link className={styles.ctaLink} href={data.cta2Url}>
+                <CtaItem className={styles.ctaLink} url={data.cta2Url}>
                   <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                   {data.cta2Label}
-                </Link>
+                </CtaItem>
               )}
             </div>
           )}

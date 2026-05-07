@@ -3,6 +3,7 @@ import { and, asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import type { db as Db } from '@/server/db';
 import { caseStudies, systemConfig } from '@/server/db/schema';
+import { assertUpdated, isUniqueViolation } from '@/server/db/utils';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const DEFAULT_CANCER_TYPE_TAGS = [
@@ -60,7 +61,7 @@ const caseStudyWriteSchema = z.object({
   slug: z.string().min(1).max(256),
   title: z.string().min(1).max(512),
   summary: z.string().max(1000).optional(),
-  coverImage: z.string().optional(),
+  coverImage: z.string().nullable().optional(),
   cancerTypeTags: z.array(z.string()).default([]),
   applicationTags: z.array(z.string()).default([]),
   challenge: z.string().optional(),
@@ -80,38 +81,14 @@ const caseStudyWriteSchema = z.object({
 });
 
 export const caseStudiesRouter = createTRPCRouter({
-  // 门户：获取已发布列表（含筛选）
-  list: publicProcedure
-    .input(
-      z.object({
-        cancerType: z.string().optional(),
-        application: z.string().optional(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const rows = await ctx.db
-        .select()
-        .from(caseStudies)
-        .where(eq(caseStudies.isPublished, true))
-        .orderBy(asc(caseStudies.sortOrder), desc(caseStudies.createdAt));
-
-      // 前端筛选逻辑（数据量有限，在内存过滤）
-      return rows.filter((r) => {
-        if (
-          input.cancerType &&
-          input.cancerType !== 'All' &&
-          !r.cancerTypeTags.includes(input.cancerType)
-        )
-          return false;
-        if (
-          input.application &&
-          input.application !== 'All' &&
-          !r.applicationTags.includes(input.application)
-        )
-          return false;
-        return true;
-      });
-    }),
+  // 门户：返回全部已发布案例；筛选逻辑在前端组件层进行（数据量有限）
+  list: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db
+      .select()
+      .from(caseStudies)
+      .where(eq(caseStudies.isPublished, true))
+      .orderBy(asc(caseStudies.sortOrder), desc(caseStudies.createdAt));
+  }),
 
   // 门户：按 slug 获取详情
   getBySlug: publicProcedure
@@ -154,35 +131,67 @@ export const caseStudiesRouter = createTRPCRouter({
   adminCreate: adminProcedure
     .input(caseStudyWriteSchema)
     .mutation(async ({ input, ctx }) => {
-      const [row] = await ctx.db
-        .insert(caseStudies)
-        .values(input)
-        .returning({ id: caseStudies.id });
-      return row;
+      try {
+        const [row] = await ctx.db
+          .insert(caseStudies)
+          .values(input)
+          .returning({ id: caseStudies.id });
+        return row;
+      } catch (err) {
+        if (isUniqueViolation(err)) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: `Slug "${input.slug}" 已存在`,
+          });
+        }
+        throw err;
+      }
     }),
 
   adminUpdate: adminProcedure
     .input(z.object({ id: z.number().int() }).merge(caseStudyWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      await ctx.db.update(caseStudies).set(data).where(eq(caseStudies.id, id));
+      let result: { id: number }[];
+      try {
+        result = await ctx.db
+          .update(caseStudies)
+          .set(data)
+          .where(eq(caseStudies.id, id))
+          .returning({ id: caseStudies.id });
+      } catch (err) {
+        if (isUniqueViolation(err)) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: `Slug "${data.slug}" 已被其他记录使用`,
+          });
+        }
+        throw err;
+      }
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(caseStudies).where(eq(caseStudies.id, input.id));
+      const result = await ctx.db
+        .delete(caseStudies)
+        .where(eq(caseStudies.id, input.id))
+        .returning({ id: caseStudies.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminTogglePublish: adminProcedure
     .input(z.object({ id: z.number().int(), isPublished: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db
+      const result = await ctx.db
         .update(caseStudies)
         .set({ isPublished: input.isPublished })
-        .where(eq(caseStudies.id, input.id));
+        .where(eq(caseStudies.id, input.id))
+        .returning({ id: caseStudies.id });
+      assertUpdated(result);
       return { success: true };
     }),
 

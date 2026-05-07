@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { faqCategories, faqItems } from '@/server/db/schema';
+import { assertUpdated } from '@/server/db/utils';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 export const faqRouter = createTRPCRouter({
@@ -60,17 +61,23 @@ export const faqRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      await ctx.db
+      const result = await ctx.db
         .update(faqCategories)
         .set(data)
-        .where(eq(faqCategories.id, id));
+        .where(eq(faqCategories.id, id))
+        .returning({ id: faqCategories.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDeleteCategory: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(faqCategories).where(eq(faqCategories.id, input.id));
+      const result = await ctx.db
+        .delete(faqCategories)
+        .where(eq(faqCategories.id, input.id))
+        .returning({ id: faqCategories.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
@@ -128,14 +135,35 @@ export const faqRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      await ctx.db.update(faqItems).set(data).where(eq(faqItems.id, id));
+      const result = await ctx.db
+        .update(faqItems)
+        .set(data)
+        .where(eq(faqItems.id, id))
+        .returning({ id: faqItems.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDeleteItem: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(faqItems).where(eq(faqItems.id, input.id));
+      const result = await ctx.db
+        .delete(faqItems)
+        .where(eq(faqItems.id, input.id))
+        .returning({ id: faqItems.id });
+      assertUpdated(result);
+      return { success: true };
+    }),
+
+  adminToggleItemVisible: adminProcedure
+    .input(z.object({ id: z.number().int(), isVisible: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const result = await ctx.db
+        .update(faqItems)
+        .set({ isVisible: input.isVisible })
+        .where(eq(faqItems.id, input.id))
+        .returning({ id: faqItems.id });
+      assertUpdated(result);
       return { success: true };
     }),
 

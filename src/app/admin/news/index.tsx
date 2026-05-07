@@ -88,7 +88,7 @@ export default function AdminNewsView() {
       ...vals,
       publishedAt: (vals.publishedAt as dayjs.Dayjs).toDate(),
       content,
-      coverImage: coverImage || undefined,
+      coverImage: coverImage || null,
       isPublished: editing?.isPublished ?? false,
     };
     if (editing) {

@@ -15,6 +15,13 @@
       "when": 1778141760000,
       "tag": "0001_ensure_user_phone_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778400000000,
+      "tag": "0002_drop_lead_additional_notes",
+      "breakpoints": true
     }
   ]
 }

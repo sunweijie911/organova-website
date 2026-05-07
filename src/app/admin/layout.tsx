@@ -10,7 +10,9 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  if (!session?.user) redirect('/signin');
+  // 未登录时回带 callbackUrl=/admin，避免登录后落到网站首页（精确子路径需要中间件
+  // 注入 pathname，当前实现仅恢复到 admin 首页）；signin 表单已对 callbackUrl 做白名单防护。
+  if (!session?.user) redirect('/signin?callbackUrl=/admin');
 
   if (!isAdminEmail(session.user.email)) {
     redirect('/');

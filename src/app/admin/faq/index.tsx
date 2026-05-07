@@ -206,6 +206,10 @@ function ItemsPanel({ category }: { category: Category }) {
   const updateItemSort = api.faq.adminUpdateItemSort.useMutation({
     onError: () => message.error('排序保存失败'),
   });
+  const toggleItemVisible = api.faq.adminToggleItemVisible.useMutation({
+    onSuccess: () => void refetch(),
+    onError: () => message.error('切换显示失败'),
+  });
 
   const handleOrderChange = useCallback(
     (newRows: FaqItem[]) => {
@@ -271,7 +275,7 @@ function ItemsPanel({ category }: { category: Category }) {
         <Switch
           checked={v}
           onChange={(checked) =>
-            updateItem.mutate({ ...r, isVisible: checked })
+            toggleItemVisible.mutate({ id: r.id, isVisible: checked })
           }
           size="small"
         />

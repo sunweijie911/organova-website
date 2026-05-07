@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import type { MetadataRoute } from 'next';
 import { db } from '@/server/db';
-import { cancerTypes, caseStudies } from '@/server/db/schema';
+import { cancerTypes, caseStudies, news } from '@/server/db/schema';
 
 const BASE_URL = process.env.BETTER_AUTH_URL ?? 'http://localhost:3000';
 
@@ -30,17 +30,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   );
 
-  const [cases, cancers] = await Promise.all([
+  // 数据库不可用时降级为空列表，避免 CI/构建阶段崩溃；
+  // 但要记日志，否则生产长期返回不完整 sitemap 也无人察觉。
+  const [cases, cancers, newsItems] = await Promise.all([
     db
       .select({ slug: caseStudies.slug, updatedAt: caseStudies.updatedAt })
       .from(caseStudies)
       .where(eq(caseStudies.isPublished, true))
-      .catch(() => []),
+      .catch((err) => {
+        console.warn('[sitemap] caseStudies 查询失败，已降级为空', err);
+        return [];
+      }),
     db
       .select({ slug: cancerTypes.slug, updatedAt: cancerTypes.updatedAt })
       .from(cancerTypes)
       .where(eq(cancerTypes.isPublished, true))
-      .catch(() => []),
+      .catch((err) => {
+        console.warn('[sitemap] cancerTypes 查询失败，已降级为空', err);
+        return [];
+      }),
+    db
+      .select({ id: news.id, updatedAt: news.updatedAt })
+      .from(news)
+      .where(eq(news.isPublished, true))
+      .catch((err) => {
+        console.warn('[sitemap] news 查询失败，已降级为空', err);
+        return [];
+      }),
   ]);
 
   const caseStudyEntries: MetadataRoute.Sitemap = cases.map((c) => ({
@@ -57,5 +73,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...caseStudyEntries, ...cancerTypeEntries];
+  const newsEntries: MetadataRoute.Sitemap = newsItems.map((n) => ({
+    url: `${BASE_URL}/news/${n.id}`,
+    lastModified: n.updatedAt ?? new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }));
+
+  return [
+    ...staticEntries,
+    ...caseStudyEntries,
+    ...cancerTypeEntries,
+    ...newsEntries,
+  ];
 }

@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { news } from '@/server/db/schema';
+import { assertUpdated } from '@/server/db/utils';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const newsWriteSchema = z.object({
@@ -9,7 +10,7 @@ const newsWriteSchema = z.object({
   publishedAt: z.date(),
   location: z.string().max(256).optional(),
   content: z.string().optional(),
-  coverImage: z.string().optional(),
+  coverImage: z.string().nullable().optional(),
   isPublished: z.boolean().default(false),
 });
 
@@ -105,24 +106,35 @@ export const newsRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(newsWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      await ctx.db.update(news).set(data).where(eq(news.id, id));
+      const result = await ctx.db
+        .update(news)
+        .set(data)
+        .where(eq(news.id, id))
+        .returning({ id: news.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(news).where(eq(news.id, input.id));
+      const result = await ctx.db
+        .delete(news)
+        .where(eq(news.id, input.id))
+        .returning({ id: news.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminTogglePublish: adminProcedure
     .input(z.object({ id: z.number().int(), isPublished: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db
+      const result = await ctx.db
         .update(news)
         .set({ isPublished: input.isPublished })
-        .where(eq(news.id, input.id));
+        .where(eq(news.id, input.id))
+        .returning({ id: news.id });
+      assertUpdated(result);
       return { success: true };
     }),
 });

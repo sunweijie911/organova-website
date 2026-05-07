@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { publications } from '@/server/db/schema';
+import { assertUpdated } from '@/server/db/utils';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const publicationWriteSchema = z.object({
@@ -57,17 +58,35 @@ export const publicationsRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(publicationWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
-      await ctx.db
+      const result = await ctx.db
         .update(publications)
         .set(data)
-        .where(eq(publications.id, id));
+        .where(eq(publications.id, id))
+        .returning({ id: publications.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(publications).where(eq(publications.id, input.id));
+      const result = await ctx.db
+        .delete(publications)
+        .where(eq(publications.id, input.id))
+        .returning({ id: publications.id });
+      assertUpdated(result);
+      return { success: true };
+    }),
+
+  adminToggleVisible: adminProcedure
+    .input(z.object({ id: z.number().int(), isVisible: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const result = await ctx.db
+        .update(publications)
+        .set({ isVisible: input.isVisible })
+        .where(eq(publications.id, input.id))
+        .returning({ id: publications.id });
+      assertUpdated(result);
       return { success: true };
     }),
 

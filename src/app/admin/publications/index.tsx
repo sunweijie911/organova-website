@@ -55,6 +55,11 @@ export default function AdminPublicationsView() {
     onError: () => message.error('排序保存失败'),
   });
 
+  const toggleVisible = api.publications.adminToggleVisible.useMutation({
+    onSuccess: () => void refetch(),
+    onError: () => message.error('切换显示失败'),
+  });
+
   const handleOrderChange = useCallback(
     (newRows: Pub[]) => {
       updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
@@ -79,7 +84,12 @@ export default function AdminPublicationsView() {
   };
 
   const handleSubmit = (vals: Record<string, unknown>) => {
-    const payload = { ...vals, isVisible: editing?.isVisible ?? true };
+    const payload = {
+      ...vals,
+      isVisible: editing?.isVisible ?? true,
+      // 表单未注册 sortOrder，编辑时显式带回原值，避免被 zod default(0) 重置
+      sortOrder: editing?.sortOrder ?? data?.length ?? 0,
+    };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
         typeof update.mutate
@@ -135,12 +145,7 @@ export default function AdminPublicationsView() {
         <Switch
           checked={v}
           onChange={(checked) =>
-            update.mutate({
-              ...r,
-              isVisible: checked,
-              citationCount: r.citationCount ?? undefined,
-              doi: r.doi ?? undefined,
-            })
+            toggleVisible.mutate({ id: r.id, isVisible: checked })
           }
           size="small"
         />

@@ -13,7 +13,7 @@ export default function CaseStudiesListView() {
   const [application, setApplication] = useState('All');
 
   const { data: options } = api.caseStudies.filterOptions.useQuery();
-  const { data: allData, isLoading } = api.caseStudies.list.useQuery({});
+  const { data: allData, isLoading } = api.caseStudies.list.useQuery();
 
   const filtered = useMemo(() => {
     if (!allData) return undefined;

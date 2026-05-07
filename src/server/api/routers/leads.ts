@@ -11,7 +11,7 @@ import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 const contactSubmitSchema = z.object({
   firstName: z.string().min(1).max(128),
   lastName: z.string().min(1).max(128),
-  email: z.string().email().max(512),
+  email: z.email().max(512),
   company: z.string().max(256).optional(),
   jobTitle: z.string().max(256).optional(),
   message: z.string().min(1).max(5000),
@@ -25,11 +25,10 @@ const rfqSubmitSchema = z.object({
   turnaround: z.string().trim().min(1).max(64),
   firstName: z.string().min(1).max(128),
   lastName: z.string().min(1).max(128),
-  email: z.string().email().max(512),
+  email: z.email().max(512),
   company: z.string().min(1).max(256),
   jobTitle: z.string().max(256).optional(),
   phone: z.string().max(64).optional(),
-  additionalNotes: z.string().max(5000).optional(),
 });
 
 function buildWhere(input: {

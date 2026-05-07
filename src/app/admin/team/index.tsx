@@ -68,6 +68,11 @@ export default function AdminTeamView() {
     onError: () => message.error('排序保存失败'),
   });
 
+  const toggleVisible = api.team.adminToggleVisible.useMutation({
+    onSuccess: () => void refetch(),
+    onError: () => message.error('切换显示失败'),
+  });
+
   const handleOrderChange = useCallback(
     (newRows: Member[]) => {
       updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
@@ -95,9 +100,11 @@ export default function AdminTeamView() {
   const handleSubmit = (vals: Record<string, unknown>) => {
     const payload = {
       ...vals,
-      photo: photo || undefined,
+      photo: photo || null,
       fullBio,
       isVisible: editing?.isVisible ?? true,
+      // 表单未注册 sortOrder，编辑时显式带回原值，避免被 zod default(0) 重置
+      sortOrder: editing?.sortOrder ?? data?.length ?? 0,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
@@ -148,13 +155,7 @@ export default function AdminTeamView() {
         <Switch
           checked={v}
           onChange={(checked) =>
-            update.mutate({
-              ...r,
-              isVisible: checked,
-              photo: r.photo ?? undefined,
-              shortBio: r.shortBio ?? undefined,
-              fullBio: r.fullBio ?? undefined,
-            })
+            toggleVisible.mutate({ id: r.id, isVisible: checked })
           }
           size="small"
         />

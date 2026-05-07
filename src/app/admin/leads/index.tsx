@@ -56,7 +56,6 @@ const LEAD_EXPORT_COLUMNS: XlsxColumn<Lead>[] = [
   { header: '研究类型', dataIndex: 'studyType' },
   { header: '化合物数量', dataIndex: 'numCompounds' },
   { header: '交付时间', dataIndex: 'turnaround' },
-  { header: '备注', dataIndex: 'additionalNotes' },
   {
     header: '提交时间',
     accessor: (r) => dayjs(r.createdAt).format('YYYY-MM-DD HH:mm:ss'),
@@ -347,13 +346,6 @@ export default function AdminLeadsView() {
             {selected.turnaround && (
               <Descriptions.Item label="交付时间">
                 {selected.turnaround}
-              </Descriptions.Item>
-            )}
-            {selected.additionalNotes && (
-              <Descriptions.Item label="备注">
-                <span style={{ whiteSpace: 'pre-wrap' }}>
-                  {selected.additionalNotes}
-                </span>
               </Descriptions.Item>
             )}
           </Descriptions>

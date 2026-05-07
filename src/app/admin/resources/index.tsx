@@ -62,6 +62,11 @@ export default function AdminResourcesView() {
     onError: () => message.error('排序保存失败'),
   });
 
+  const toggleVisible = api.resources.adminToggleVisible.useMutation({
+    onSuccess: () => void refetch(),
+    onError: () => message.error('切换显示失败'),
+  });
+
   const handleOrderChange = useCallback(
     (newRows: Resource[]) => {
       updateSort.mutate(newRows.map((r, i) => ({ id: r.id, sortOrder: i })));
@@ -88,10 +93,16 @@ export default function AdminResourcesView() {
   };
 
   const handleSubmit = (vals: Record<string, unknown>) => {
+    // 按 ctaType 清理无关字段，避免切换类型后旧 fileUrl/externalUrl 残留为脏数据
+    const ctaType = vals.ctaType as string;
     const payload = {
       ...vals,
-      fileUrl: fileUrl || undefined,
+      fileUrl: ctaType === 'download' ? fileUrl || null : null,
+      externalUrl:
+        ctaType === 'link' ? (vals.externalUrl as string) || null : null,
       isVisible: editing?.isVisible ?? true,
+      // 表单未注册 sortOrder，编辑时显式带回原值，避免被 zod default(0) 重置
+      sortOrder: editing?.sortOrder ?? data?.length ?? 0,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
@@ -129,14 +140,7 @@ export default function AdminResourcesView() {
         <Switch
           checked={v}
           onChange={(checked) =>
-            update.mutate({
-              ...r,
-              isVisible: checked,
-              description: r.description ?? undefined,
-              ctaLabel: r.ctaLabel ?? undefined,
-              fileUrl: r.fileUrl ?? undefined,
-              externalUrl: r.externalUrl ?? undefined,
-            })
+            toggleVisible.mutate({ id: r.id, isVisible: checked })
           }
           size="small"
         />

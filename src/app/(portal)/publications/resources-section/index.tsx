@@ -20,6 +20,30 @@ interface ResourcesSectionProps {
   resources?: Resource[];
 }
 
+interface CtaProps {
+  href: string;
+  target?: '_blank';
+  rel?: 'noopener noreferrer';
+}
+
+// 按 ctaType 派生 a 标签属性；未知枚举或缺数据返回 null（不渲染按钮）
+function getCtaProps(r: Resource): CtaProps | null {
+  switch (r.ctaType) {
+    case 'download':
+      return r.fileUrl
+        ? { href: r.fileUrl, target: '_blank', rel: 'noopener noreferrer' }
+        : null;
+    case 'link':
+      return r.externalUrl
+        ? { href: r.externalUrl, target: '_blank', rel: 'noopener noreferrer' }
+        : null;
+    case 'contact':
+      return { href: '/contact' };
+    default:
+      return null;
+  }
+}
+
 export default function ResourcesSection({ resources }: ResourcesSectionProps) {
   if (!resources || resources.length === 0) return null;
 
@@ -28,59 +52,52 @@ export default function ResourcesSection({ resources }: ResourcesSectionProps) {
       <div className={styles.inner}>
         {/* 3列卡片网格，gap:18px，对应 Frame 66 */}
         <div className={styles.grid}>
-          {resources.map((r) => (
-            <article className={styles.card} key={r.id}>
-              <div className={styles.cardBody}>
-                {/* 卡片标题：Roboto SemiBold 600 20px，颜色 #313238 */}
-                <h3 className={styles.cardTitle}>{r.name}</h3>
+          {resources.map((r) => {
+            const cta = r.ctaLabel ? getCtaProps(r) : null;
+            return (
+              <article className={styles.card} key={r.id}>
+                <div className={styles.cardBody}>
+                  {/* 卡片标题：Roboto SemiBold 600 20px，颜色 #313238 */}
+                  <h3 className={styles.cardTitle}>{r.name}</h3>
 
-                {/* 描述文字：Roboto Regular 16px，line-height 24px，颜色 #4D4F56 */}
-                {r.description && (
-                  <p className={styles.cardDesc}>{r.description}</p>
-                )}
-              </div>
-
-              {/* CTA 按钮：Roboto Regular 14px，颜色 #3A84FF，带右箭头 */}
-              {r.ctaLabel && (
-                <div className={styles.cardFooter}>
-                  <a
-                    className={styles.cta}
-                    href={
-                      r.ctaType === 'download'
-                        ? (r.fileUrl ?? '#')
-                        : r.ctaType === 'contact'
-                          ? '/contact'
-                          : (r.externalUrl ?? '#')
-                    }
-                    rel={
-                      r.ctaType !== 'contact'
-                        ? 'noopener noreferrer'
-                        : undefined
-                    }
-                    target={r.ctaType !== 'contact' ? '_blank' : undefined}
-                  >
-                    {r.ctaLabel}
-                    {/* 右箭头 SVG，对应 Figma Icon/右箭头，16×16 */}
-                    <svg
-                      aria-hidden="true"
-                      fill="none"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      width="16"
-                    >
-                      <path
-                        d="M3 8H13M13 8L9 4M13 8L9 12"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.3"
-                      />
-                    </svg>
-                  </a>
+                  {/* 描述文字：Roboto Regular 16px，line-height 24px，颜色 #4D4F56 */}
+                  {r.description && (
+                    <p className={styles.cardDesc}>{r.description}</p>
+                  )}
                 </div>
-              )}
-            </article>
-          ))}
+
+                {/* CTA 按钮：Roboto Regular 14px，颜色 #3A84FF，带右箭头 */}
+                {cta && (
+                  <div className={styles.cardFooter}>
+                    <a
+                      className={styles.cta}
+                      href={cta.href}
+                      rel={cta.rel}
+                      target={cta.target}
+                    >
+                      {r.ctaLabel}
+                      {/* 右箭头 SVG，对应 Figma Icon/右箭头，16×16 */}
+                      <svg
+                        aria-hidden="true"
+                        fill="none"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        width="16"
+                      >
+                        <path
+                          d="M3 8H13M13 8L9 4M13 8L9 12"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.3"
+                        />
+                      </svg>
+                    </a>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

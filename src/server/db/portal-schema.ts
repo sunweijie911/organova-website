@@ -35,7 +35,6 @@ export const leads = createTable(
     turnaround: d.varchar({ length: 64 }),
     // rfq 专有 - Step 2
     phone: d.varchar({ length: 64 }),
-    additionalNotes: d.text('additional_notes'),
     ip: d.text(),
     createdAt: d
       .timestamp('created_at', { withTimezone: true })

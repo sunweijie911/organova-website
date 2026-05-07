@@ -2,25 +2,15 @@ import { TRPCError } from '@trpc/server';
 import { and, asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { cancerTypes } from '@/server/db/schema';
+import { assertUpdated, isUniqueViolation } from '@/server/db/utils';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
-
-// PostgreSQL unique_violation
-const UNIQUE_VIOLATION = '23505';
-function isUniqueViolation(err: unknown): boolean {
-  return (
-    typeof err === 'object' &&
-    err !== null &&
-    'code' in err &&
-    (err as { code?: string }).code === UNIQUE_VIOLATION
-  );
-}
 
 const cancerTypeWriteSchema = z.object({
   name: z.string().min(1).max(256),
   slug: z.string().min(1).max(256),
   modelCount: z.string().max(64).optional(),
   formats: z.string().max(128).optional(),
-  coverImage: z.string().optional(),
+  coverImage: z.string().nullable().optional(),
   subpageTitle: z.string().max(512).optional(),
   modelCountDetail: z.string().optional(),
   validationMethods: z.string().optional(),
@@ -104,12 +94,13 @@ export const cancerTypesRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(cancerTypeWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
+      let result: { id: number }[];
       try {
-        await ctx.db
+        result = await ctx.db
           .update(cancerTypes)
           .set(data)
-          .where(eq(cancerTypes.id, id));
-        return { success: true };
+          .where(eq(cancerTypes.id, id))
+          .returning({ id: cancerTypes.id });
       } catch (err) {
         if (isUniqueViolation(err)) {
           throw new TRPCError({
@@ -119,22 +110,30 @@ export const cancerTypesRouter = createTRPCRouter({
         }
         throw err;
       }
+      assertUpdated(result);
+      return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.delete(cancerTypes).where(eq(cancerTypes.id, input.id));
+      const result = await ctx.db
+        .delete(cancerTypes)
+        .where(eq(cancerTypes.id, input.id))
+        .returning({ id: cancerTypes.id });
+      assertUpdated(result);
       return { success: true };
     }),
 
   adminTogglePublish: adminProcedure
     .input(z.object({ id: z.number().int(), isPublished: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db
+      const result = await ctx.db
         .update(cancerTypes)
         .set({ isPublished: input.isPublished })
-        .where(eq(cancerTypes.id, input.id));
+        .where(eq(cancerTypes.id, input.id))
+        .returning({ id: cancerTypes.id });
+      assertUpdated(result);
       return { success: true };
     }),
 

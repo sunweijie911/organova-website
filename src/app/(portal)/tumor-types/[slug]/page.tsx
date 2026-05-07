@@ -1,5 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { db } from '@/server/db';
 import { cancerTypes } from '@/server/db/schema';
 import TumorTypeDetailView from '.';
@@ -24,4 +25,17 @@ export async function generateMetadata({
   };
 }
 
-export default TumorTypeDetailView;
+export default async function TumorTypeDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const [row] = await db
+    .select({ id: cancerTypes.id })
+    .from(cancerTypes)
+    .where(and(eq(cancerTypes.slug, slug), eq(cancerTypes.isPublished, true)))
+    .limit(1);
+  if (!row) notFound();
+  return <TumorTypeDetailView />;
+}
