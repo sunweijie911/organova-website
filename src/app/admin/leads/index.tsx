@@ -16,112 +16,67 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { api } from '@/lib/trpc/react';
+import { EllipsisCell } from '@/components/EllipsisCell';
+import { exportToXlsx, type XlsxColumn } from '@/lib/export-xlsx';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
+import {
+  LEAD_SOURCE_LABELS,
+  LEAD_SOURCE_TAG_COLORS,
+  LEAD_SOURCES,
+  LEAD_STATUS_BADGE_COLORS,
+  LEAD_STATUS_LABELS,
+  LEAD_STATUSES,
+  type LeadSource,
+  type LeadStatus,
+  toSelectOptions,
+} from '@/types/enums';
 
 const { Text } = Typography;
 const { Search } = Input;
 
-type Lead = {
-  id: number;
-  source: string;
-  status: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  company: string | null;
-  jobTitle: string | null;
-  message: string | null;
-  cancerType: string | null;
-  drugModality: string | null;
-  studyType: string | null;
-  numCompounds: string | null;
-  turnaround: string | null;
-  phone: string | null;
-  additionalNotes: string | null;
-  createdAt: Date;
-};
+type Lead = RouterOutputs['leads']['adminList']['items'][number];
 
-const STATUS_COLOR: Record<string, string> = {
-  new: 'blue',
-  following: 'orange',
-  closed: 'default',
-};
+const LEAD_EXPORT_COLUMNS: XlsxColumn<Lead>[] = [
+  {
+    header: '来源',
+    accessor: (r) => LEAD_SOURCE_LABELS[r.source as LeadSource] ?? r.source,
+  },
+  {
+    header: '状态',
+    accessor: (r) => LEAD_STATUS_LABELS[r.status as LeadStatus] ?? r.status,
+  },
+  { header: '姓名', accessor: (r) => `${r.firstName} ${r.lastName}` },
+  { header: '邮箱', dataIndex: 'email' },
+  { header: '公司', dataIndex: 'company' },
+  { header: '职位', dataIndex: 'jobTitle' },
+  { header: '电话', dataIndex: 'phone' },
+  { header: '留言', dataIndex: 'message' },
+  { header: '癌种', dataIndex: 'cancerType' },
+  { header: '药物类型', dataIndex: 'drugModality' },
+  { header: '研究类型', dataIndex: 'studyType' },
+  { header: '化合物数量', dataIndex: 'numCompounds' },
+  { header: '交付时间', dataIndex: 'turnaround' },
+  { header: '备注', dataIndex: 'additionalNotes' },
+  {
+    header: '提交时间',
+    accessor: (r) => dayjs(r.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+  },
+];
 
-const STATUS_LABEL: Record<string, string> = {
-  new: '新建',
-  following: '跟进中',
-  closed: '已关闭',
-};
-
-function exportToCsv(rows: Lead[]) {
-  const headers = [
-    '来源',
-    '状态',
-    '姓名',
-    '邮箱',
-    '公司',
-    '职位',
-    '电话',
-    '留言',
-    '癌种',
-    '药物类型',
-    '研究类型',
-    '化合物数量',
-    '交付时间',
-    '备注',
-    '提交时间',
-  ];
-  const csvEscape = (v: string | null | undefined) =>
-    v ? `"${v.replace(/"/g, '""')}"` : '';
-
-  const lines = [
-    headers.join(','),
-    ...rows.map((r) =>
-      [
-        r.source === 'contact' ? 'Contact' : 'RFQ',
-        STATUS_LABEL[r.status] ?? r.status,
-        `${r.firstName} ${r.lastName}`,
-        r.email,
-        csvEscape(r.company),
-        csvEscape(r.jobTitle),
-        csvEscape(r.phone),
-        csvEscape(r.message),
-        csvEscape(r.cancerType),
-        csvEscape(r.drugModality),
-        csvEscape(r.studyType),
-        csvEscape(r.numCompounds),
-        csvEscape(r.turnaround),
-        csvEscape(r.additionalNotes),
-        dayjs(r.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      ].join(','),
-    ),
-  ];
-
-  const blob = new Blob([`﻿${lines.join('\n')}`], {
-    type: 'text/csv;charset=utf-8;',
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `leads_${dayjs().format('YYYYMMDD_HHmm')}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+const LEADS_PAGE_SIZE = 20;
 
 export default function AdminLeadsView() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [source, setSource] = useState<'contact' | 'rfq' | undefined>();
-  const [status, setStatus] = useState<
-    'new' | 'following' | 'closed' | undefined
-  >();
+  const [source, setSource] = useState<LeadSource | undefined>();
+  const [status, setStatus] = useState<LeadStatus | undefined>();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selected, setSelected] = useState<Lead | null>(null);
   const [exporting, setExporting] = useState(false);
 
   const { data, isLoading, refetch } = api.leads.adminList.useQuery({
     page,
-    pageSize: 20,
+    pageSize: LEADS_PAGE_SIZE,
     search: search || undefined,
     source,
     status,
@@ -153,7 +108,14 @@ export default function AdminLeadsView() {
     setExporting(true);
     try {
       const result = await exportQuery.refetch();
-      if (result.data) exportToCsv(result.data as Lead[]);
+      if (result.data) {
+        await exportToXlsx({
+          filename: 'leads',
+          sheetName: '用户咨询',
+          columns: LEAD_EXPORT_COLUMNS,
+          rows: result.data as Lead[],
+        });
+      }
     } catch {
       message.error('导出失败');
     } finally {
@@ -163,12 +125,18 @@ export default function AdminLeadsView() {
 
   const columns: ColumnsType<Lead> = [
     {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => (page - 1) * LEADS_PAGE_SIZE + idx + 1,
+    },
+    {
       title: '来源',
       dataIndex: 'source',
       width: 90,
       render: (v: string) => (
-        <Tag color={v === 'contact' ? 'purple' : 'geekblue'}>
-          {v === 'contact' ? 'Contact' : 'RFQ'}
+        <Tag color={LEAD_SOURCE_TAG_COLORS[v as LeadSource]}>
+          {LEAD_SOURCE_LABELS[v as LeadSource] ?? v}
         </Tag>
       ),
     },
@@ -177,14 +145,27 @@ export default function AdminLeadsView() {
       render: (_, r) => `${r.firstName} ${r.lastName}`,
       width: 140,
     },
-    { title: '公司', dataIndex: 'company', ellipsis: true },
-    { title: '邮箱', dataIndex: 'email', ellipsis: true },
+    {
+      title: '公司',
+      dataIndex: 'company',
+      ellipsis: { showTitle: false },
+      render: (v: string | null) => <EllipsisCell value={v} />,
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'email',
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
     {
       title: '状态',
       dataIndex: 'status',
       width: 90,
       render: (v: string) => (
-        <Badge color={STATUS_COLOR[v]} text={STATUS_LABEL[v]} />
+        <Badge
+          color={LEAD_STATUS_BADGE_COLORS[v as LeadStatus]}
+          text={LEAD_STATUS_LABELS[v as LeadStatus] ?? v}
+        />
       ),
     },
     {
@@ -235,10 +216,7 @@ export default function AdminLeadsView() {
               setSource(v);
               setPage(1);
             }}
-            options={[
-              { value: 'contact', label: 'Contact' },
-              { value: 'rfq', label: 'RFQ' },
-            ]}
+            options={toSelectOptions(LEAD_SOURCES, LEAD_SOURCE_LABELS)}
             placeholder="来源"
             style={{ width: 120 }}
           />
@@ -248,11 +226,7 @@ export default function AdminLeadsView() {
               setStatus(v);
               setPage(1);
             }}
-            options={[
-              { value: 'new', label: '新建' },
-              { value: 'following', label: '跟进中' },
-              { value: 'closed', label: '已关闭' },
-            ]}
+            options={toSelectOptions(LEAD_STATUSES, LEAD_STATUS_LABELS)}
             placeholder="状态"
             style={{ width: 120 }}
           />
@@ -260,7 +234,7 @@ export default function AdminLeadsView() {
         <Space>
           <Text type="secondary">共 {data?.total ?? 0} 条</Text>
           <Button loading={exporting} onClick={handleExport}>
-            导出 CSV
+            导出 Excel
           </Button>
         </Space>
       </div>
@@ -271,7 +245,7 @@ export default function AdminLeadsView() {
         loading={isLoading}
         pagination={{
           current: page,
-          pageSize: 20,
+          pageSize: LEADS_PAGE_SIZE,
           total: data?.total ?? 0,
           onChange: setPage,
           showSizeChanger: false,
@@ -286,17 +260,10 @@ export default function AdminLeadsView() {
           selected && (
             <Select
               loading={updateStatus.isPending}
-              onChange={(v) =>
-                updateStatus.mutate({
-                  id: selected.id,
-                  status: v as 'new' | 'following' | 'closed',
-                })
+              onChange={(v: LeadStatus) =>
+                updateStatus.mutate({ id: selected.id, status: v })
               }
-              options={[
-                { value: 'new', label: '新建' },
-                { value: 'following', label: '跟进中' },
-                { value: 'closed', label: '已关闭' },
-              ]}
+              options={toSelectOptions(LEAD_STATUSES, LEAD_STATUS_LABELS)}
               style={{ width: 120 }}
               value={selected.status}
             />
@@ -313,15 +280,19 @@ export default function AdminLeadsView() {
           <Descriptions bordered column={1} size="small">
             <Descriptions.Item label="来源">
               <Tag
-                color={selected.source === 'contact' ? 'purple' : 'geekblue'}
+                color={LEAD_SOURCE_TAG_COLORS[selected.source as LeadSource]}
               >
-                {selected.source === 'contact' ? 'Contact' : 'RFQ'}
+                {LEAD_SOURCE_LABELS[selected.source as LeadSource] ??
+                  selected.source}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="状态">
               <Badge
-                color={STATUS_COLOR[selected.status]}
-                text={STATUS_LABEL[selected.status]}
+                color={LEAD_STATUS_BADGE_COLORS[selected.status as LeadStatus]}
+                text={
+                  LEAD_STATUS_LABELS[selected.status as LeadStatus] ??
+                  selected.status
+                }
               />
             </Descriptions.Item>
             <Descriptions.Item label="姓名">

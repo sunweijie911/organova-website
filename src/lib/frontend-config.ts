@@ -47,6 +47,8 @@ export interface IStringSchema extends IBaseSchema {
     | 'i18n';
   accept?: string;
   enumType?: readonly string[];
+  /** image / file 类型上传到 /api/upload 时的 module，默认 'portal' */
+  uploadModule?: 'portal' | 'avatars' | 'misc';
   defaultValue?: string | Record<string, string>;
 }
 

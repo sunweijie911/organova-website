@@ -15,6 +15,7 @@ import { auth } from '@/server/better-auth';
 import { db } from '@/server/db';
 import { adminAuditLog } from '@/server/db/schema';
 import { isAdminEmail } from '@/server/services/admin-check';
+import { maybePurgeAuditLogs } from '@/server/services/audit-purge';
 
 /**
  * 1. CONTEXT
@@ -82,38 +83,13 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 
 /**
- * Middleware for timing procedure execution and adding an artificial delay in development.
- *
- * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
- * network latency that would occur in production but not in local development.
- */
-const timingMiddleware = t.middleware(async ({ next, path }) => {
-  const start = Date.now();
-
-  if (t._config.isDev) {
-    // 开发环境模拟网络延迟
-    const waitMs = Math.floor(Math.random() * 400) + 100;
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-  }
-
-  const result = await next();
-
-  if (t._config.isDev) {
-    const end = Date.now();
-    console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
-  }
-
-  return result;
-});
-
-/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure;
 
 /**
  * Protected (authenticated) procedure
@@ -123,19 +99,17 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' });
-    }
-    return next({
-      ctx: {
-        // 将 session 类型收窄为非空
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  return next({
+    ctx: {
+      // 将 session 类型收窄为非空
+      session: { ...ctx.session, user: ctx.session.user },
+    },
   });
+});
 
 /**
  * 对输入参数进行脱敏，移除密码、token 等敏感字段。
@@ -171,6 +145,8 @@ const auditMiddleware = t.middleware(
     const writeLog = (values: typeof adminAuditLog.$inferInsert) => {
       db.insert(adminAuditLog)
         .values(values)
+        // 写入日志成功后顺带触发懒清理（自带 24h 频次保护，失败已被 service 自吞）
+        .then(() => maybePurgeAuditLogs())
         .catch((err) => console.error('[AuditLog] 写入失败:', err));
     };
 

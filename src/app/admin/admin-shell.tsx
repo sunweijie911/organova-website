@@ -5,6 +5,7 @@ import {
   FileTextOutlined,
   FormOutlined,
   GlobalOutlined,
+  HistoryOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -15,30 +16,15 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Dropdown, Layout, Menu, Modal, theme } from 'antd';
+import { Button, Dropdown, Layout, Menu, Modal, Tooltip, theme } from 'antd';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFrontendConfig } from '@/hooks/useFrontendConfig';
 import { authClient } from '@/lib/auth-client';
+import { pickI18nText } from '@/lib/i18n-text';
 
 const SITE_NAME_FALLBACK = 'Organova';
-
-function pickSiteName(
-  title: string | Record<string, string> | undefined,
-): string {
-  if (title && typeof title === 'object') {
-    return (
-      title['zh-CN'] ||
-      title['en-US'] ||
-      Object.values(title)[0] ||
-      SITE_NAME_FALLBACK
-    );
-  }
-  return typeof title === 'string' && title.length > 0
-    ? title
-    : SITE_NAME_FALLBACK;
-}
 
 const { Sider, Content, Header } = Layout;
 
@@ -53,7 +39,12 @@ const MENU_ITEMS: MenuProps['items'] = [
   { key: '/admin/leads', icon: <FormOutlined />, label: '用户咨询' },
   { type: 'divider' },
   {
-    key: '/admin/setting/frontend',
+    key: '/admin/audit-logs',
+    icon: <HistoryOutlined />,
+    label: '审计日志',
+  },
+  {
+    key: '/admin/setting',
     icon: <SettingOutlined />,
     label: '门户设置',
   },
@@ -65,7 +56,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const { data: session } = authClient.useSession();
   const frontendConfig = useFrontendConfig();
-  const siteName = pickSiteName(frontendConfig.basic?.systemTitle);
+  const siteName = pickI18nText(
+    frontendConfig.basic?.systemTitle,
+    'zh-CN',
+    SITE_NAME_FALLBACK,
+  );
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -123,14 +118,27 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* 底部：返回前台 */}
-          {!collapsed && (
-            <div
-              style={{
-                flexShrink: 0,
-                padding: '12px 16px',
-                borderTop: '1px solid #f0f0f0',
-              }}
-            >
+          <div
+            style={{
+              flexShrink: 0,
+              padding: collapsed ? '12px 0' : '12px 16px',
+              borderTop: '1px solid #f0f0f0',
+              display: 'flex',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+            }}
+          >
+            {collapsed ? (
+              <Tooltip placement="right" title="返回前台">
+                <Link
+                  aria-label="返回前台"
+                  href="/"
+                  style={{ color: '#8c8c8c', fontSize: 16 }}
+                  target="_blank"
+                >
+                  <GlobalOutlined />
+                </Link>
+              </Tooltip>
+            ) : (
               <Link
                 className="flex items-center gap-2 text-gray-500 text-sm hover:text-gray-900"
                 href="/"
@@ -139,8 +147,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 <GlobalOutlined />
                 返回前台
               </Link>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </Sider>
 

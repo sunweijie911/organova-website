@@ -1,14 +1,11 @@
 'use client';
 
-import {
-  DeleteOutlined,
-  PlusOutlined,
-  UploadOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { json } from '@codemirror/lang-json';
 import { oneDark } from '@codemirror/theme-one-dark';
 import CodeMirror from '@uiw/react-codemirror';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -16,10 +13,8 @@ import {
   ColorPicker,
   DatePicker,
   Form,
-  Image,
   Input,
   InputNumber,
-  message,
   Radio,
   Rate,
   Row,
@@ -30,11 +25,10 @@ import {
   Switch,
   TimePicker,
   theme,
-  Upload,
-  type UploadFile,
 } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ImageUploader } from '@/components/ImageUploader';
 import {
   extractDefaults,
   type IObjectSchema,
@@ -46,7 +40,6 @@ import { LocaleList } from '@/types/system';
 
 // ==================== 常量 ====================
 
-const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
 const localeKeys = Object.keys(LocaleList).filter((k) =>
   Number.isNaN(Number(k)),
 ) as LocaleKey[];
@@ -87,55 +80,6 @@ function I18nField({
         value={value[activeLang] ?? ''}
       />
     </Space.Compact>
-  );
-}
-
-function ImagePreviewUpload({
-  accept,
-  fileList,
-  disabled,
-  hasValue,
-  onRemove,
-  onUpload,
-}: {
-  accept: string;
-  fileList: UploadFile[];
-  disabled?: boolean;
-  hasValue: boolean;
-  onRemove: () => void;
-  onUpload: (file: File) => void;
-}) {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  return (
-    <>
-      <Upload
-        accept={accept}
-        beforeUpload={(file) => {
-          onUpload(file);
-          return false;
-        }}
-        disabled={disabled}
-        fileList={fileList}
-        listType="picture-card"
-        maxCount={1}
-        onPreview={() => setPreviewOpen(true)}
-        onRemove={onRemove}
-      >
-        {!hasValue && (
-          <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>选择图片</div>
-          </div>
-        )}
-      </Upload>
-      {hasValue && (
-        <Image
-          preview={{ open: previewOpen, onOpenChange: setPreviewOpen }}
-          src={fileList[0]?.url}
-          style={{ display: 'none' }}
-        />
-      )}
-    </>
   );
 }
 
@@ -236,76 +180,27 @@ function SchemaFields({
             );
           }
           if (fieldSchema.inputType === 'image') {
-            const imageFileList: UploadFile[] = fieldValue
-              ? [{ uid: '-1', name: 'image', status: 'done', url: fieldValue }]
-              : [];
+            const moduleName =
+              (fieldSchema as IStringSchema).uploadModule ?? 'portal';
             return (
-              <ImagePreviewUpload
-                accept={(fieldSchema as IStringSchema).accept || 'image/*'}
-                disabled={disabled}
-                fileList={imageFileList}
-                hasValue={!!fieldValue}
-                onRemove={() => onFieldChange('')}
-                onUpload={(file) => {
-                  if (file.size > MAX_UPLOAD_SIZE) {
-                    void message.error(
-                      `文件大小不能超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB`,
-                    );
-                    return;
-                  }
-                  const reader = new FileReader();
-                  reader.onload = (e) =>
-                    onFieldChange(e.target?.result as string);
-                  reader.readAsDataURL(file);
-                }}
+              <ImageUploader
+                accept="image"
+                module={moduleName}
+                onChange={(url) => onFieldChange(url ?? '')}
+                value={fieldValue}
               />
             );
           }
           if (fieldSchema.inputType === 'file') {
+            const moduleName =
+              (fieldSchema as IStringSchema).uploadModule ?? 'portal';
             return (
-              <div>
-                {fieldValue && (
-                  <Space style={{ marginBottom: 8 }}>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: 'var(--ant-color-text-secondary)',
-                      }}
-                    >
-                      已上传文件
-                    </span>
-                    <Button
-                      danger
-                      disabled={disabled}
-                      icon={<DeleteOutlined />}
-                      onClick={() => onFieldChange('')}
-                      size="small"
-                    />
-                  </Space>
-                )}
-                <Upload
-                  accept={(fieldSchema as IStringSchema).accept}
-                  beforeUpload={(file) => {
-                    if (file.size > MAX_UPLOAD_SIZE) {
-                      void message.error(
-                        `文件大小不能超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB`,
-                      );
-                      return false;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = (e) =>
-                      onFieldChange(e.target?.result as string);
-                    reader.readAsDataURL(file);
-                    return false;
-                  }}
-                  disabled={disabled}
-                  showUploadList={false}
-                >
-                  <Button disabled={disabled} icon={<UploadOutlined />}>
-                    选择文件
-                  </Button>
-                </Upload>
-              </div>
+              <ImageUploader
+                accept="pdf"
+                module={moduleName}
+                onChange={(url) => onFieldChange(url ?? '')}
+                value={fieldValue}
+              />
             );
           }
           if (fieldSchema.inputType === 'url') {
@@ -684,99 +579,105 @@ function SchemaForm({
 
 // ==================== 主组件 ====================
 
-type EditMode = 'visual' | 'code';
+export type EditMode = 'visual' | 'code';
 
 interface ConfigEditorProps {
   schema: Record<string, JsonSchema>;
   value: Record<string, any>;
   onChange: (value: Record<string, any>) => void;
+  /** 受控编辑模式 */
+  mode: EditMode;
+  /** JSON 错误提示通知父组件，用于禁用保存按钮 */
+  onValidityChange?: (error: string | null) => void;
 }
 
 export default function ConfigEditor({
   schema,
   value,
   onChange,
+  mode,
+  onValidityChange,
 }: ConfigEditorProps) {
   const { token } = theme.useToken();
   const isDark =
     token.colorBgBase === '#141414' || token.colorBgBase === '#000';
-  const [editMode, setEditMode] = useState<EditMode>('visual');
-  const [jsonText, setJsonText] = useState('');
+  const [jsonText, setJsonText] = useState(() =>
+    JSON.stringify(value, null, 2),
+  );
+  const [jsonError, setJsonError] = useState<string | null>(null);
   const skipSyncRef = useRef(false);
 
+  // value 来自父组件 → 同步到 jsonText（跳过自身编辑触发的回流）
   useEffect(() => {
     if (skipSyncRef.current) {
       skipSyncRef.current = false;
       return;
     }
     setJsonText(JSON.stringify(value, null, 2));
-  }, [value]);
+    setJsonError(null);
+    onValidityChange?.(null);
+  }, [value, onValidityChange]);
+
+  // 切到 code 时用最新 value 重置文本，清掉残留错误
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 仅响应 mode 切换；value 变化由上方 effect 单独处理
+  useEffect(() => {
+    if (mode === 'code') {
+      setJsonText(JSON.stringify(value, null, 2));
+      setJsonError(null);
+      onValidityChange?.(null);
+    }
+  }, [mode]);
 
   const handleCodeChange = useCallback(
     (text: string) => {
       setJsonText(text);
       try {
         const parsed = JSON.parse(text);
-        if (typeof parsed === 'object' && parsed !== null) {
-          skipSyncRef.current = true;
-          onChange(parsed);
-        }
-      } catch {
-        // JSON 不合法时不触发更新
-      }
-    },
-    [onChange],
-  );
-
-  const handleModeChange = useCallback(
-    (mode: EditMode) => {
-      if (editMode === 'code' && mode === 'visual') {
-        try {
-          JSON.parse(jsonText);
-        } catch {
-          void message.error('请先修正 JSON 格式错误');
+        if (typeof parsed !== 'object' || parsed === null) {
+          const msg = '配置必须是 JSON 对象';
+          setJsonError(msg);
+          onValidityChange?.(msg);
           return;
         }
+        setJsonError(null);
+        onValidityChange?.(null);
+        skipSyncRef.current = true;
+        onChange(parsed);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'JSON 格式错误';
+        setJsonError(msg);
+        onValidityChange?.(msg);
       }
-      if (mode === 'code') setJsonText(JSON.stringify(value, null, 2));
-      setEditMode(mode);
     },
-    [editMode, jsonText, value],
+    [onChange, onValidityChange],
   );
 
   const codeExtensions = useMemo(() => [json()], []);
 
   return (
     <div>
-      <div
-        style={{
-          marginBottom: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Radio.Group
-          buttonStyle="solid"
-          onChange={(e) => handleModeChange(e.target.value as EditMode)}
-          size="small"
-          value={editMode}
-        >
-          <Radio.Button value="visual">可视模式</Radio.Button>
-          <Radio.Button value="code">编辑模式</Radio.Button>
-        </Radio.Group>
-      </div>
-      {editMode === 'visual' ? (
+      {mode === 'visual' ? (
         <SchemaForm onChange={onChange} schema={schema} value={value} />
       ) : (
-        <CodeMirror
-          extensions={codeExtensions}
-          height="calc(100vh - 320px)"
-          onChange={handleCodeChange}
-          style={{ borderRadius: 4, overflow: 'hidden' }}
-          theme={isDark ? oneDark : undefined}
-          value={jsonText}
-        />
+        <>
+          {jsonError && (
+            <Alert
+              description={jsonError}
+              message="JSON 格式错误"
+              showIcon
+              style={{ marginBottom: 12 }}
+              type="error"
+            />
+          )}
+          <CodeMirror
+            extensions={codeExtensions}
+            height="calc(100vh - 320px)"
+            onChange={handleCodeChange}
+            style={{ borderRadius: 4, overflow: 'hidden' }}
+            theme={isDark ? oneDark : undefined}
+            value={jsonText}
+          />
+        </>
       )}
     </div>
   );

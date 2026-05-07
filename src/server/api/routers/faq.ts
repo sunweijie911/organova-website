@@ -144,14 +144,14 @@ export const faqRouter = createTRPCRouter({
       z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
     )
     .mutation(async ({ input, ctx }) => {
-      await Promise.all(
-        input.map(({ id, sortOrder }) =>
-          ctx.db
+      await ctx.db.transaction(async (tx) => {
+        for (const { id, sortOrder } of input) {
+          await tx
             .update(faqCategories)
             .set({ sortOrder })
-            .where(eq(faqCategories.id, id)),
-        ),
-      );
+            .where(eq(faqCategories.id, id));
+        }
+      });
       return { success: true };
     }),
 
@@ -160,11 +160,14 @@ export const faqRouter = createTRPCRouter({
       z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
     )
     .mutation(async ({ input, ctx }) => {
-      await Promise.all(
-        input.map(({ id, sortOrder }) =>
-          ctx.db.update(faqItems).set({ sortOrder }).where(eq(faqItems.id, id)),
-        ),
-      );
+      await ctx.db.transaction(async (tx) => {
+        for (const { id, sortOrder } of input) {
+          await tx
+            .update(faqItems)
+            .set({ sortOrder })
+            .where(eq(faqItems.id, id));
+        }
+      });
       return { success: true };
     }),
 });

@@ -5,8 +5,9 @@ import { Toaster } from 'sonner';
 import '@unocss/reset/tailwind.css';
 import '@/styles/globals.css';
 import { DebugPanel } from '@/components/DebugPanel';
+import { pickI18nText } from '@/lib/i18n-text';
 import { TRPCReactProvider } from '@/lib/trpc/react';
-import { getSiteName } from '@/server/services/config';
+import { getFrontendConfig, getPortalTitle } from '@/server/services/config';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -25,27 +26,38 @@ const robotoSerif = Roboto_Serif({
 });
 
 const SITE_URL = process.env.BETTER_AUTH_URL ?? 'http://localhost:3000';
-const SITE_DESCRIPTION =
+const FALLBACK_DESCRIPTION =
   'Patient-derived organoid (PDO) platform enabling precision oncology drug discovery, efficacy testing, and translational research.';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const siteName = await getSiteName();
+  const [siteName, cfg] = await Promise.all([
+    getPortalTitle('en-US'),
+    getFrontendConfig(),
+  ]);
+  const description =
+    pickI18nText(cfg.seo?.defaultDescription, 'en-US', '') ||
+    FALLBACK_DESCRIPTION;
+  const keywords = Array.isArray(cfg.seo?.keywords) ? cfg.seo.keywords : [];
+  const ogImage = cfg.seo?.ogImage || cfg.basic?.logoImage || '';
   return {
     metadataBase: new URL(SITE_URL),
     title: {
       default: siteName,
       template: `%s | ${siteName}`,
     },
-    description: SITE_DESCRIPTION,
+    description,
+    keywords: keywords.length > 0 ? keywords : undefined,
     icons: [{ rel: 'icon', url: '/favicon.ico' }],
     openGraph: {
       type: 'website',
       siteName,
       locale: 'en_US',
-      description: SITE_DESCRIPTION,
+      description,
+      images: ogImage ? [{ url: ogImage }] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }

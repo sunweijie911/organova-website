@@ -12,7 +12,7 @@ export const pageRouter = createTRPCRouter({
       .from(systemConfig)
       .where(eq(systemConfig.key, FRONTEND_CONFIG_KEY))
       .limit(1);
-    return (row[0]?.value ?? {}) as Record<string, any>;
+    return (row[0]?.value ?? {}) as Record<string, unknown>;
   }),
 
   saveFrontendConfig: adminProcedure

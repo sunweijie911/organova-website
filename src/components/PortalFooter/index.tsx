@@ -1,37 +1,77 @@
+import { getFrontendConfig } from '@/server/services/config';
 import styles from './index.module.scss';
 
-const FOOTER = {
-  tagline: 'Decoding Cancer',
-  address: 'OrgaNova TRiCBiO\nPhiladelphia,\nPA & Nanjing,\nChina',
-  social: [
-    { label: 'LinkedIn', url: '' },
-    { label: 'X', url: '' },
-    { label: 'YouTube', url: '' },
-    { label: 'info@tricbio.com', url: 'mailto:info@tricbio.com' },
-  ],
-  copyright: 'OrgaNova © 2026. All Rights Reserved.',
-};
+interface SocialLink {
+  label: string;
+  url: string;
+}
 
-export function PortalFooter() {
+function buildSocialLinks(
+  social: Record<string, string> | undefined,
+): SocialLink[] {
+  if (!social) return [];
+  const items: SocialLink[] = [];
+  if (social.linkedin) items.push({ label: 'LinkedIn', url: social.linkedin });
+  if (social.x) items.push({ label: 'X', url: social.x });
+  if (social.youtube) items.push({ label: 'YouTube', url: social.youtube });
+  if (social.weibo) items.push({ label: '微博', url: social.weibo });
+  if (social.email)
+    items.push({ label: social.email, url: `mailto:${social.email}` });
+  return items;
+}
+
+export async function PortalFooter() {
+  const cfg = await getFrontendConfig();
+  const footer = cfg.footer ?? {};
+  const tagline = footer.tagline || 'Decoding Cancer';
+  const address =
+    footer.address || 'OrgaNova TRiCBiO\nPhiladelphia,\nPA & Nanjing,\nChina';
+  const copyright = footer.copyright || 'OrgaNova © 2026. All Rights Reserved.';
+  const icp = footer.icp || '';
+  const icpLink = footer.icpLink || 'https://beian.miit.gov.cn/';
+
+  const socialLinks = buildSocialLinks(
+    cfg.social as Record<string, string> | undefined,
+  );
+
   return (
     <footer className={styles.footer} id="site-footer">
-      <h2 className={styles.tagline}>{FOOTER.tagline}</h2>
+      <h2 className={styles.tagline}>{tagline}</h2>
       <div className={styles.right}>
         <div className={styles.info}>
-          <div className={styles.address}>{FOOTER.address}</div>
-          <div className={styles.social}>
-            {FOOTER.social.map((s) => (
+          <div className={styles.address}>{address}</div>
+          {socialLinks.length > 0 && (
+            <div className={styles.social}>
+              {socialLinks.map((s) => (
+                <a
+                  className={styles.socialLink}
+                  href={s.url}
+                  key={s.label}
+                  rel="noreferrer"
+                  target={s.url.startsWith('mailto:') ? undefined : '_blank'}
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+        <p className={styles.copyright}>
+          {copyright}
+          {icp && (
+            <>
+              {' · '}
               <a
                 className={styles.socialLink}
-                href={s.url || '#'}
-                key={s.label}
+                href={icpLink}
+                rel="noreferrer"
+                target="_blank"
               >
-                {s.label}
+                {icp}
               </a>
-            ))}
-          </div>
-        </div>
-        <p className={styles.copyright}>{FOOTER.copyright}</p>
+            </>
+          )}
+        </p>
       </div>
     </footer>
   );

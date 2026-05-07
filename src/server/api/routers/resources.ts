@@ -2,13 +2,14 @@ import { TRPCError } from '@trpc/server';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { resources } from '@/server/db/schema';
+import { RESOURCE_CTA_TYPES } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const resourceWriteSchema = z.object({
   name: z.string().min(1).max(256),
   description: z.string().optional(),
   ctaLabel: z.string().max(128).optional(),
-  ctaType: z.enum(['download', 'link', 'contact']),
+  ctaType: z.enum(RESOURCE_CTA_TYPES),
   fileUrl: z.string().optional(),
   externalUrl: z.string().optional(),
   isVisible: z.boolean(),
@@ -64,14 +65,14 @@ export const resourcesRouter = createTRPCRouter({
       z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
     )
     .mutation(async ({ input, ctx }) => {
-      await Promise.all(
-        input.map(({ id, sortOrder }) =>
-          ctx.db
+      await ctx.db.transaction(async (tx) => {
+        for (const { id, sortOrder } of input) {
+          await tx
             .update(resources)
             .set({ sortOrder })
-            .where(eq(resources.id, id)),
-        ),
-      );
+            .where(eq(resources.id, id));
+        }
+      });
       return { success: true };
     }),
 });

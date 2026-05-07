@@ -13,19 +13,10 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
-import { api } from '@/lib/trpc/react';
+import { EllipsisCell } from '@/components/EllipsisCell';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
 
-type Pub = {
-  id: number;
-  year: number;
-  journal: string;
-  title: string;
-  authors: string;
-  citationCount: string | null;
-  doi: string | null;
-  sortOrder: number;
-  isVisible: boolean;
-};
+type Pub = RouterOutputs['publications']['adminList'][number];
 
 export default function AdminPublicationsView() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -76,7 +67,6 @@ export default function AdminPublicationsView() {
     form.resetFields();
     form.setFieldsValue({
       year: new Date().getFullYear(),
-      isVisible: true,
       sortOrder: 0,
     });
     setModalOpen(true);
@@ -89,12 +79,13 @@ export default function AdminPublicationsView() {
   };
 
   const handleSubmit = (vals: Record<string, unknown>) => {
+    const payload = { ...vals, isVisible: editing?.isVisible ?? true };
     if (editing) {
-      update.mutate({ id: editing.id, ...vals } as Parameters<
+      update.mutate({ id: editing.id, ...payload } as Parameters<
         typeof update.mutate
       >[0]);
     } else {
-      create.mutate(vals as Parameters<typeof create.mutate>[0]);
+      create.mutate(payload as Parameters<typeof create.mutate>[0]);
     }
   };
 
@@ -108,10 +99,33 @@ export default function AdminPublicationsView() {
   };
 
   const columns: ColumnsType<Pub> = [
+    {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => idx + 1,
+    },
     { title: '年份', dataIndex: 'year', width: 80 },
-    { title: '期刊', dataIndex: 'journal', width: 180, ellipsis: true },
-    { title: '标题', dataIndex: 'title', ellipsis: true },
-    { title: '作者', dataIndex: 'authors', ellipsis: true, width: 200 },
+    {
+      title: '期刊',
+      dataIndex: 'journal',
+      width: 180,
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
+    {
+      title: '标题',
+      dataIndex: 'title',
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
+    {
+      title: '作者',
+      dataIndex: 'authors',
+      width: 200,
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
     { title: '引用', dataIndex: 'citationCount', width: 80 },
     {
       title: '显示',
@@ -211,9 +225,6 @@ export default function AdminPublicationsView() {
           </Form.Item>
           <Form.Item label="DOI / 外部链接" name="doi">
             <Input />
-          </Form.Item>
-          <Form.Item label="显示" name="isVisible" valuePropName="checked">
-            <Switch />
           </Form.Item>
           <Form.Item>
             <Button

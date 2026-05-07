@@ -50,7 +50,7 @@ export async function sendLeadNotification(lead: {
 }): Promise<void> {
   const sourceLabel =
     lead.source === 'rfq' ? 'RFQ (询价)' : 'Contact (联系我们)';
-  if (process.env.NODE_ENV !== 'production') {
+  if (env.NODE_ENV !== 'production') {
     console.log(
       `[LEAD] 新线索 [${sourceLabel}] ${lead.firstName} ${lead.lastName} <${lead.email}>`,
     );
@@ -81,7 +81,7 @@ export async function sendLeadNotification(lead: {
 }
 
 export async function sendEmailOtp(email: string, code: string): Promise<void> {
-  if (process.env.NODE_ENV !== 'production') {
+  if (env.NODE_ENV !== 'production') {
     console.log(`[EMAIL OTP] 邮箱: ${email} | 验证码: ${code}`);
     return;
   }

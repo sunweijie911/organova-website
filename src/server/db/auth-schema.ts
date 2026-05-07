@@ -11,9 +11,6 @@ export const user = pgTable('user', {
   email: text('email').unique(),
   emailVerified: boolean('email_verified').default(false),
   image: text('image'),
-  // Added by better-auth phoneNumber plugin
-  phoneNumber: text('phone_number').unique(),
-  phoneNumberVerified: boolean('phone_number_verified').$defaultFn(() => false),
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),

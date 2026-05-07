@@ -1,32 +1,14 @@
 'use client';
 
-import { Button, Form, Input, Modal, message, Space, Switch, Tag } from 'antd';
+import { Button, Form, Input, Modal, message, Space, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
-import { api } from '@/lib/trpc/react';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
 
-type CancerType = {
-  id: number;
-  name: string;
-  slug: string;
-  modelCount: string | null;
-  formats: string | null;
-  coverImage: string | null;
-  subpageTitle: string | null;
-  modelCountDetail: string | null;
-  validationMethods: string | null;
-  validatedApplications: string | null;
-  clinicalCorrelation: string | null;
-  cta1Label: string | null;
-  cta1Url: string | null;
-  cta2Label: string | null;
-  cta2Url: string | null;
-  sortOrder: number;
-  isPublished: boolean;
-};
+type CancerType = RouterOutputs['cancerTypes']['adminList'][number];
 
 export default function AdminCancerTypesView() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -84,7 +66,7 @@ export default function AdminCancerTypesView() {
     setCoverImage('');
     setValidatedApps('');
     form.resetFields();
-    form.setFieldsValue({ isPublished: false, sortOrder: data?.length ?? 0 });
+    form.setFieldsValue({ sortOrder: data?.length ?? 0 });
     setModalOpen(true);
   };
 
@@ -101,6 +83,8 @@ export default function AdminCancerTypesView() {
       ...vals,
       coverImage: coverImage || undefined,
       validatedApplications: validatedApps,
+      // 编辑时保留原有上线状态；新增时默认为草稿
+      isPublished: editing?.isPublished ?? false,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
@@ -112,6 +96,12 @@ export default function AdminCancerTypesView() {
   };
 
   const columns: ColumnsType<CancerType> = [
+    {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => idx + 1,
+    },
     {
       title: '封面',
       dataIndex: 'coverImage',
@@ -221,16 +211,7 @@ export default function AdminCancerTypesView() {
 
       <Modal
         destroyOnHidden
-        footer={
-          <Button
-            block
-            loading={create.isPending || update.isPending}
-            onClick={() => form.submit()}
-            type="primary"
-          >
-            保存
-          </Button>
-        }
+        footer={null}
         onCancel={() => setModalOpen(false)}
         open={modalOpen}
         styles={{
@@ -304,8 +285,15 @@ export default function AdminCancerTypesView() {
           <Form.Item label="CTA 2 链接" name="cta2Url">
             <Input placeholder="/request-quote" />
           </Form.Item>
-          <Form.Item label="上线" name="isPublished" valuePropName="checked">
-            <Switch />
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button
+              block
+              htmlType="submit"
+              loading={create.isPending || update.isPending}
+              type="primary"
+            >
+              保存
+            </Button>
           </Form.Item>
         </Form>
       </Modal>

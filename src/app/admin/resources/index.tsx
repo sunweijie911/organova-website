@@ -9,31 +9,20 @@ import {
   Select,
   Space,
   Switch,
-  Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
+import { EllipsisCell } from '@/components/EllipsisCell';
 import { ImageUploader } from '@/components/ImageUploader';
-import { api } from '@/lib/trpc/react';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
+import {
+  RESOURCE_CTA_TYPE_LABELS,
+  RESOURCE_CTA_TYPES,
+  toSelectOptions,
+} from '@/types/enums';
 
-type Resource = {
-  id: number;
-  name: string;
-  description: string | null;
-  ctaLabel: string | null;
-  ctaType: string;
-  fileUrl: string | null;
-  externalUrl: string | null;
-  isVisible: boolean;
-  sortOrder: number;
-};
-
-const CTA_TYPE_LABELS: Record<string, string> = {
-  download: '下载 PDF',
-  link: '外部链接',
-  contact: '联系我们',
-};
+type Resource = RouterOutputs['resources']['adminList'][number];
 
 export default function AdminResourcesView() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +30,7 @@ export default function AdminResourcesView() {
   const [fileUrl, setFileUrl] = useState('');
   const [form] = Form.useForm();
 
-  const { data, refetch } = api.resources.adminList.useQuery();
+  const { data, isLoading, refetch } = api.resources.adminList.useQuery();
 
   const create = api.resources.adminCreate.useMutation({
     onSuccess: () => {
@@ -85,7 +74,6 @@ export default function AdminResourcesView() {
     setFileUrl('');
     form.resetFields();
     form.setFieldsValue({
-      isVisible: true,
       ctaType: 'download',
       sortOrder: data?.length ?? 0,
     });
@@ -100,7 +88,11 @@ export default function AdminResourcesView() {
   };
 
   const handleSubmit = (vals: Record<string, unknown>) => {
-    const payload = { ...vals, fileUrl: fileUrl || undefined };
+    const payload = {
+      ...vals,
+      fileUrl: fileUrl || undefined,
+      isVisible: editing?.isVisible ?? true,
+    };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
         typeof update.mutate
@@ -111,19 +103,43 @@ export default function AdminResourcesView() {
   };
 
   const columns: ColumnsType<Resource> = [
-    { title: '资源名称', dataIndex: 'name', ellipsis: true },
+    {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => idx + 1,
+    },
+    {
+      title: '资源名称',
+      dataIndex: 'name',
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
     {
       title: '类型',
       dataIndex: 'ctaType',
       width: 100,
-      render: (v: string) => CTA_TYPE_LABELS[v] ?? v,
+      render: (v: Resource['ctaType']) => RESOURCE_CTA_TYPE_LABELS[v] ?? v,
     },
     {
       title: '显示',
       dataIndex: 'isVisible',
       width: 70,
-      render: (v: boolean) => (
-        <Tag color={v ? 'success' : 'default'}>{v ? '显示' : '隐藏'}</Tag>
+      render: (v: boolean, r: Resource) => (
+        <Switch
+          checked={v}
+          onChange={(checked) =>
+            update.mutate({
+              ...r,
+              isVisible: checked,
+              description: r.description ?? undefined,
+              ctaLabel: r.ctaLabel ?? undefined,
+              fileUrl: r.fileUrl ?? undefined,
+              externalUrl: r.externalUrl ?? undefined,
+            })
+          }
+          size="small"
+        />
       ),
     },
     {
@@ -171,6 +187,7 @@ export default function AdminResourcesView() {
       <DraggableTable
         columns={columns}
         dataSource={data ?? []}
+        loading={isLoading}
         onOrderChange={handleOrderChange}
         pagination={false}
         size="middle"
@@ -205,11 +222,10 @@ export default function AdminResourcesView() {
             rules={[{ required: true }]}
           >
             <Select
-              options={[
-                { value: 'download', label: '下载 PDF' },
-                { value: 'link', label: '外部链接' },
-                { value: 'contact', label: '联系我们' },
-              ]}
+              options={toSelectOptions(
+                RESOURCE_CTA_TYPES,
+                RESOURCE_CTA_TYPE_LABELS,
+              )}
             />
           </Form.Item>
           <Form.Item
@@ -220,6 +236,7 @@ export default function AdminResourcesView() {
               getFieldValue('ctaType') === 'download' ? (
                 <Form.Item label="PDF 文件">
                   <ImageUploader
+                    accept="pdf"
                     module="portal"
                     onChange={(url) => setFileUrl(url ?? '')}
                     placeholder="点击上传 PDF 文件"
@@ -232,9 +249,6 @@ export default function AdminResourcesView() {
                 </Form.Item>
               ) : null
             }
-          </Form.Item>
-          <Form.Item label="显示" name="isVisible" valuePropName="checked">
-            <Switch />
           </Form.Item>
           <Form.Item>
             <Button

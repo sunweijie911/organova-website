@@ -136,7 +136,7 @@ export function ContactForm() {
       </ArrowButton>
       {submit.isError && (
         <p className={styles.errorMsg}>
-          Something went wrong. Please try again.
+          {submit.error?.message || 'Something went wrong. Please try again.'}
         </p>
       )}
     </form>

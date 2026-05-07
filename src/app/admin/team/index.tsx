@@ -15,21 +15,19 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
+import { EllipsisCell } from '@/components/EllipsisCell';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
-import { api } from '@/lib/trpc/react';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
+import {
+  TEAM_GROUP_LABELS,
+  TEAM_GROUP_SHORT_LABELS,
+  TEAM_GROUP_TAG_COLORS,
+  TEAM_GROUPS,
+  toSelectOptions,
+} from '@/types/enums';
 
-type Member = {
-  id: number;
-  photo: string | null;
-  name: string;
-  title: string;
-  shortBio: string | null;
-  fullBio: string | null;
-  group: string;
-  sortOrder: number;
-  isVisible: boolean;
-};
+type Member = RouterOutputs['team']['adminList'][number];
 
 export default function AdminTeamView() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -82,7 +80,7 @@ export default function AdminTeamView() {
     setPhoto('');
     setFullBio('');
     form.resetFields();
-    form.setFieldsValue({ group: 'tricbio', isVisible: true, sortOrder: 0 });
+    form.setFieldsValue({ group: 'tricbio', sortOrder: 0 });
     setModalOpen(true);
   };
 
@@ -95,7 +93,12 @@ export default function AdminTeamView() {
   };
 
   const handleSubmit = (vals: Record<string, unknown>) => {
-    const payload = { ...vals, photo: photo || undefined, fullBio };
+    const payload = {
+      ...vals,
+      photo: photo || undefined,
+      fullBio,
+      isVisible: editing?.isVisible ?? true,
+    };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
         typeof update.mutate
@@ -107,6 +110,12 @@ export default function AdminTeamView() {
 
   const columns: ColumnsType<Member> = [
     {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => idx + 1,
+    },
+    {
       title: '头像',
       dataIndex: 'photo',
       width: 56,
@@ -117,15 +126,18 @@ export default function AdminTeamView() {
       ),
     },
     { title: '姓名', dataIndex: 'name', width: 180 },
-    { title: '职位', dataIndex: 'title', ellipsis: true },
+    {
+      title: '职位',
+      dataIndex: 'title',
+      ellipsis: { showTitle: false },
+      render: (v: string | null) => <EllipsisCell value={v} />,
+    },
     {
       title: '团队',
       dataIndex: 'group',
       width: 100,
-      render: (v: string) => (
-        <Tag color={v === 'tricbio' ? 'purple' : 'blue'}>
-          {v === 'tricbio' ? 'TRiCBiO' : 'OrgaNova'}
-        </Tag>
+      render: (v: Member['group']) => (
+        <Tag color={TEAM_GROUP_TAG_COLORS[v]}>{TEAM_GROUP_SHORT_LABELS[v]}</Tag>
       ),
     },
     {
@@ -138,7 +150,6 @@ export default function AdminTeamView() {
           onChange={(checked) =>
             update.mutate({
               ...r,
-              group: r.group as 'tricbio' | 'organova',
               isVisible: checked,
               photo: r.photo ?? undefined,
               shortBio: r.shortBio ?? undefined,
@@ -242,15 +253,7 @@ export default function AdminTeamView() {
             />
           </Form.Item>
           <Form.Item label="所属团队" name="group" rules={[{ required: true }]}>
-            <Select
-              options={[
-                { value: 'tricbio', label: 'TRiCBiO (Nanjing/Shanghai)' },
-                { value: 'organova', label: 'OrgaNova (Philadelphia)' },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item label="显示" name="isVisible" valuePropName="checked">
-            <Switch />
+            <Select options={toSelectOptions(TEAM_GROUPS, TEAM_GROUP_LABELS)} />
           </Form.Item>
           <Form.Item>
             <Button

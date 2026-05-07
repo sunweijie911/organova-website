@@ -11,6 +11,10 @@ import { auth } from '@/server/better-auth';
 import { user } from '@/server/db/auth-schema';
 import { adminAuditLog, systemConfig } from '@/server/db/schema';
 import { isAdminEmail } from '@/server/services/admin-check';
+import {
+  getAuditPurgeConfig,
+  setAuditPurgeConfig,
+} from '@/server/services/audit-purge';
 
 // 构建审计日志查询的 where 条件（listAuditLogs 和 exportAuditLogs 共用）
 function buildAuditLogWhere(input: {
@@ -183,6 +187,23 @@ export const adminRouter = createTRPCRouter({
       earliestDate: minResult[0]?.earliest?.toISOString() ?? null,
     };
   }),
+
+  // 自动清理配置（默认开启，保留 90 天）
+  getAuditPurgeConfig: adminProcedure.query(async () => {
+    return getAuditPurgeConfig();
+  }),
+
+  setAuditPurgeConfig: adminProcedure
+    .input(
+      z.object({
+        enabled: z.boolean(),
+        retentionDays: z.number().int().min(1).max(3650),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await setAuditPurgeConfig(input);
+      return { success: true };
+    }),
 
   // 手动清理指定日期之前的日志
   purgeAuditLogs: adminProcedure

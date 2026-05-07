@@ -5,6 +5,7 @@ import { leads } from '@/server/db/schema';
 import { sendLeadNotification } from '@/server/services/email';
 import { getClientIp } from '@/server/services/get-client-ip';
 import { contactLimiter } from '@/server/services/rate-limiter';
+import { LEAD_SOURCES, LEAD_STATUSES } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const contactSubmitSchema = z.object({
@@ -17,11 +18,11 @@ const contactSubmitSchema = z.object({
 });
 
 const rfqSubmitSchema = z.object({
-  cancerType: z.string().max(256),
-  drugModality: z.string().max(128),
-  studyType: z.string().max(128),
-  numCompounds: z.string().max(32),
-  turnaround: z.string().max(64),
+  cancerType: z.string().trim().min(1).max(256),
+  drugModality: z.string().trim().min(1).max(128),
+  studyType: z.string().trim().min(1).max(128),
+  numCompounds: z.string().trim().min(1).max(32),
+  turnaround: z.string().trim().min(1).max(64),
   firstName: z.string().min(1).max(128),
   lastName: z.string().min(1).max(128),
   email: z.string().email().max(512),
@@ -33,8 +34,8 @@ const rfqSubmitSchema = z.object({
 
 function buildWhere(input: {
   search?: string;
-  source?: string;
-  status?: string;
+  source?: (typeof LEAD_SOURCES)[number];
+  status?: (typeof LEAD_STATUSES)[number];
 }) {
   const conditions = [];
   if (input.source) conditions.push(eq(leads.source, input.source));
@@ -93,8 +94,8 @@ export const leadsRouter = createTRPCRouter({
         page: z.number().int().min(1).default(1),
         pageSize: z.number().int().min(1).max(100).default(20),
         search: z.string().optional(),
-        source: z.enum(['contact', 'rfq']).optional(),
-        status: z.enum(['new', 'following', 'closed']).optional(),
+        source: z.enum(LEAD_SOURCES).optional(),
+        status: z.enum(LEAD_STATUSES).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -121,8 +122,8 @@ export const leadsRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string().optional(),
-        source: z.enum(['contact', 'rfq']).optional(),
-        status: z.enum(['new', 'following', 'closed']).optional(),
+        source: z.enum(LEAD_SOURCES).optional(),
+        status: z.enum(LEAD_STATUSES).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -151,7 +152,7 @@ export const leadsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.number().int(),
-        status: z.enum(['new', 'following', 'closed']),
+        status: z.enum(LEAD_STATUSES),
       }),
     )
     .mutation(async ({ input, ctx }) => {

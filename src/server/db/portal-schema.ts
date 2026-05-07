@@ -1,59 +1,24 @@
 import { index, integer, serial } from 'drizzle-orm/pg-core';
+import type {
+  LeadSource,
+  LeadStatus,
+  ResourceCtaType,
+  TeamGroup,
+} from '@/types/enums';
+import { user } from './auth-schema';
 import { createTable } from './table-creator';
-
-export const posts = createTable(
-  'post',
-  (d) => ({
-    id: serial('id').primaryKey(),
-    slug: d.varchar({ length: 256 }).notNull().unique(),
-    title: d.varchar({ length: 512 }).notNull(),
-    summary: d.text(),
-    content: d.text().notNull().default(''),
-    coverImage: d.text('cover_image'),
-    status: d.varchar({ length: 32 }).notNull().default('draft'),
-    authorId: d.text('author_id').notNull(),
-    publishedAt: d.timestamp('published_at', { withTimezone: true }),
-    createdAt: d
-      .timestamp('created_at', { withTimezone: true })
-      .$defaultFn(() => new Date())
-      .notNull(),
-    updatedAt: d
-      .timestamp('updated_at', { withTimezone: true })
-      .$onUpdate(() => new Date()),
-  }),
-  (t) => [
-    index('post_slug_idx').on(t.slug),
-    index('post_status_idx').on(t.status),
-    index('post_published_at_idx').on(t.publishedAt),
-  ],
-);
-
-export const sitePages = createTable(
-  'site_page',
-  (d) => ({
-    id: serial('id').primaryKey(),
-    slug: d.varchar({ length: 256 }).notNull().unique(),
-    title: d.varchar({ length: 512 }).notNull(),
-    content: d.text().notNull().default(''),
-    isPublished: d.boolean('is_published').notNull().default(false),
-    updatedAt: d
-      .timestamp('updated_at', { withTimezone: true })
-      .$onUpdate(() => new Date()),
-    createdAt: d
-      .timestamp('created_at', { withTimezone: true })
-      .$defaultFn(() => new Date())
-      .notNull(),
-  }),
-  (t) => [index('site_page_slug_idx').on(t.slug)],
-);
 
 // 统一线索表（contact 表单 + request-quote 表单）
 export const leads = createTable(
   'lead',
   (d) => ({
     id: serial('id').primaryKey(),
-    source: d.varchar({ length: 32 }).notNull(), // 'contact' | 'rfq'
-    status: d.varchar({ length: 32 }).notNull().default('new'), // 'new' | 'following' | 'closed'
+    source: d.varchar({ length: 32 }).$type<LeadSource>().notNull(),
+    status: d
+      .varchar({ length: 32 })
+      .$type<LeadStatus>()
+      .notNull()
+      .default('new'),
     // 共同字段
     firstName: d.varchar('first_name', { length: 128 }).notNull(),
     lastName: d.varchar('last_name', { length: 128 }).notNull(),
@@ -186,8 +151,9 @@ export const resources = createTable(
     ctaLabel: d.varchar('cta_label', { length: 128 }), // "Download PDF →"
     ctaType: d
       .varchar('cta_type', { length: 32 })
+      .$type<ResourceCtaType>()
       .notNull()
-      .default('download'), // 'download' | 'link' | 'contact'
+      .default('download'),
     fileUrl: d.text('file_url'), // PDF 文件 URL
     externalUrl: d.text('external_url'),
     isVisible: d.boolean('is_visible').notNull().default(true),
@@ -258,7 +224,11 @@ export const teamMembers = createTable(
     title: d.varchar({ length: 256 }).notNull(), // "Co-Founder & CSO"
     shortBio: d.text('short_bio'), // 卡片显示文字
     fullBio: d.text('full_bio'), // 富文本 HTML，点击展开
-    group: d.varchar({ length: 32 }).notNull().default('tricbio'), // 'tricbio' | 'organova'
+    group: d
+      .varchar({ length: 32 })
+      .$type<TeamGroup>()
+      .notNull()
+      .default('tricbio'),
     sortOrder: integer('sort_order').notNull().default(0),
     isVisible: d.boolean('is_visible').notNull().default(true),
     createdAt: d
@@ -313,7 +283,10 @@ export const cancerTypes = createTable(
 );
 
 export const userProfiles = createTable('user_profile', (d) => ({
-  userId: d.text('user_id').primaryKey(),
+  userId: d
+    .text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
   displayName: d.varchar('display_name', { length: 256 }),
   avatar: d.text(),
   bio: d.text(),

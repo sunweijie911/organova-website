@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { teamMembers } from '@/server/db/schema';
+import { TEAM_GROUPS } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const teamMemberWriteSchema = z.object({
@@ -10,7 +11,7 @@ const teamMemberWriteSchema = z.object({
   title: z.string().min(1).max(256),
   shortBio: z.string().optional(),
   fullBio: z.string().optional(),
-  group: z.enum(['tricbio', 'organova']),
+  group: z.enum(TEAM_GROUPS),
   sortOrder: z.number().int().default(0),
   isVisible: z.boolean().default(true),
 });
@@ -79,14 +80,14 @@ export const teamRouter = createTRPCRouter({
       z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
     )
     .mutation(async ({ input, ctx }) => {
-      await Promise.all(
-        input.map(({ id, sortOrder }) =>
-          ctx.db
+      await ctx.db.transaction(async (tx) => {
+        for (const { id, sortOrder } of input) {
+          await tx
             .update(teamMembers)
             .set({ sortOrder })
-            .where(eq(teamMembers.id, id)),
-        ),
-      );
+            .where(eq(teamMembers.id, id));
+        }
+      });
       return { success: true };
     }),
 });

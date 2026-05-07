@@ -1,6 +1,8 @@
 import 'server-only';
 import { eq } from 'drizzle-orm';
+import { cache } from 'react';
 import { type FrontendConfig, mergeConfig } from '@/lib/frontend-config';
+import { pickI18nText } from '@/lib/i18n-text';
 import { db } from '@/server/db';
 import { systemConfig } from '@/server/db/schema';
 
@@ -34,8 +36,8 @@ export async function getConfigString(
 }
 
 // 服务端读取门户前端配置（systemConfig 表 key='frontend' 下的 JSONB），
-// 与默认值合并后返回。用于 SSR / metadata / Server Component。
-export async function getFrontendConfig(): Promise<FrontendConfig> {
+// 与默认值合并后返回。用 React.cache 包装，确保单次请求内只查一次 DB。
+export const getFrontendConfig = cache(async (): Promise<FrontendConfig> => {
   try {
     const row = await db
       .select({ value: systemConfig.value })
@@ -52,20 +54,24 @@ export async function getFrontendConfig(): Promise<FrontendConfig> {
     console.error('[config] getFrontendConfig failed:', error);
     return mergeConfig({});
   }
-}
+});
 
-// 站点名（用于 <title>、admin 顶栏、登录页 logo）。从门户后台 basic.systemTitle 读取。
+// 后台站点名（admin 顶栏、登录页 logo）。优先 basic.systemTitle，回退到 fallback。
 export async function getSiteName(
   lang: 'zh-CN' | 'en-US' = 'zh-CN',
 ): Promise<string> {
   const cfg = await getFrontendConfig();
-  const title = cfg.basic?.systemTitle as Record<string, string> | undefined;
-  if (!title) return SITE_NAME_FALLBACK;
-  return (
-    title[lang] ||
-    title['zh-CN'] ||
-    title['en-US'] ||
-    Object.values(title).find((v) => v) ||
-    SITE_NAME_FALLBACK
+  return pickI18nText(cfg.basic?.systemTitle, lang, SITE_NAME_FALLBACK);
+}
+
+// 门户 SEO 标题。优先 seo.defaultTitle，缺失时回退 basic.systemTitle、再回退 fallback。
+export async function getPortalTitle(
+  lang: 'zh-CN' | 'en-US' = 'en-US',
+): Promise<string> {
+  const cfg = await getFrontendConfig();
+  return pickI18nText(
+    cfg.seo?.defaultTitle,
+    lang,
+    pickI18nText(cfg.basic?.systemTitle, lang, SITE_NAME_FALLBACK),
   );
 }

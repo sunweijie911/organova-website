@@ -143,14 +143,14 @@ export const cancerTypesRouter = createTRPCRouter({
       z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
     )
     .mutation(async ({ input, ctx }) => {
-      await Promise.all(
-        input.map(({ id, sortOrder }) =>
-          ctx.db
+      await ctx.db.transaction(async (tx) => {
+        for (const { id, sortOrder } of input) {
+          await tx
             .update(cancerTypes)
             .set({ sortOrder })
-            .where(eq(cancerTypes.id, id)),
-        ),
-      );
+            .where(eq(cancerTypes.id, id));
+        }
+      });
       return { success: true };
     }),
 });

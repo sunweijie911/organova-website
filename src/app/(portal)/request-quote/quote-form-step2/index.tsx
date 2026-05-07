@@ -14,6 +14,7 @@ export type Step2Data = {
 
 interface QuoteFormStep2Props {
   data: Step2Data;
+  errorMessage?: string;
   isError: boolean;
   isPending: boolean;
   onChange: (
@@ -60,6 +61,7 @@ function LineInput({
 
 export default function QuoteFormStep2({
   data,
+  errorMessage,
   isError,
   isPending,
   onChange,
@@ -138,7 +140,9 @@ export default function QuoteFormStep2({
 
       {/* 错误提示 */}
       {isError && (
-        <p className={styles.error}>Something went wrong. Please try again.</p>
+        <p className={styles.error}>
+          {errorMessage || 'Something went wrong. Please try again.'}
+        </p>
       )}
 
       {/* 操作按钮区 */}

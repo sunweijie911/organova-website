@@ -1,6 +1,11 @@
 'use client';
 
-import { HolderOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  HolderOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import {
   DndContext,
   type DragEndEvent,
@@ -16,27 +21,29 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Form, Input, Modal, message, Space, Switch, Tag } from 'antd';
+import {
+  Badge,
+  Button,
+  Card,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  message,
+  Space,
+  Switch,
+  Tag,
+  Tooltip,
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useEffect, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
+import { EllipsisCell } from '@/components/EllipsisCell';
 import { RichTextEditor } from '@/components/RichTextEditor';
-import { api } from '@/lib/trpc/react';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
 
-type Category = {
-  id: number;
-  name: string;
-  sortOrder: number;
-  isVisible: boolean;
-};
-type FaqItem = {
-  id: number;
-  categoryId: number;
-  question: string;
-  answer: string;
-  sortOrder: number;
-  isVisible: boolean;
-};
+type Category = RouterOutputs['faq']['adminListCategories'][number];
+type FaqItem = RouterOutputs['faq']['adminListItems'][number];
 
 // ──────────────────────────────────────────────
 // 左侧可拖拽分类列表
@@ -67,78 +74,94 @@ function CategoryRow({
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
-    ...(isDragging ? { zIndex: 9999, position: 'relative' } : {}),
+    ...(isDragging
+      ? {
+          zIndex: 9999,
+          position: 'relative',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+        }
+      : {}),
   };
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: 列表项内嵌 antd <Button>（编辑/删除），不能用原生 <button>，否则形成 button 嵌套
     <div
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
       ref={setNodeRef}
+      role="button"
       style={{
         ...style,
         display: 'flex',
         alignItems: 'center',
-        gap: 6,
-        padding: '8px 12px',
-        borderRadius: 6,
+        gap: 4,
+        padding: '8px 8px 8px 6px',
+        borderRadius: 8,
         cursor: 'pointer',
         background: selected ? '#e6f4ff' : 'transparent',
-        borderLeft: selected ? '3px solid #1677ff' : '3px solid transparent',
+        color: selected ? '#1677ff' : '#333',
         marginBottom: 2,
+        transition: 'background 0.15s',
       }}
+      tabIndex={0}
     >
       <HolderOutlined
+        onClick={(e) => e.stopPropagation()}
         ref={setActivatorNodeRef as React.Ref<HTMLSpanElement>}
-        style={{ color: '#ccc', fontSize: 13, cursor: 'grab', flexShrink: 0 }}
+        style={{ color: '#bbb', fontSize: 14, cursor: 'grab', flexShrink: 0 }}
         {...(listeners as React.HTMLAttributes<HTMLSpanElement>)}
       />
-      <button
-        onClick={onSelect}
+      <span
         style={{
           flex: 1,
           fontSize: 14,
-          color: selected ? '#1677ff' : '#333',
           fontWeight: selected ? 600 : 400,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          cursor: 'pointer',
-          textAlign: 'left',
         }}
-        type="button"
       >
         {cat.name}
-        {!cat.isVisible && (
-          <Tag color="default" style={{ marginLeft: 4, fontSize: 11 }}>
-            隐藏
-          </Tag>
-        )}
-      </button>
-      <Button
-        onClick={(e) => {
-          e.stopPropagation();
-          onEdit();
-        }}
-        size="small"
-        style={{ color: '#999', padding: '0 4px' }}
-        type="text"
-      >
-        编辑
-      </Button>
-      <Button
-        danger
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-        size="small"
-        style={{ padding: '0 4px' }}
-        type="text"
-      >
-        删除
-      </Button>
+      </span>
+      {!cat.isVisible && (
+        <Tag
+          bordered={false}
+          color="default"
+          style={{ fontSize: 11, margin: 0 }}
+        >
+          隐藏
+        </Tag>
+      )}
+      <span style={{ display: 'flex', flexShrink: 0 }}>
+        <Tooltip title="编辑">
+          <Button
+            icon={<EditOutlined />}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            size="small"
+            type="text"
+          />
+        </Tooltip>
+        <Tooltip title="删除">
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            size="small"
+            type="text"
+          />
+        </Tooltip>
+      </span>
     </div>
   );
 }
@@ -197,7 +220,6 @@ function ItemsPanel({ category }: { category: Category }) {
     setEditingItem(null);
     setAnswerContent('');
     itemForm.resetFields();
-    itemForm.setFieldsValue({ isVisible: true });
     setItemModalOpen(true);
   };
 
@@ -215,19 +237,32 @@ function ItemsPanel({ category }: { category: Category }) {
         id: editingItem.id,
         categoryId: category.id,
         sortOrder: editingItem.sortOrder,
+        isVisible: editingItem.isVisible,
         ...payload,
       } as Parameters<typeof updateItem.mutate>[0]);
     } else {
       createItem.mutate({
         categoryId: category.id,
         sortOrder: items?.length ?? 0,
+        isVisible: true,
         ...payload,
       } as Parameters<typeof createItem.mutate>[0]);
     }
   };
 
   const itemColumns: ColumnsType<FaqItem> = [
-    { title: '问题', dataIndex: 'question', ellipsis: true },
+    {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => idx + 1,
+    },
+    {
+      title: '问题',
+      dataIndex: 'question',
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
     {
       title: '显示',
       dataIndex: 'isVisible',
@@ -273,24 +308,41 @@ function ItemsPanel({ category }: { category: Category }) {
     <>
       <div
         style={{
-          marginBottom: 12,
+          marginBottom: 16,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          gap: 12,
+          flexWrap: 'wrap',
         }}
       >
-        <span style={{ fontWeight: 600, fontSize: 15 }}>{category.name}</span>
-        <Button onClick={openCreateItem} size="small" type="primary">
-          + 添加问题
+        <Space size={10}>
+          <span style={{ fontWeight: 600, fontSize: 18 }}>{category.name}</span>
+          <Badge
+            color={category.isVisible ? 'blue' : 'default'}
+            count={items?.length ?? 0}
+            showZero
+            style={{
+              backgroundColor: category.isVisible ? '#e6f4ff' : '#f0f0f0',
+              color: '#555',
+            }}
+          />
+          {!category.isVisible && <Tag color="default">分类已隐藏</Tag>}
+        </Space>
+        <Button icon={<PlusOutlined />} onClick={openCreateItem} type="primary">
+          添加问题
         </Button>
       </div>
 
       <DraggableTable
         columns={itemColumns}
         dataSource={items ?? []}
+        locale={{
+          emptyText: <Empty description="该分类下还没有问题" />,
+        }}
         onOrderChange={handleOrderChange}
         pagination={false}
-        size="small"
+        size="middle"
       />
 
       <Modal
@@ -316,9 +368,6 @@ function ItemsPanel({ category }: { category: Category }) {
               key={editingItem?.id ?? 'new'}
               onChange={setAnswerContent}
             />
-          </Form.Item>
-          <Form.Item label="显示" name="isVisible" valuePropName="checked">
-            <Switch />
           </Form.Item>
           <Form.Item>
             <Button
@@ -444,37 +493,48 @@ export default function AdminFaqView() {
         display: 'flex',
         height: 'calc(100vh - 64px)',
         overflow: 'hidden',
+        background: '#f5f5f5',
       }}
     >
       {/* 左侧分类菜单 */}
       <div
         style={{
-          width: 220,
+          width: 260,
           flexShrink: 0,
           borderRight: '1px solid #f0f0f0',
           display: 'flex',
           flexDirection: 'column',
-          background: '#fafafa',
+          background: '#fff',
         }}
       >
         <div
           style={{
-            padding: '12px 12px 8px',
+            padding: '16px 16px 12px',
             borderBottom: '1px solid #f0f0f0',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
-          <span style={{ fontWeight: 600, fontSize: 13, color: '#555' }}>
-            FAQ 分类
-          </span>
-          <Button onClick={openCreateCat} size="small" type="primary">
-            + 添加
-          </Button>
+          <Space size={6}>
+            <span style={{ fontWeight: 600, fontSize: 14, color: '#1f1f1f' }}>
+              FAQ 分类
+            </span>
+            <Tag bordered={false} style={{ margin: 0, color: '#666' }}>
+              {cats.length}
+            </Tag>
+          </Space>
+          <Tooltip title="添加分类">
+            <Button
+              icon={<PlusOutlined />}
+              onClick={openCreateCat}
+              size="small"
+              type="primary"
+            />
+          </Tooltip>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '8px 6px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
           <DndContext
             modifiers={[restrictToVerticalAxis]}
             onDragEnd={handleCatDragEnd}
@@ -505,16 +565,11 @@ export default function AdminFaqView() {
           </DndContext>
 
           {cats.length === 0 && (
-            <div
-              style={{
-                color: '#999',
-                fontSize: 13,
-                textAlign: 'center',
-                marginTop: 24,
-              }}
-            >
-              暂无分类
-            </div>
+            <Empty
+              description="暂无分类"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ marginTop: 32 }}
+            />
           )}
         </div>
       </div>
@@ -522,10 +577,18 @@ export default function AdminFaqView() {
       {/* 右侧问题 Table */}
       <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
         {selectedCat ? (
-          <ItemsPanel category={selectedCat} key={selectedCat.id} />
+          <Card
+            bordered={false}
+            style={{
+              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+            }}
+            styles={{ body: { padding: 20 } }}
+          >
+            <ItemsPanel category={selectedCat} key={selectedCat.id} />
+          </Card>
         ) : (
           <div style={{ color: '#999', marginTop: 60, textAlign: 'center' }}>
-            请从左侧选择一个分类
+            <Empty description="请从左侧选择一个分类" />
           </div>
         )}
       </div>

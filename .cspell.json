@@ -149,7 +149,15 @@
     "biotechs",
     "Biotech",
     "Nadauld",
-    "Kuo"
+    "Kuo",
+    "seo",
+    "SEO",
+    "weibo",
+    "exceljs",
+    "argb",
+    "openxmlformats",
+    "officedocument",
+    "spreadsheetml"
   ],
   "patterns": [
     {

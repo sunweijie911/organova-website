@@ -8,39 +8,17 @@ import {
   Modal,
   message,
   Space,
-  Switch,
   Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
+import { EllipsisCell } from '@/components/EllipsisCell';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
-import { api } from '@/lib/trpc/react';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
 
-type CS = {
-  id: number;
-  slug: string;
-  title: string;
-  summary: string | null;
-  coverImage: string | null;
-  cancerTypeTags: string[];
-  applicationTags: string[];
-  challenge: string | null;
-  approach: string | null;
-  results: string | null;
-  implication: string | null;
-  metaModel: string | null;
-  metaDrugClasses: string | null;
-  metaReadout: string | null;
-  metaValidation: string | null;
-  cta1Label: string | null;
-  cta1Url: string | null;
-  cta2Label: string | null;
-  cta2Url: string | null;
-  sortOrder: number;
-  isPublished: boolean;
-};
+type CS = RouterOutputs['caseStudies']['adminList'][number];
 
 export default function AdminCaseStudiesView() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -130,7 +108,6 @@ export default function AdminCaseStudiesView() {
     setImplication('');
     form.resetFields();
     form.setFieldsValue({
-      isPublished: false,
       sortOrder: data?.length ?? 0,
       cancerTypeTags: [],
       applicationTags: [],
@@ -157,6 +134,7 @@ export default function AdminCaseStudiesView() {
       approach,
       results,
       implication,
+      isPublished: editing?.isPublished ?? false,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
@@ -168,6 +146,12 @@ export default function AdminCaseStudiesView() {
   };
 
   const columns: ColumnsType<CS> = [
+    {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => idx + 1,
+    },
     {
       title: '封面',
       dataIndex: 'coverImage',
@@ -195,7 +179,12 @@ export default function AdminCaseStudiesView() {
           />
         ),
     },
-    { title: '标题', dataIndex: 'title', ellipsis: true },
+    {
+      title: '标题',
+      dataIndex: 'title',
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
     {
       title: '标签',
       dataIndex: 'cancerTypeTags',
@@ -288,16 +277,7 @@ export default function AdminCaseStudiesView() {
 
       <Modal
         destroyOnHidden
-        footer={
-          <Button
-            block
-            loading={create.isPending || update.isPending}
-            onClick={() => form.submit()}
-            type="primary"
-          >
-            保存
-          </Button>
-        }
+        footer={null}
         onCancel={() => setModalOpen(false)}
         open={modalOpen}
         styles={{
@@ -394,8 +374,15 @@ export default function AdminCaseStudiesView() {
           <Form.Item label="CTA 2 链接" name="cta2Url">
             <Input />
           </Form.Item>
-          <Form.Item label="上线" name="isPublished" valuePropName="checked">
-            <Switch />
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button
+              block
+              htmlType="submit"
+              loading={create.isPending || update.isPending}
+              type="primary"
+            >
+              保存
+            </Button>
           </Form.Item>
         </Form>
       </Modal>

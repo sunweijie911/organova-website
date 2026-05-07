@@ -8,35 +8,32 @@ import {
   Modal,
   message,
   Space,
-  Switch,
   Table,
   Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useState } from 'react';
+import { EllipsisCell } from '@/components/EllipsisCell';
 import { ImageUploader } from '@/components/ImageUploader';
 import { RichTextEditor } from '@/components/RichTextEditor';
-import { api } from '@/lib/trpc/react';
+import { api, type RouterOutputs } from '@/lib/trpc/react';
 
-type NewsItem = {
-  id: number;
-  title: string;
-  publishedAt: Date;
-  location: string | null;
-  content: string | null;
-  coverImage: string | null;
-  isPublished: boolean;
-};
+type NewsItem = RouterOutputs['news']['adminList']['items'][number];
 
 export default function AdminNewsView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<NewsItem | null>(null);
   const [coverImage, setCoverImage] = useState<string>('');
   const [content, setContent] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
   const [form] = Form.useForm();
 
-  const { data, isLoading, refetch } = api.news.adminList.useQuery();
+  const { data, isLoading, refetch } = api.news.adminList.useQuery({
+    page,
+    pageSize,
+  });
 
   const create = api.news.adminCreate.useMutation({
     onSuccess: () => {
@@ -74,7 +71,7 @@ export default function AdminNewsView() {
     setCoverImage('');
     setContent('');
     form.resetFields();
-    form.setFieldsValue({ isPublished: false, publishedAt: dayjs() });
+    form.setFieldsValue({ publishedAt: dayjs() });
     setModalOpen(true);
   };
 
@@ -92,6 +89,7 @@ export default function AdminNewsView() {
       publishedAt: (vals.publishedAt as dayjs.Dayjs).toDate(),
       content,
       coverImage: coverImage || undefined,
+      isPublished: editing?.isPublished ?? false,
     };
     if (editing) {
       update.mutate({ id: editing.id, ...payload } as Parameters<
@@ -112,6 +110,12 @@ export default function AdminNewsView() {
   };
 
   const columns: ColumnsType<NewsItem> = [
+    {
+      title: '#',
+      width: 56,
+      align: 'center',
+      render: (_, __, idx) => (page - 1) * pageSize + idx + 1,
+    },
     {
       title: '封面',
       dataIndex: 'coverImage',
@@ -139,14 +143,25 @@ export default function AdminNewsView() {
           />
         ),
     },
-    { title: '标题', dataIndex: 'title', ellipsis: true },
+    {
+      title: '标题',
+      dataIndex: 'title',
+      ellipsis: { showTitle: false },
+      render: (v: string) => <EllipsisCell value={v} />,
+    },
     {
       title: '发布日期',
       dataIndex: 'publishedAt',
       width: 130,
       render: (v: Date) => dayjs(v).format('YYYY-MM-DD'),
     },
-    { title: '来源地', dataIndex: 'location', width: 160, ellipsis: true },
+    {
+      title: '来源地',
+      dataIndex: 'location',
+      width: 160,
+      ellipsis: { showTitle: false },
+      render: (v: string | null) => <EllipsisCell value={v} />,
+    },
     {
       title: '状态',
       dataIndex: 'isPublished',
@@ -210,9 +225,15 @@ export default function AdminNewsView() {
 
       <Table
         columns={columns}
-        dataSource={data ?? []}
+        dataSource={data?.items ?? []}
         loading={isLoading}
-        pagination={false}
+        pagination={{
+          current: page,
+          pageSize,
+          total: data?.total ?? 0,
+          onChange: setPage,
+          showSizeChanger: false,
+        }}
         rowKey="id"
         size="middle"
       />
@@ -257,9 +278,6 @@ export default function AdminNewsView() {
               key={editing?.id ?? 'new'}
               onChange={setContent}
             />
-          </Form.Item>
-          <Form.Item label="上线" name="isPublished" valuePropName="checked">
-            <Switch />
           </Form.Item>
           <Form.Item>
             <Button

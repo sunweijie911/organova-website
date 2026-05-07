@@ -55,9 +55,29 @@ export const newsRouter = createTRPCRouter({
     return rows.map((r) => r.year);
   }),
 
-  adminList: adminProcedure.query(async ({ ctx }) => {
-    return ctx.db.select().from(news).orderBy(desc(news.publishedAt));
-  }),
+  adminList: adminProcedure
+    .input(
+      z
+        .object({
+          page: z.number().int().min(1).default(1),
+          pageSize: z.number().int().min(1).max(100).default(20),
+        })
+        .default({ page: 1, pageSize: 20 }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { page, pageSize } = input;
+      const offset = (page - 1) * pageSize;
+      const [rows, total] = await Promise.all([
+        ctx.db
+          .select()
+          .from(news)
+          .orderBy(desc(news.publishedAt))
+          .limit(pageSize)
+          .offset(offset),
+        ctx.db.$count(news),
+      ]);
+      return { items: rows, total, page, pageSize };
+    }),
 
   adminGet: adminProcedure
     .input(z.object({ id: z.number().int() }))

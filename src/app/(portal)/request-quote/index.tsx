@@ -95,6 +95,7 @@ export default function RequestQuoteView() {
           {step === 2 && (
             <QuoteFormStep2
               data={s2}
+              errorMessage={submit.error?.message}
               isError={submit.isError}
               isPending={submit.isPending}
               onBack={() => setStep(1)}
