@@ -5,7 +5,7 @@
 .hero {
   position: relative;
   background: #000;
-  padding: 110px 240px 100px;
+  padding: 110px var(--portal-content-pad-x) 100px;
   overflow: hidden;
 }
 
@@ -15,10 +15,9 @@
   max-width: 1080px;
 }
 
-// Figma style_WDYZ0K: Roboto Serif Regular 64px，#FFFFFF
 .title {
-  font-family: 'Roboto Serif', Georgia, serif;
-  font-size: 64px;
+  font-family: var(--portal-hero-font-family);
+  font-size: var(--portal-hero-title-size);
   font-weight: 400;
   line-height: 1.15;
   color: #fff;
@@ -26,9 +25,9 @@
   letter-spacing: -0.01em;
 }
 
-// Figma style_CBH96T: Roboto Regular 24px，#FFFFFF
 .subtitle {
-  font-size: 24px;
+  font-family: var(--portal-body-font-family);
+  font-size: var(--portal-hero-subtitle-size);
   font-weight: 400;
   line-height: 1.6;
   color: #fff;

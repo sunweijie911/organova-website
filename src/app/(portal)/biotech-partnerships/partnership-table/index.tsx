@@ -1,5 +1,6 @@
 'use client';
 
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 const PARTNERSHIP_TYPES = [
@@ -28,51 +29,6 @@ const PARTNERSHIP_TYPES = [
   },
 ];
 
-function SortIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="16"
-      viewBox="0 0 16 16"
-      width="16"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4 6l4-4 4 4M4 10l4 4 4-4"
-        stroke="#9CA3AF"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
-
-function InfoIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="24"
-      viewBox="0 0 24 24"
-      width="24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="12" cy="12" r="10.5" stroke="#286996" strokeWidth="1.5" />
-      <rect
-        fill="#286996"
-        height="7"
-        rx="0.75"
-        width="1.5"
-        x="11.25"
-        y="10.5"
-      />
-      <circle cx="12" cy="7.5" fill="#286996" r="1" />
-    </svg>
-  );
-}
-
 export default function PartnershipTable() {
   return (
     <section className={styles.section}>
@@ -100,7 +56,7 @@ export default function PartnershipTable() {
                 <div className={styles.typeCell}>
                   <div className={styles.typeCellInner}>
                     <span aria-hidden="true" className={styles.sortIcon}>
-                      <SortIcon />
+                      <SvgIcon color="#9CA3AF" name="sort" size={16} />
                     </span>
                     <span className={styles.typeText}>{item.type}</span>
                   </div>
@@ -118,7 +74,7 @@ export default function PartnershipTable() {
 
         <div className={styles.alert}>
           <span className={styles.alertIcon}>
-            <InfoIcon />
+            <SvgIcon color="#286996" name="info" size={24} />
           </span>
           <p className={styles.alertText}>
             All partnership types include a dedicated scientific project

@@ -6,12 +6,12 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding: 200px 240px 60px;
+  padding: 200px var(--portal-content-pad-x) 60px;
 }
 
 .title {
-  font-family: 'Roboto Serif', Georgia, serif;
-  font-size: 64px;
+  font-family: var(--portal-hero-font-family);
+  font-size: var(--portal-hero-title-size);
   font-weight: 400;
   color: #fff;
   line-height: 1.1;
@@ -27,7 +27,7 @@
 }
 
 .tab {
-  font-family: Roboto, sans-serif;
+  font-family: var(--portal-body-font-family);
   font-size: 20px;
   font-weight: 300;
   color: #fff;

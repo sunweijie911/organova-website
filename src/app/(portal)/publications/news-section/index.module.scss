@@ -129,11 +129,6 @@
   }
 }
 
-/* 底部区域：宽 125px，column，gap:7px */
-.itemFooter {
-  width: 125px;
-}
-
 /* Read more 链接/按钮：Roboto Regular 14px，黑色，含箭头 */
 .readMore {
   display: inline-flex;
@@ -159,40 +154,6 @@
 
   &:hover {
     opacity: 0.6;
-  }
-
-  svg {
-    flex-shrink: 0;
-    color: rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* 可展开折叠容器 */
-.expandable {
-  &[open] .readMore svg {
-    transform: rotate(90deg);
-    transition: transform 0.2s;
-  }
-}
-
-/* rich-text 内容展开后显示 */
-.richContent {
-  margin-top: 16px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 1.7;
-  color: #4b5563;
-  max-width: 452px;
-
-  p {
-    margin: 0 0 12px;
-  }
-
-  strong,
-  b {
-    font-weight: 600;
-    color: #000;
   }
 }
 

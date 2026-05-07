@@ -24,8 +24,9 @@ export function PortalStickyNav() {
     const apply = (nextVisible: boolean) => {
       if (nextVisible === isVisible.current) return;
       isVisible.current = nextVisible;
-      // biome-ignore lint/style/noNonNullAssertion: CSS module class name is always defined
-      el.classList.toggle(styles.visible!, nextVisible);
+      if (styles.visible) {
+        el.classList.toggle(styles.visible, nextVisible);
+      }
       document.documentElement.style.setProperty(
         '--sticky-nav-height',
         nextVisible ? '114px' : '0px',

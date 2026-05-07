@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowButton } from '@/components/ArrowButton';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 /**
@@ -95,19 +96,7 @@ export default function OurStory({ expanded, onToggle }: OurStoryProps) {
             {/* Back 按钮：Roboto Regular 20px，#979BA5，左箭头 */}
             <button className={styles.backBtn} onClick={onToggle} type="button">
               <span aria-hidden="true" className={styles.backArrow}>
-                <svg
-                  fill="none"
-                  height="14"
-                  role="presentation"
-                  viewBox="0 0 28 14"
-                  width="28"
-                >
-                  <path
-                    d="M28 7H1M1 7L8 1M1 7L8 13"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                </svg>
+                <SvgIcon height={14} name="arrow-thin-left" width={28} />
               </span>
               Back
             </button>

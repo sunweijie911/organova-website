@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 /**
@@ -30,26 +31,6 @@ function formatLongDate(date: Date | string): string {
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(date));
-}
-
-function ArrowSvg() {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="11"
-      viewBox="0 0 17 11"
-      width="17"
-    >
-      <path
-        d="M1 5.5H15.5M15.5 5.5L11 1M15.5 5.5L11 10"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.2"
-      />
-    </svg>
-  );
 }
 
 export default function NewsSection({
@@ -107,7 +88,13 @@ export default function NewsSection({
               </Link>
 
               <Link className={styles.readMore} href={`/news/${item.id}`}>
-                Read more <ArrowSvg />
+                Read more
+                <SvgIcon
+                  color="rgba(0,0,0,0.4)"
+                  height={11}
+                  name="arrow-thin-right"
+                  width={17}
+                />
               </Link>
             </article>
           ))}

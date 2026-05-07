@@ -5,28 +5,26 @@
 
 .hero {
   background: #fff;
-  padding: 0 240px 60px;
+  padding: 0 var(--portal-content-pad-x) 60px;
 }
 
 .inner {
-  max-width: 1440px;
+  max-width: var(--portal-content-max);
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
 
-/* 主标题 Roboto Serif Regular 64 */
 .title {
-  font-family: 'Roboto Serif', serif;
+  font-family: var(--portal-hero-font-family);
   font-weight: 400;
-  font-size: 64px;
+  font-size: var(--portal-hero-title-size);
   color: #000;
   line-height: 1.1;
   margin: 0;
   letter-spacing: -0.01em;
 }
 
-/* tab 导航：横排，间距 48 */
 .tabNav {
   display: flex;
   align-items: center;
@@ -35,7 +33,7 @@
 
 .tabActive,
 .tabLink {
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--portal-body-font-family);
   font-size: 20px;
   color: #000;
   background: none;
@@ -47,13 +45,11 @@
   transition: opacity 0.15s ease;
 }
 
-/* 选中：Medium 500 + 较粗下划线 */
 .tabActive {
   font-weight: 500;
   text-decoration-thickness: 1.5px;
 }
 
-/* 非选中：Light 300 + 细下划线 */
 .tabLink {
   font-weight: 300;
   text-decoration-thickness: 1px;
@@ -64,13 +60,12 @@
   }
 }
 
-/* 副标题 Roboto Regular 24，黑色 */
 .subtitle {
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--portal-body-font-family);
   font-weight: 400;
-  font-size: 24px;
+  font-size: var(--portal-hero-subtitle-size);
   color: #000;
-  line-height: 1.5;
+  line-height: var(--portal-hero-subtitle-line);
   max-width: 1100px;
   margin: 0;
 }

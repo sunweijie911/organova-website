@@ -2,20 +2,14 @@
 
 import styles from './index.module.scss';
 
-const CATEGORIES = [
-  'About Our Technology',
-  'About Our Services',
-  'About Our Biobank',
-  'About Partnerships',
-  'About Quality & Compliance',
-];
-
 interface HeroBannerProps {
+  categories: string[];
   activeCategory: string;
   onCategoryChange: (category: string) => void;
 }
 
 export default function HeroBanner({
+  categories,
   activeCategory,
   onCategoryChange,
 }: HeroBannerProps) {
@@ -23,18 +17,20 @@ export default function HeroBanner({
     <section className={styles.hero}>
       <div className={styles.inner}>
         <h1 className={styles.title}>Your Questions, Answered.</h1>
-        <nav className={styles.tabs}>
-          {CATEGORIES.map((cat) => (
-            <button
-              className={`${styles.tab} ${activeCategory === cat ? styles.tabActive : ''}`}
-              key={cat}
-              onClick={() => onCategoryChange(cat)}
-              type="button"
-            >
-              {cat}
-            </button>
-          ))}
-        </nav>
+        {categories.length > 0 && (
+          <nav className={styles.tabs}>
+            {categories.map((cat) => (
+              <button
+                className={`${styles.tab} ${activeCategory === cat ? styles.tabActive : ''}`}
+                key={cat}
+                onClick={() => onCategoryChange(cat)}
+                type="button"
+              >
+                {cat}
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
     </section>
   );

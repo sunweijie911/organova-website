@@ -1,26 +1,10 @@
 'use client';
 
+import { useMemo } from 'react';
 import { ArrowButton } from '@/components/ArrowButton';
+import { SvgIcon } from '@/components/SvgIcon';
+import { api } from '@/lib/trpc/react';
 import styles from './index.module.scss';
-
-const CANCER_TYPES = [
-  'Liver Cancer (HCC / ICC)',
-  'Colorectal Cancer (CRC)',
-  'Kidney Cancer (ccRCC)',
-  'Breast Cancer',
-  'Pancreatic Cancer (PDAC)',
-  'Sarcoma (GIST / OS)',
-  'Lung Cancer (NSCLC)',
-  'Glioblastoma (GBM)',
-  'Endometrial Cancer',
-  'Ovarian Cancer',
-  'Gastric Cancer',
-  'Biliary Tract Cancer',
-  'Head & Neck Cancer',
-  'Prostate Cancer',
-  'Lymphoma',
-  'Other',
-];
 
 const DRUG_MODALITIES = [
   'Small Molecule',
@@ -60,25 +44,6 @@ interface QuoteFormStep1Props {
   ) => (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
-
-/* 自定义下拉 chevron 图标 */
-const ChevronIcon = () => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="5"
-    viewBox="0 0 10 5"
-    width="10"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M1 1l4 3 4-3"
-      stroke="#000"
-      strokeLinecap="round"
-      strokeWidth="1.4"
-    />
-  </svg>
-);
 
 interface SelectFieldProps {
   id: string;
@@ -120,7 +85,7 @@ function SelectField({
           ))}
         </select>
         <span aria-hidden="true" className={styles.chevron}>
-          <ChevronIcon />
+          <SvgIcon color="#000" height={5} name="chevron-down" width={10} />
         </span>
       </div>
     </div>
@@ -132,6 +97,13 @@ export default function QuoteFormStep1({
   onChange,
   onSubmit,
 }: QuoteFormStep1Props) {
+  // 癌种来自后台 cancerTypes 接口，与 /tumor-types 列表共享数据源
+  const { data: cancerTypeList } = api.cancerTypes.list.useQuery();
+  const cancerOptions = useMemo(() => {
+    const names = cancerTypeList?.map((ct) => ct.name) ?? [];
+    return [...names, 'Other'];
+  }, [cancerTypeList]);
+
   return (
     <form className={styles.formSection} onSubmit={onSubmit}>
       {/* 第一行：Cancer Type / Indication + Drug Modality */}
@@ -140,7 +112,7 @@ export default function QuoteFormStep1({
           id="cancerType"
           label="Cancer Type / Indication"
           onChange={onChange('cancerType')}
-          options={CANCER_TYPES}
+          options={cancerOptions}
           placeholder="Cancer Type / Indication"
           required
           value={data.cancerType}

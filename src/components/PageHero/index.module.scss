@@ -1,0 +1,68 @@
+.hero {
+  position: relative;
+  min-height: 1079px;
+  overflow: hidden;
+  background: #000;
+
+  &.alignBottom {
+    display: flex;
+    align-items: flex-end;
+    height: 1079px;
+    min-height: unset;
+  }
+}
+
+.bg {
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 401px var(--portal-content-pad-x) 0;
+  max-width: var(--portal-content-max);
+  width: 100%;
+
+  .alignBottom & {
+    padding: 0 var(--portal-content-pad-x) 395px;
+  }
+}
+
+.title {
+  font-family: var(--portal-hero-font-family);
+  font-weight: 400;
+  font-size: var(--portal-hero-title-size);
+  line-height: var(--portal-hero-title-line);
+  color: #fff;
+  max-width: var(--page-hero-title-mw, 1098px);
+  margin: 0 0 var(--page-hero-title-gap, 80px);
+  white-space: pre-line;
+}
+
+.subtitle {
+  font-family: var(--portal-body-font-family);
+  font-weight: 400;
+  font-size: var(--portal-hero-subtitle-size);
+  line-height: var(--portal-hero-subtitle-line);
+  color: #fff;
+  max-width: var(--page-hero-subtitle-mw, 1255px);
+  margin: 0;
+}
+
+.extra {
+  margin-top: var(--page-hero-subtitle-gap, 80px);
+}
