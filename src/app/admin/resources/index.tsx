@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  message,
-  Select,
-  Space,
-  Switch,
-} from 'antd';
+import { App, Button, Form, Input, Modal, Select, Space, Switch } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
@@ -25,6 +16,7 @@ import {
 type Resource = RouterOutputs['resources']['adminList'][number];
 
 export default function AdminResourcesView() {
+  const { message, modal } = App.useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Resource | null>(null);
   const [fileUrl, setFileUrl] = useState('');
@@ -157,7 +149,7 @@ export default function AdminResourcesView() {
           <Button
             danger
             onClick={() =>
-              Modal.confirm({
+              modal.confirm({
                 title: '确认删除？',
                 content: r.name,
                 okType: 'danger',

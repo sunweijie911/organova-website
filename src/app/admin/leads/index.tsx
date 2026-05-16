@@ -1,12 +1,12 @@
 'use client';
 
 import {
+  App,
   Badge,
   Button,
   Descriptions,
   Drawer,
   Input,
-  message,
   Select,
   Space,
   Table,
@@ -65,6 +65,7 @@ const LEAD_EXPORT_COLUMNS: XlsxColumn<Lead>[] = [
 const LEADS_PAGE_SIZE = 20;
 
 export default function AdminLeadsView() {
+  const { message } = App.useApp();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [source, setSource] = useState<LeadSource | undefined>();

@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import '@unocss/reset/tailwind.css';
 import '@/styles/globals.css';
 import { DebugPanel } from '@/components/DebugPanel';
+import { env } from '@/env';
 import { pickI18nText } from '@/lib/i18n-text';
 import { TRPCReactProvider } from '@/lib/trpc/react';
 import { getFrontendConfig, getPortalTitle } from '@/server/services/config';
@@ -25,7 +26,7 @@ const robotoSerif = Roboto_Serif({
   display: 'swap',
 });
 
-const SITE_URL = process.env.BETTER_AUTH_URL ?? 'http://localhost:3000';
+const SITE_URL = env.BETTER_AUTH_URL ?? 'http://localhost:3000';
 const FALLBACK_DESCRIPTION =
   'Patient-derived organoid (PDO) platform enabling precision oncology drug discovery, efficacy testing, and translational research.';
 

@@ -1,12 +1,12 @@
 'use client';
 
 import {
+  App,
   Button,
   DatePicker,
   Form,
   Input,
   Modal,
-  message,
   Space,
   Table,
   Tag,
@@ -22,6 +22,7 @@ import { api, type RouterOutputs } from '@/lib/trpc/react';
 type NewsItem = RouterOutputs['news']['adminList']['items'][number];
 
 export default function AdminNewsView() {
+  const { message, modal } = App.useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<NewsItem | null>(null);
   const [coverImage, setCoverImage] = useState<string>('');
@@ -101,7 +102,7 @@ export default function AdminNewsView() {
   };
 
   const handleDelete = (r: NewsItem) => {
-    Modal.confirm({
+    modal.confirm({
       title: '确认删除？',
       content: r.title,
       okType: 'danger',
@@ -180,7 +181,7 @@ export default function AdminNewsView() {
           </Button>
           <Button
             onClick={() =>
-              Modal.confirm({
+              modal.confirm({
                 title: r.isPublished ? '确认下线？' : '确认上线？',
                 content: r.title,
                 okType: r.isPublished ? 'danger' : 'primary',

@@ -1,12 +1,12 @@
 'use client';
 
 import {
+  App,
   Avatar,
   Button,
   Form,
   Input,
   Modal,
-  message,
   Select,
   Space,
   Switch,
@@ -30,6 +30,7 @@ import {
 type Member = RouterOutputs['team']['adminList'][number];
 
 export default function AdminTeamView() {
+  const { message, modal } = App.useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Member | null>(null);
   const [photo, setPhoto] = useState('');
@@ -85,7 +86,11 @@ export default function AdminTeamView() {
     setPhoto('');
     setFullBio('');
     form.resetFields();
-    form.setFieldsValue({ group: 'tricbio', sortOrder: 0 });
+    form.setFieldsValue({
+      group: 'tricbio',
+      isVisible: true,
+      sortOrder: data?.length ?? 0,
+    });
     setModalOpen(true);
   };
 
@@ -172,7 +177,7 @@ export default function AdminTeamView() {
           <Button
             danger
             onClick={() =>
-              Modal.confirm({
+              modal.confirm({
                 title: '确认删除？',
                 content: r.name,
                 okType: 'danger',

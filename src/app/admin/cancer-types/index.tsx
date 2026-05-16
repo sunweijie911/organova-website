@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Form, Input, Modal, message, Space, Tag } from 'antd';
+import { App, Button, Form, Input, Modal, Space, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useState } from 'react';
 import { DraggableTable } from '@/components/DraggableTable';
@@ -11,6 +11,7 @@ import { api, type RouterOutputs } from '@/lib/trpc/react';
 type CancerType = RouterOutputs['cancerTypes']['adminList'][number];
 
 export default function AdminCancerTypesView() {
+  const { message, modal } = App.useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<CancerType | null>(null);
   const [coverImage, setCoverImage] = useState('');
@@ -152,7 +153,7 @@ export default function AdminCancerTypesView() {
           </Button>
           <Button
             onClick={() =>
-              Modal.confirm({
+              modal.confirm({
                 title: r.isPublished ? '确认下线？' : '确认上线？',
                 content: r.name,
                 okType: r.isPublished ? 'danger' : 'primary',
@@ -171,7 +172,7 @@ export default function AdminCancerTypesView() {
           <Button
             danger
             onClick={() =>
-              Modal.confirm({
+              modal.confirm({
                 title: '确认删除？',
                 content: r.name,
                 okType: 'danger',

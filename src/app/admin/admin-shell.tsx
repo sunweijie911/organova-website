@@ -16,7 +16,7 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Dropdown, Layout, Menu, Modal, Tooltip, theme } from 'antd';
+import { App, Button, Dropdown, Layout, Menu, Tooltip, theme } from 'antd';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -51,6 +51,7 @@ const MENU_ITEMS: MenuProps['items'] = [
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
+  const { modal } = App.useApp();
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
@@ -178,7 +179,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                     icon: <LogoutOutlined />,
                     label: '退出登录',
                     onClick: () => {
-                      Modal.confirm({
+                      modal.confirm({
                         title: '确认退出',
                         content: '确定要退出登录吗？',
                         okText: '确定退出',

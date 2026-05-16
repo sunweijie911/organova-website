@@ -73,9 +73,9 @@ export default function HeroBanner() {
           ref={videoRef}
           src="/assets/video/banner.mp4"
         />
-        <h2 className={styles.title} ref={titleRef}>
+        <h1 className={styles.title} ref={titleRef}>
           {HERO.title}
-        </h2>
+        </h1>
         <div className={styles.textGroup} ref={textGroupRef}>
           <p className={styles.subtitle}>{HERO.subtitle}</p>
           <p className={styles.description}>{HERO.description}</p>

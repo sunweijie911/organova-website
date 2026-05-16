@@ -1,9 +1,18 @@
-import { and, eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { db } from '@/server/db';
-import { cancerTypes } from '@/server/db/schema';
-import TumorTypeDetailView from '.';
+import { cache } from 'react';
+import { api } from '@/lib/trpc/server';
+import DetailContent from './detail-content';
+
+const getCancerType = cache(async (slug: string) => {
+  try {
+    return await api.cancerTypes.getBySlug({ slug });
+  } catch (err) {
+    if (err instanceof TRPCError && err.code === 'NOT_FOUND') return null;
+    throw err;
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -11,14 +20,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const [row] = await db
-    .select({ name: cancerTypes.name, subpageTitle: cancerTypes.subpageTitle })
-    .from(cancerTypes)
-    .where(and(eq(cancerTypes.slug, slug), eq(cancerTypes.isPublished, true)))
-    .limit(1);
-
+  const row = await getCancerType(slug);
   if (!row) return { title: 'Tumor Type' };
-
   return {
     title: row.name,
     description: row.subpageTitle ?? undefined,
@@ -31,11 +34,8 @@ export default async function TumorTypeDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [row] = await db
-    .select({ id: cancerTypes.id })
-    .from(cancerTypes)
-    .where(and(eq(cancerTypes.slug, slug), eq(cancerTypes.isPublished, true)))
-    .limit(1);
-  if (!row) notFound();
-  return <TumorTypeDetailView />;
+  const data = await getCancerType(slug);
+  if (!data) notFound();
+
+  return <DetailContent data={data} />;
 }

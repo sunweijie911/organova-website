@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';

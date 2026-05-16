@@ -16,6 +16,7 @@ import { db } from '@/server/db';
 import { adminAuditLog } from '@/server/db/schema';
 import { isAdminEmail } from '@/server/services/admin-check';
 import { maybePurgeAuditLogs } from '@/server/services/audit-purge';
+import { getClientIp } from '@/server/services/get-client-ip';
 
 /**
  * 1. CONTEXT
@@ -127,7 +128,8 @@ function sanitizeInput(input: unknown): unknown {
 
 /**
  * 审计日志中间件 —— 记录所有 admin mutation 操作到 adminAuditLog 表。
- * 异步写入，不阻塞响应。
+ * 同步 await 写入，确保在 serverless 环境下函数返回前 flush 完成；
+ * 写入失败仅记录到 console，不阻断业务请求。
  */
 const auditMiddleware = t.middleware(
   async ({ ctx, next, path, type, getRawInput }) => {
@@ -136,23 +138,23 @@ const auditMiddleware = t.middleware(
 
     const sessionUser = ctx.session.user;
     const rawInput = await getRawInput();
-    const ip =
-      ctx.headers.get('x-real-ip') ??
-      ctx.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-      null;
+    const rawIp = getClientIp(ctx.headers);
+    const ip = rawIp === 'unknown' ? null : rawIp;
     const ua = ctx.headers.get('user-agent') ?? null;
 
-    const writeLog = (values: typeof adminAuditLog.$inferInsert) => {
-      db.insert(adminAuditLog)
-        .values(values)
-        // 写入日志成功后顺带触发懒清理（自带 24h 频次保护，失败已被 service 自吞）
-        .then(() => maybePurgeAuditLogs())
-        .catch((err) => console.error('[AuditLog] 写入失败:', err));
+    const writeLog = async (values: typeof adminAuditLog.$inferInsert) => {
+      try {
+        await db.insert(adminAuditLog).values(values);
+        // 写入成功后顺带触发懒清理（自带 24h 频次保护，失败已被 service 自吞）
+        await maybePurgeAuditLogs();
+      } catch (err) {
+        console.error('[AuditLog] 写入失败:', err);
+      }
     };
 
     try {
       const result = await next({ ctx });
-      writeLog({
+      await writeLog({
         userId: sessionUser.id,
         userEmail: sessionUser.email,
         action: path,
@@ -163,7 +165,7 @@ const auditMiddleware = t.middleware(
       });
       return result;
     } catch (error) {
-      writeLog({
+      await writeLog({
         userId: sessionUser.id,
         userEmail: sessionUser.email,
         action: path,

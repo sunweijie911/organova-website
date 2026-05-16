@@ -22,7 +22,10 @@ export async function getConfigValue(key: string): Promise<string | null> {
     }
     return null;
   } catch (error) {
-    console.error('[config] getConfigValue failed for key:', key, error);
+    console.warn(
+      `[config] getConfigValue 读取失败，已降级为 null (key=${key}):`,
+      error,
+    );
     return null;
   }
 }
@@ -51,7 +54,10 @@ export const getFrontendConfig = cache(async (): Promise<FrontendConfig> => {
         : {},
     );
   } catch (error) {
-    console.error('[config] getFrontendConfig failed:', error);
+    console.warn(
+      '[config] getFrontendConfig 读取失败，已降级为默认配置:',
+      error,
+    );
     return mergeConfig({});
   }
 });

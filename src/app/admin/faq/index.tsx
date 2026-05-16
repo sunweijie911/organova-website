@@ -22,6 +22,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
+  App,
   Badge,
   Button,
   Card,
@@ -29,7 +30,6 @@ import {
   Form,
   Input,
   Modal,
-  message,
   Space,
   Switch,
   Tag,
@@ -171,6 +171,7 @@ function CategoryRow({
 // ──────────────────────────────────────────────
 
 function ItemsPanel({ category }: { category: Category }) {
+  const { message, modal } = App.useApp();
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<FaqItem | null>(null);
   const [answerContent, setAnswerContent] = useState('');
@@ -235,6 +236,12 @@ function ItemsPanel({ category }: { category: Category }) {
   };
 
   const handleItemSubmit = (vals: Record<string, unknown>) => {
+    // 富文本字段在 Form 之外维护，需在提交前手工校验非空；
+    // 仅靠 Form.Item rules 无效（rules 必须配合 name 才会跑）。
+    if (!answerContent.replace(/<[^>]+>/g, '').trim()) {
+      message.error('请填写答案');
+      return;
+    }
     const payload = { ...vals, answer: answerContent };
     if (editingItem) {
       updateItem.mutate({
@@ -292,7 +299,7 @@ function ItemsPanel({ category }: { category: Category }) {
           <Button
             danger
             onClick={() =>
-              Modal.confirm({
+              modal.confirm({
                 title: '确认删除该问题？',
                 okType: 'danger',
                 onOk: () => deleteItem.mutate({ id: r.id }),
@@ -394,6 +401,7 @@ function ItemsPanel({ category }: { category: Category }) {
 // ──────────────────────────────────────────────
 
 export default function AdminFaqView() {
+  const { message, modal } = App.useApp();
   const [catModalOpen, setCatModalOpen] = useState(false);
   const [editingCat, setEditingCat] = useState<Category | null>(null);
   const [selectedCatId, setSelectedCatId] = useState<number | null>(null);
@@ -553,7 +561,7 @@ export default function AdminFaqView() {
                   cat={cat}
                   key={cat.id}
                   onDelete={() =>
-                    Modal.confirm({
+                    modal.confirm({
                       title: '确认删除整个分类及其下所有问题？',
                       content: cat.name,
                       okType: 'danger',

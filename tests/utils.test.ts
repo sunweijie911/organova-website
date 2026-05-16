@@ -8,8 +8,15 @@ describe('getClientIp', () => {
     expect(getClientIp(headers)).toBe('1.2.3.4');
   });
 
-  it('x-real-ip 缺失时回退到 x-forwarded-for 第一个地址', () => {
+  // 安全语义：nginx 用 $proxy_add_x_forwarded_for 追加，最后一项才是受信代理观测的真实
+  // 对端 IP；第一项是客户端可伪造的值，不能用于限流/审计 key。
+  it('x-real-ip 缺失时取 x-forwarded-for 最后一项', () => {
     const headers = new Headers({ 'x-forwarded-for': '5.6.7.8, 9.10.11.12' });
+    expect(getClientIp(headers)).toBe('9.10.11.12');
+  });
+
+  it('x-forwarded-for 单值时直接返回该值', () => {
+    const headers = new Headers({ 'x-forwarded-for': '5.6.7.8' });
     expect(getClientIp(headers)).toBe('5.6.7.8');
   });
 

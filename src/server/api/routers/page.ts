@@ -1,9 +1,14 @@
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
+import { frontendConfigSchema } from '@/constants/frontend-config';
+import {
+  buildFrontendConfigZod,
+  type FrontendConfig,
+} from '@/lib/frontend-config';
 import { systemConfig } from '@/server/db/schema';
 import { adminProcedure, createTRPCRouter } from '../trpc';
 
 const FRONTEND_CONFIG_KEY = 'frontend';
+const frontendConfigInput = buildFrontendConfigZod(frontendConfigSchema);
 
 export const pageRouter = createTRPCRouter({
   getFrontendConfig: adminProcedure.query(async ({ ctx }) => {
@@ -12,11 +17,11 @@ export const pageRouter = createTRPCRouter({
       .from(systemConfig)
       .where(eq(systemConfig.key, FRONTEND_CONFIG_KEY))
       .limit(1);
-    return (row[0]?.value ?? {}) as Record<string, unknown>;
+    return (row[0]?.value ?? {}) as Partial<FrontendConfig>;
   }),
 
   saveFrontendConfig: adminProcedure
-    .input(z.record(z.string(), z.any()))
+    .input(frontendConfigInput)
     .mutation(async ({ input, ctx }) => {
       await ctx.db
         .insert(systemConfig)

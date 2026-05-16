@@ -1,12 +1,12 @@
 'use client';
 
 import {
+  App,
   Button,
   Form,
   Input,
   InputNumber,
   Modal,
-  message,
   Space,
   Switch,
 } from 'antd';
@@ -19,6 +19,7 @@ import { api, type RouterOutputs } from '@/lib/trpc/react';
 type Pub = RouterOutputs['publications']['adminList'][number];
 
 export default function AdminPublicationsView() {
+  const { message, modal } = App.useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Pub | null>(null);
   const [form] = Form.useForm();
@@ -72,7 +73,8 @@ export default function AdminPublicationsView() {
     form.resetFields();
     form.setFieldsValue({
       year: new Date().getFullYear(),
-      sortOrder: 0,
+      isVisible: true,
+      sortOrder: data?.length ?? 0,
     });
     setModalOpen(true);
   };
@@ -100,7 +102,7 @@ export default function AdminPublicationsView() {
   };
 
   const handleDelete = (r: Pub) => {
-    Modal.confirm({
+    modal.confirm({
       title: '确认删除？',
       content: r.title,
       okType: 'danger',

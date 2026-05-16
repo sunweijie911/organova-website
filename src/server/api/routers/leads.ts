@@ -65,8 +65,12 @@ export const leadsRouter = createTRPCRouter({
         });
       }
       await ctx.db.insert(leads).values({ ...input, source: 'contact', ip });
-      // 异步发送通知邮件，不阻塞响应
-      void sendLeadNotification({ source: 'contact', ...input });
+      // 邮件失败不应阻断写入，但需在响应前完成，避免 serverless 函数提前结束
+      try {
+        await sendLeadNotification({ source: 'contact', ...input });
+      } catch (err) {
+        console.error('[leads] sendLeadNotification failed:', err);
+      }
       return { success: true };
     }),
 
@@ -82,7 +86,11 @@ export const leadsRouter = createTRPCRouter({
         });
       }
       await ctx.db.insert(leads).values({ ...input, source: 'rfq', ip });
-      void sendLeadNotification({ source: 'rfq', ...input });
+      try {
+        await sendLeadNotification({ source: 'rfq', ...input });
+      } catch (err) {
+        console.error('[leads] sendLeadNotification failed:', err);
+      }
       return { success: true };
     }),
 

@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 // 原生深合并，替代 lodash-es/merge
 function deepMerge<T extends Record<string, any>>(
   target: T,
@@ -136,4 +138,49 @@ export function mergeConfig(
   customConfig: Partial<FrontendConfig> = {},
 ): FrontendConfig {
   return deepMerge(defaultFrontendConfig as FrontendConfig, customConfig);
+}
+
+// ==================== 运行时校验（zod） ====================
+
+// 将 JsonSchema 节点转换为对应的 zod 校验器。
+function nodeToZod(node: JsonSchema): z.ZodType {
+  switch (node.type) {
+    case 'string': {
+      if (node.inputType === 'i18n') {
+        return z.record(z.string(), z.string());
+      }
+      if (node.enumType && node.enumType.length > 0) {
+        return z.enum(node.enumType as readonly [string, ...string[]]);
+      }
+      return z.string();
+    }
+    case 'number': {
+      let n: z.ZodNumber = z.number();
+      if (typeof node.min === 'number') n = n.min(node.min);
+      if (typeof node.max === 'number') n = n.max(node.max);
+      return n;
+    }
+    case 'boolean':
+      return z.boolean();
+    case 'array':
+      return z.array(nodeToZod(node.items));
+    case 'object': {
+      const shape: Record<string, z.ZodType> = {};
+      for (const [k, v] of Object.entries(node.properties)) {
+        shape[k] = nodeToZod(v).optional();
+      }
+      return z.object(shape).strict();
+    }
+  }
+}
+
+// 顶层校验器：每个 section 都是 strict object，未知 section / 字段会被 zod 拒绝。
+export function buildFrontendConfigZod(
+  schema: FrontendSchema,
+): z.ZodType<Partial<FrontendConfig>> {
+  const shape: Record<string, z.ZodType> = {};
+  for (const [k, v] of Object.entries(schema)) {
+    shape[k] = nodeToZod(v).optional();
+  }
+  return z.object(shape).strict() as z.ZodType<Partial<FrontendConfig>>;
 }
