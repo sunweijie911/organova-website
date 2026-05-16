@@ -2,6 +2,7 @@
 
 import { SettingOutlined } from '@ant-design/icons';
 import {
+  App,
   Button,
   DatePicker,
   Descriptions,
@@ -10,7 +11,6 @@ import {
   Input,
   InputNumber,
   Modal,
-  message,
   Select,
   Space,
   Switch,
@@ -61,6 +61,7 @@ function buildAuditExportColumns(
 }
 
 export default function AdminAuditLogsView() {
+  const { message, modal } = App.useApp();
   const [page, setPage] = useState(1);
   const [pageSize] = useState(20);
   const [range, setRange] = useState<Range>(null);
@@ -145,7 +146,7 @@ export default function AdminAuditLogsView() {
 
   const handlePurgeNow = () => {
     const days = purgeConfigQuery.data?.retentionDays ?? 90;
-    Modal.confirm({
+    modal.confirm({
       title: '立即清理',
       content: `将删除 ${days} 天前的所有审计日志，此操作不可恢复。是否继续？`,
       okText: '确认清理',

@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Card,
-  Modal,
-  message,
-  Radio,
-  Space,
-  Spin,
-  Tooltip,
-} from 'antd';
+import { App, Button, Card, Radio, Space, Spin, Tooltip } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ConfigEditor, { type EditMode } from '@/components/ConfigEditor';
 import { frontendConfigSchema } from '@/constants/frontend-config';
@@ -17,6 +8,7 @@ import { type FrontendConfig, mergeConfig } from '@/lib/frontend-config';
 import { api } from '@/lib/trpc/react';
 
 export default function AdminSettingPage() {
+  const { message, modal } = App.useApp();
   const {
     data: storedConfig,
     isLoading,
@@ -62,10 +54,10 @@ export default function AdminSettingPage() {
       return;
     }
     saveMutation.mutate(draft);
-  }, [saveMutation, draft, jsonError]);
+  }, [saveMutation, draft, jsonError, message]);
 
   const handleReset = useCallback(() => {
-    Modal.confirm({
+    modal.confirm({
       title: '恢复默认配置',
       content: '确定要恢复默认配置吗？所有自定义修改将丢失。',
       centered: true,
@@ -73,7 +65,7 @@ export default function AdminSettingPage() {
         resetMutation.mutate({});
       },
     });
-  }, [resetMutation]);
+  }, [resetMutation, modal]);
 
   const visualDisabledTip =
     jsonError && editMode === 'code' ? '请先修正 JSON 格式错误' : '';
