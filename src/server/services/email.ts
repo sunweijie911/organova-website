@@ -37,17 +37,22 @@ function getTransporter(): Transporter {
   return transporter;
 }
 
-/**
- * 发送线索通知邮件。
- * 开发环境打印到控制台；生产环境通过 SMTP 发送（见 .env.example SMTP 配置）。
- */
-export async function sendLeadNotification(lead: {
+export interface LeadNotificationPayload {
   source: string;
   firstName: string;
   lastName: string;
   email: string;
   company?: string | null;
-}): Promise<void> {
+}
+
+/**
+ * 发送线索通知邮件。
+ * 开发环境打印到控制台；生产环境通过 SMTP 发送（见 .env.example SMTP 配置）。
+ * 邮件失败会抛出异常，由调用方决定如何记录（leads router 会写 email_send_status）。
+ */
+export async function sendLeadNotification(
+  lead: LeadNotificationPayload,
+): Promise<void> {
   const sourceLabel =
     lead.source === 'rfq' ? 'RFQ (询价)' : 'Contact (联系我们)';
   if (env.NODE_ENV !== 'production') {
@@ -56,28 +61,24 @@ export async function sendLeadNotification(lead: {
     );
     return;
   }
-  try {
-    const fullName = `${lead.firstName} ${lead.lastName}`;
-    await getTransporter().sendMail({
-      from: `"OrgaNova 网站" <${env.SMTP_USER}>`,
-      to: 'info@tricbio.com',
-      subject: `[新线索] ${sourceLabel} — ${fullName}`,
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
-          <h2 style="color:#333;margin-bottom:16px;">收到新的网站线索</h2>
-          <table style="width:100%;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:8px;color:#666;width:100px;">来源</td><td style="padding:8px;font-weight:600;">${esc(sourceLabel)}</td></tr>
-            <tr><td style="padding:8px;color:#666;">姓名</td><td style="padding:8px;">${esc(fullName)}</td></tr>
-            <tr><td style="padding:8px;color:#666;">邮箱</td><td style="padding:8px;"><a href="mailto:${esc(lead.email)}">${esc(lead.email)}</a></td></tr>
-            ${lead.company ? `<tr><td style="padding:8px;color:#666;">公司</td><td style="padding:8px;">${esc(lead.company)}</td></tr>` : ''}
-          </table>
-          <p style="margin-top:20px;font-size:13px;color:#999;">请登录后台查看完整信息。</p>
-        </div>
-      `,
-    });
-  } catch (err) {
-    console.error('[LEAD EMAIL] 发送失败:', err);
-  }
+  const fullName = `${lead.firstName} ${lead.lastName}`;
+  await getTransporter().sendMail({
+    from: `"OrgaNova 网站" <${env.SMTP_USER}>`,
+    to: 'info@tricbio.com',
+    subject: `[新线索] ${sourceLabel} — ${fullName}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2 style="color:#333;margin-bottom:16px;">收到新的网站线索</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <tr><td style="padding:8px;color:#666;width:100px;">来源</td><td style="padding:8px;font-weight:600;">${esc(sourceLabel)}</td></tr>
+          <tr><td style="padding:8px;color:#666;">姓名</td><td style="padding:8px;">${esc(fullName)}</td></tr>
+          <tr><td style="padding:8px;color:#666;">邮箱</td><td style="padding:8px;"><a href="mailto:${esc(lead.email)}">${esc(lead.email)}</a></td></tr>
+          ${lead.company ? `<tr><td style="padding:8px;color:#666;">公司</td><td style="padding:8px;">${esc(lead.company)}</td></tr>` : ''}
+        </table>
+        <p style="margin-top:20px;font-size:13px;color:#999;">请登录后台查看完整信息。</p>
+      </div>
+    `,
+  });
 }
 
 export async function sendEmailOtp(email: string, code: string): Promise<void> {

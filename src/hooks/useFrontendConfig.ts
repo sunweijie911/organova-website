@@ -10,5 +10,5 @@ import { api } from '@/lib/trpc/react';
  */
 export function useFrontendConfig(): FrontendConfig {
   const { data } = api.page.getFrontendConfig.useQuery();
-  return useMemo(() => mergeConfig(data ?? {}), [data]);
+  return useMemo(() => mergeConfig(data?.value ?? {}), [data?.value]);
 }

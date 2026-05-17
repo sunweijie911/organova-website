@@ -43,7 +43,7 @@ export default function CaseStudiesListView() {
     <>
       {/* 顶部黑底容器：包住 BrandLogo + Hero，避免 BrandLogo 上方出现白色条 */}
       <div className={styles.page}>
-        <BrandLogo variant="dark" />
+        <BrandLogo bg="dark" />
         <ListHero />
       </div>
 

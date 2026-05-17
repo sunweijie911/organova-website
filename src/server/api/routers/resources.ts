@@ -2,12 +2,13 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { resources } from '@/server/db/schema';
 import { assertUpdated } from '@/server/db/utils';
+import { deleteFileIfChanged } from '@/server/services/storage';
 import { RESOURCE_CTA_TYPES } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const resourceWriteSchema = z.object({
   name: z.string().min(1).max(256),
-  description: z.string().optional(),
+  description: z.string().max(10_000).optional(),
   ctaLabel: z.string().max(128).optional(),
   ctaType: z.enum(RESOURCE_CTA_TYPES),
   fileUrl: z.string().nullable().optional(),
@@ -43,23 +44,35 @@ export const resourcesRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(resourceWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
+      const [before] = await ctx.db
+        .select({ fileUrl: resources.fileUrl })
+        .from(resources)
+        .where(eq(resources.id, id))
+        .limit(1);
       const result = await ctx.db
         .update(resources)
         .set(data)
         .where(eq(resources.id, id))
         .returning({ id: resources.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.fileUrl, data.fileUrl);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
+      const [before] = await ctx.db
+        .select({ fileUrl: resources.fileUrl })
+        .from(resources)
+        .where(eq(resources.id, input.id))
+        .limit(1);
       const result = await ctx.db
         .delete(resources)
         .where(eq(resources.id, input.id))
         .returning({ id: resources.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.fileUrl, null);
       return { success: true };
     }),
 
@@ -77,7 +90,9 @@ export const resourcesRouter = createTRPCRouter({
 
   adminUpdateSort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {

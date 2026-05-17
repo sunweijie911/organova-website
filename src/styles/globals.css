@@ -16,8 +16,9 @@
   --portal-body-font-family: var(--font-roboto), "Roboto", sans-serif;
 }
 
-/* 修复 UnoCSS reset 将 button background 设为 transparent 导致 antd 按钮闪白 */
-.ant-btn-primary:not(:disabled) {
+/* portal 子树用 UnoCSS reset，会把 button background 设为 transparent；
+ * 用 .portal-root scope 把覆盖收敛到 portal，避免影响 admin AntD 按钮 token。 */
+.portal-root .ant-btn-primary:not(:disabled) {
   background-color: var(--ant-color-primary, #ff6b3d);
 }
 

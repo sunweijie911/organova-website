@@ -8,7 +8,11 @@ if (!DATABASE_URL) {
   process.exit(0);
 }
 
-const ssl = { rejectUnauthorized: false };
+// URL 显式 sslmode=disable 时不走 TLS（本地无 SSL 的 PG）；
+// 其余情况开 SSL 但跳过证书校验（RDS / Aliyun RDS 的自签证书场景）。
+const ssl = /[?&]sslmode=disable\b/.test(DATABASE_URL)
+  ? false
+  : { rejectUnauthorized: false };
 
 const sql = postgres(DATABASE_URL, { max: 1, ssl });
 

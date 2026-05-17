@@ -19,7 +19,10 @@ function loadEruda(): Promise<Eruda> {
  */
 export function DebugPanel() {
   const searchParams = useSearchParams();
-  const enabled = searchParams.get('debug') === 'true';
+  // 仅非生产环境允许 ?debug=true 唤出调试面板，避免泄露 session cookie / tRPC payload
+  const enabled =
+    process.env.NODE_ENV !== 'production' &&
+    searchParams.get('debug') === 'true';
   const initializedRef = useRef(false);
 
   useEffect(() => {

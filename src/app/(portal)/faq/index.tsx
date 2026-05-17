@@ -21,7 +21,7 @@ export default function FaqView() {
 
   return (
     <div className={styles.page}>
-      <BrandLogo variant="dark" />
+      <BrandLogo bg="dark" />
       <HeroBanner
         activeCategory={effectiveCategory}
         categories={categoryNames}

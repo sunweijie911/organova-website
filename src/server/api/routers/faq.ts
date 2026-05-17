@@ -108,8 +108,8 @@ export const faqRouter = createTRPCRouter({
     .input(
       z.object({
         categoryId: z.number().int(),
-        question: z.string().min(1),
-        answer: z.string().min(1),
+        question: z.string().min(1).max(2000),
+        answer: z.string().min(1).max(20_000),
         sortOrder: z.number().int().default(0),
         isVisible: z.boolean().default(true),
       }),
@@ -127,8 +127,8 @@ export const faqRouter = createTRPCRouter({
       z.object({
         id: z.number().int(),
         categoryId: z.number().int(),
-        question: z.string().min(1),
-        answer: z.string().min(1),
+        question: z.string().min(1).max(2000),
+        answer: z.string().min(1).max(20_000),
         sortOrder: z.number().int(),
         isVisible: z.boolean(),
       }),
@@ -169,7 +169,9 @@ export const faqRouter = createTRPCRouter({
 
   adminUpdateCategorySort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {
@@ -185,7 +187,9 @@ export const faqRouter = createTRPCRouter({
 
   adminUpdateItemSort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {

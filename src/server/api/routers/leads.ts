@@ -1,12 +1,45 @@
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, ilike, or } from 'drizzle-orm';
 import { z } from 'zod';
+import type { db as Db } from '@/server/db';
 import { leads } from '@/server/db/schema';
-import { sendLeadNotification } from '@/server/services/email';
+import {
+  type LeadNotificationPayload,
+  sendLeadNotification,
+} from '@/server/services/email';
 import { getClientIp } from '@/server/services/get-client-ip';
 import { contactLimiter } from '@/server/services/rate-limiter';
 import { LEAD_SOURCES, LEAD_STATUSES } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
+
+// 发送通知邮件并回写发送状态。邮件失败不抛错，避免影响用户提交体验。
+async function sendLeadAndRecordStatus(
+  db: typeof Db,
+  leadId: number | undefined,
+  payload: LeadNotificationPayload,
+) {
+  try {
+    await sendLeadNotification(payload);
+    if (leadId) {
+      await db
+        .update(leads)
+        .set({ emailSendStatus: 'sent', emailSentAt: new Date() })
+        .where(eq(leads.id, leadId));
+    }
+  } catch (err) {
+    console.error('[leads] sendLeadNotification failed:', err);
+    if (leadId) {
+      const msg = err instanceof Error ? err.message : String(err);
+      await db
+        .update(leads)
+        .set({
+          emailSendStatus: 'failed',
+          emailError: msg.slice(0, 2000),
+        })
+        .where(eq(leads.id, leadId));
+    }
+  }
+}
 
 const contactSubmitSchema = z.object({
   firstName: z.string().min(1).max(128),
@@ -57,20 +90,25 @@ export const leadsRouter = createTRPCRouter({
     .input(contactSubmitSchema)
     .mutation(async ({ input, ctx }) => {
       const ip = getClientIp(ctx.headers);
-      const { allowed, retryAfterMs } = contactLimiter.check(`contact:${ip}`);
+      // contact 和 rfq 共用同一限流桶（lead:），防止攻击者通过分别打两个端点叠加配额
+      const { allowed, retryAfterMs } = await contactLimiter.check(
+        `lead:${ip}`,
+      );
       if (!allowed) {
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
           message: `请求过于频繁，请 ${Math.ceil(retryAfterMs / 1000)} 秒后重试`,
         });
       }
-      await ctx.db.insert(leads).values({ ...input, source: 'contact', ip });
-      // 邮件失败不应阻断写入，但需在响应前完成，避免 serverless 函数提前结束
-      try {
-        await sendLeadNotification({ source: 'contact', ...input });
-      } catch (err) {
-        console.error('[leads] sendLeadNotification failed:', err);
-      }
+      const [row] = await ctx.db
+        .insert(leads)
+        .values({ ...input, source: 'contact', ip })
+        .returning({ id: leads.id });
+      // 邮件失败不应阻断写入；通过 email_send_status 留痕，admin 可补救
+      await sendLeadAndRecordStatus(ctx.db, row?.id, {
+        source: 'contact',
+        ...input,
+      });
       return { success: true };
     }),
 
@@ -78,19 +116,23 @@ export const leadsRouter = createTRPCRouter({
     .input(rfqSubmitSchema)
     .mutation(async ({ input, ctx }) => {
       const ip = getClientIp(ctx.headers);
-      const { allowed, retryAfterMs } = contactLimiter.check(`rfq:${ip}`);
+      const { allowed, retryAfterMs } = await contactLimiter.check(
+        `lead:${ip}`,
+      );
       if (!allowed) {
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
           message: `请求过于频繁，请 ${Math.ceil(retryAfterMs / 1000)} 秒后重试`,
         });
       }
-      await ctx.db.insert(leads).values({ ...input, source: 'rfq', ip });
-      try {
-        await sendLeadNotification({ source: 'rfq', ...input });
-      } catch (err) {
-        console.error('[leads] sendLeadNotification failed:', err);
-      }
+      const [row] = await ctx.db
+        .insert(leads)
+        .values({ ...input, source: 'rfq', ip })
+        .returning({ id: leads.id });
+      await sendLeadAndRecordStatus(ctx.db, row?.id, {
+        source: 'rfq',
+        ...input,
+      });
       return { success: true };
     }),
 
@@ -125,15 +167,16 @@ export const leadsRouter = createTRPCRouter({
     }),
 
   // CSV 导出（单次最多 1000 条；超量需配合分批接口或筛选缩量）
+  // 改为 mutation 以走 auditMiddleware 留痕（导出敏感数据必须可审计）
   adminExportAll: adminProcedure
     .input(
       z.object({
-        search: z.string().optional(),
+        search: z.string().max(256).optional(),
         source: z.enum(LEAD_SOURCES).optional(),
         status: z.enum(LEAD_STATUSES).optional(),
       }),
     )
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const where = buildWhere(input);
       return ctx.db
         .select()

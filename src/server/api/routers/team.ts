@@ -3,6 +3,7 @@ import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { teamMembers } from '@/server/db/schema';
 import { assertUpdated } from '@/server/db/utils';
+import { deleteFileIfChanged } from '@/server/services/storage';
 import { TEAM_GROUPS } from '@/types/enums';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
@@ -10,8 +11,8 @@ const teamMemberWriteSchema = z.object({
   photo: z.string().nullable().optional(),
   name: z.string().min(1).max(256),
   title: z.string().min(1).max(256),
-  shortBio: z.string().optional(),
-  fullBio: z.string().optional(),
+  shortBio: z.string().max(2000).optional(),
+  fullBio: z.string().max(20_000).optional(),
   group: z.enum(TEAM_GROUPS),
   sortOrder: z.number().int().default(0),
   isVisible: z.boolean().default(true),
@@ -65,23 +66,35 @@ export const teamRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(teamMemberWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
+      const [before] = await ctx.db
+        .select({ photo: teamMembers.photo })
+        .from(teamMembers)
+        .where(eq(teamMembers.id, id))
+        .limit(1);
       const result = await ctx.db
         .update(teamMembers)
         .set(data)
         .where(eq(teamMembers.id, id))
         .returning({ id: teamMembers.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.photo, data.photo);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
+      const [before] = await ctx.db
+        .select({ photo: teamMembers.photo })
+        .from(teamMembers)
+        .where(eq(teamMembers.id, input.id))
+        .limit(1);
       const result = await ctx.db
         .delete(teamMembers)
         .where(eq(teamMembers.id, input.id))
         .returning({ id: teamMembers.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.photo, null);
       return { success: true };
     }),
 
@@ -99,7 +112,9 @@ export const teamRouter = createTRPCRouter({
 
   adminUpdateSort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {

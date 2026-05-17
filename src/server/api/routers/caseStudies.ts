@@ -4,6 +4,7 @@ import { z } from 'zod';
 import type { db as Db } from '@/server/db';
 import { caseStudies, systemConfig } from '@/server/db/schema';
 import { assertUpdated, isUniqueViolation } from '@/server/db/utils';
+import { deleteFileIfChanged } from '@/server/services/storage';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const DEFAULT_CANCER_TYPE_TAGS = [
@@ -62,12 +63,12 @@ const caseStudyWriteSchema = z.object({
   title: z.string().min(1).max(512),
   summary: z.string().max(1000).optional(),
   coverImage: z.string().nullable().optional(),
-  cancerTypeTags: z.array(z.string()).default([]),
-  applicationTags: z.array(z.string()).default([]),
-  challenge: z.string().optional(),
-  approach: z.string().optional(),
-  results: z.string().optional(),
-  implication: z.string().optional(),
+  cancerTypeTags: z.array(z.string().max(64)).max(50).default([]),
+  applicationTags: z.array(z.string().max(64)).max(50).default([]),
+  challenge: z.string().max(50_000).optional(),
+  approach: z.string().max(50_000).optional(),
+  results: z.string().max(50_000).optional(),
+  implication: z.string().max(50_000).optional(),
   metaModel: z.string().max(256).optional(),
   metaDrugClasses: z.string().max(256).optional(),
   metaReadout: z.string().max(256).optional(),
@@ -152,6 +153,11 @@ export const caseStudiesRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(caseStudyWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
+      const [before] = await ctx.db
+        .select({ coverImage: caseStudies.coverImage })
+        .from(caseStudies)
+        .where(eq(caseStudies.id, id))
+        .limit(1);
       let result: { id: number }[];
       try {
         result = await ctx.db
@@ -169,17 +175,24 @@ export const caseStudiesRouter = createTRPCRouter({
         throw err;
       }
       assertUpdated(result);
+      deleteFileIfChanged(before?.coverImage, data.coverImage);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
+      const [before] = await ctx.db
+        .select({ coverImage: caseStudies.coverImage })
+        .from(caseStudies)
+        .where(eq(caseStudies.id, input.id))
+        .limit(1);
       const result = await ctx.db
         .delete(caseStudies)
         .where(eq(caseStudies.id, input.id))
         .returning({ id: caseStudies.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.coverImage, null);
       return { success: true };
     }),
 
@@ -197,7 +210,9 @@ export const caseStudiesRouter = createTRPCRouter({
 
   adminUpdateSort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {
@@ -230,8 +245,8 @@ export const caseStudiesRouter = createTRPCRouter({
   adminSetFilterTags: adminProcedure
     .input(
       z.object({
-        cancerTypeTags: z.array(z.string()).optional(),
-        applicationTags: z.array(z.string()).optional(),
+        cancerTypeTags: z.array(z.string().max(64)).max(50).optional(),
+        applicationTags: z.array(z.string().max(64)).max(50).optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {

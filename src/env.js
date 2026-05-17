@@ -33,6 +33,18 @@ export const env = createEnv({
     RATE_LIMIT_AUTH_IP: z.string().default('5/60000'),
     RATE_LIMIT_CONTACT: z.string().default('3/60000'),
 
+    // 是否信任 X-Real-IP / X-Forwarded-For 头来推断客户端 IP。
+    // 仅当请求一定经过受信代理（nginx / CDN）时才能为 true；否则攻击者可伪造 IP 绕过限流。
+    TRUST_PROXY_HEADERS: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+
+    // Redis 限流后端：设置后所有 rate-limiter 走 Redis（多实例共享计数）；
+    // 未设置时退化为进程内 Map，启动会 warn。生产水平扩展必须设。
+    // 示例：redis://default:password@host:6379/0 或 rediss://... (TLS)
+    REDIS_URL: z.string().optional(),
+
     // 登录方式：email-password | email-otp
     // 运行时变量，通过服务端注入到客户端，改 .env 重启即可生效
     AUTH_METHOD: z.enum(['email-otp', 'email-password']).default('email-otp'),
@@ -70,6 +82,8 @@ export const env = createEnv({
     RATE_LIMIT_GLOBAL_IP: stripQuotes(process.env.RATE_LIMIT_GLOBAL_IP),
     RATE_LIMIT_AUTH_IP: stripQuotes(process.env.RATE_LIMIT_AUTH_IP),
     RATE_LIMIT_CONTACT: stripQuotes(process.env.RATE_LIMIT_CONTACT),
+    TRUST_PROXY_HEADERS: stripQuotes(process.env.TRUST_PROXY_HEADERS),
+    REDIS_URL: stripQuotes(process.env.REDIS_URL),
     AUTH_METHOD: stripQuotes(process.env.AUTH_METHOD),
     STORAGE_PROVIDER: stripQuotes(process.env.STORAGE_PROVIDER),
     OSS_REGION: stripQuotes(process.env.OSS_REGION),

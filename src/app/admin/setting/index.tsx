@@ -10,28 +10,54 @@ import { api } from '@/lib/trpc/react';
 export default function AdminSettingPage() {
   const { message, modal } = App.useApp();
   const {
-    data: storedConfig,
+    data: stored,
     isLoading,
     refetch,
   } = api.page.getFrontendConfig.useQuery();
+  // 持有读取时的 updatedAt 作为乐观锁版本号，保存/重置时回传给后端
+  const expectedUpdatedAt = useMemo(
+    () =>
+      stored?.updatedAt instanceof Date
+        ? stored.updatedAt.toISOString()
+        : (stored?.updatedAt ?? null),
+    [stored?.updatedAt],
+  );
+
+  const handleConflict = useCallback(() => {
+    void message.error('配置已被其他管理员修改，已为你拉取最新版本');
+    void refetch();
+  }, [message, refetch]);
+
   const saveMutation = api.page.saveFrontendConfig.useMutation({
     onSuccess: () => {
       message.success('配置已保存');
       void refetch();
     },
-    onError: () => message.error('保存失败，请重试'),
+    onError: (err) => {
+      if (err.data?.code === 'CONFLICT') {
+        handleConflict();
+      } else {
+        message.error('保存失败，请重试');
+      }
+    },
   });
   const resetMutation = api.page.saveFrontendConfig.useMutation({
     onSuccess: () => {
       message.success('已恢复默认配置');
       void refetch();
     },
-    onError: () => message.error('恢复失败，请重试'),
+    onError: (err) => {
+      if (err.data?.code === 'CONFLICT') {
+        handleConflict();
+      } else {
+        message.error('恢复失败，请重试');
+      }
+    },
   });
 
   const savedConfig = useMemo(
-    () => mergeConfig(storedConfig ?? {}),
-    [storedConfig],
+    () => mergeConfig(stored?.value ?? {}),
+    [stored?.value],
   );
   const [draft, setDraft] = useState<FrontendConfig>(savedConfig);
   const [editMode, setEditMode] = useState<EditMode>('visual');
@@ -53,8 +79,8 @@ export default function AdminSettingPage() {
       void message.error('请先修正 JSON 格式错误');
       return;
     }
-    saveMutation.mutate(draft);
-  }, [saveMutation, draft, jsonError, message]);
+    saveMutation.mutate({ value: draft, expectedUpdatedAt });
+  }, [saveMutation, draft, jsonError, message, expectedUpdatedAt]);
 
   const handleReset = useCallback(() => {
     modal.confirm({
@@ -62,10 +88,10 @@ export default function AdminSettingPage() {
       content: '确定要恢复默认配置吗？所有自定义修改将丢失。',
       centered: true,
       onOk: () => {
-        resetMutation.mutate({});
+        resetMutation.mutate({ value: {}, expectedUpdatedAt });
       },
     });
-  }, [resetMutation, modal]);
+  }, [resetMutation, modal, expectedUpdatedAt]);
 
   const visualDisabledTip =
     jsonError && editMode === 'code' ? '请先修正 JSON 格式错误' : '';

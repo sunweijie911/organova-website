@@ -87,15 +87,7 @@ export default function AdminAuditLogsView() {
   const { data: actionOptions } = api.sys.listDistinctActions.useQuery();
   const { data: stats } = api.sys.getAuditLogStats.useQuery();
 
-  const exportQuery = api.sys.exportAuditLogs.useQuery(
-    {
-      startDate: queryInput.startDate,
-      endDate: queryInput.endDate,
-      action,
-      userEmail: userEmail || undefined,
-    },
-    { enabled: false },
-  );
+  const exportMutation = api.sys.exportAuditLogs.useMutation();
 
   const purgeMutation = api.sys.purgeAuditLogs.useMutation({
     onSuccess: (res) => {
@@ -128,15 +120,18 @@ export default function AdminAuditLogsView() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const result = await exportQuery.refetch();
-      if (result.data) {
-        await exportToXlsx({
-          filename: 'audit_logs',
-          sheetName: '审计日志',
-          columns: buildAuditExportColumns(actionLabelMap),
-          rows: result.data as AuditLog[],
-        });
-      }
+      const rows = await exportMutation.mutateAsync({
+        startDate: queryInput.startDate,
+        endDate: queryInput.endDate,
+        action,
+        userEmail: userEmail || undefined,
+      });
+      await exportToXlsx({
+        filename: 'audit_logs',
+        sheetName: '审计日志',
+        columns: buildAuditExportColumns(actionLabelMap),
+        rows: rows as AuditLog[],
+      });
     } catch {
       message.error('导出失败');
     } finally {

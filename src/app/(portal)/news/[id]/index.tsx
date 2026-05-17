@@ -1,10 +1,7 @@
-'use client';
-
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { BrandLogo } from '@/components/BrandLogo';
 import SafeHtml from '@/components/SafeHtml';
-import { api } from '@/lib/trpc/react';
+import type { news } from '@/server/db/schema';
 import styles from './index.module.scss';
 
 /**
@@ -15,6 +12,8 @@ import styles from './index.module.scss';
  *  - 日期 04.15.2026 (Roboto Light 16px)
  *  - 富文本正文 (Roboto Regular 24px)
  */
+type NewsRow = typeof news.$inferSelect;
+
 function formatDotDate(date: Date | string): string {
   const d = new Date(date);
   const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -23,48 +22,19 @@ function formatDotDate(date: Date | string): string {
   return `${mm}.${dd}.${yyyy}`;
 }
 
-export default function NewsDetailView() {
-  const params = useParams<{ id: string }>();
-  const numericId = Number(params.id);
-
-  const { data, isLoading } = api.news.getById.useQuery(
-    { id: numericId },
-    { enabled: Number.isFinite(numericId) },
-  );
-
-  if (isLoading) {
-    return (
-      <>
-        <BrandLogo />
-        <div className={styles.loading}>Loading...</div>
-      </>
-    );
-  }
-
-  if (!data) {
-    return (
-      <>
-        <BrandLogo />
-        <div className={styles.notFound}>
-          News not found.{' '}
-          <Link href="/publications?tab=news">← Back to News</Link>
-        </div>
-      </>
-    );
-  }
-
+export default function NewsDetailView({ news }: { news: NewsRow }) {
   return (
     <>
       <BrandLogo />
       <article className={styles.article}>
         <span className={styles.tag}>News</span>
-        <h1 className={styles.title}>{data.title}</h1>
-        <span className={styles.date}>{formatDotDate(data.publishedAt)}</span>
+        <h1 className={styles.title}>{news.title}</h1>
+        <span className={styles.date}>{formatDotDate(news.publishedAt)}</span>
 
-        {data.content && (
+        {news.content && (
           <SafeHtml
             className={`${styles.content} rich-text`}
-            html={data.content}
+            html={news.content}
           />
         )}
 

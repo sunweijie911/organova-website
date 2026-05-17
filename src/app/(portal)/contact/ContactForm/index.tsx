@@ -129,7 +129,7 @@ export function ContactForm() {
       ))}
       <ArrowButton
         className={styles.submitBtn}
-        onClick={undefined}
+        disabled={submit.isPending}
         type="submit"
       >
         {submit.isPending ? 'Submitting...' : 'Submit'}

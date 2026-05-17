@@ -1,7 +1,14 @@
 import 'server-only';
-import { inArray, lt } from 'drizzle-orm';
+import { inArray, lt, sql } from 'drizzle-orm';
 import { db } from '@/server/db';
 import { adminAuditLog, systemConfig } from '@/server/db/schema';
+
+// pg_try_advisory_xact_lock 的 key：用一个固定 bigint 标识 audit purge 作业；
+// 多实例并发触发时只有一个能拿到锁，其他立即返回不阻塞。
+// 用 xact_lock 而非 session 级 lock：postgres-js 连接池（默认 max=10）下，
+// session 级锁/解锁可能落在不同 connection 上，解锁会静默返回 false 导致锁泄漏；
+// xact 级锁在事务结束时由 PG 自动释放，无需手动 unlock，也避免跨 connection 风险。
+const PURGE_ADVISORY_LOCK_KEY = 1734720001n;
 
 const KEY_ENABLED = 'audit_log_auto_purge_enabled';
 const KEY_RETENTION = 'audit_log_retention_days';
@@ -67,6 +74,7 @@ export async function setAuditPurgeConfig(input: {
 
 /**
  * 懒触发清理：距上次清理 ≥ 24h 才执行一次，失败仅记日志，不影响调用方。
+ * 通过 pg_try_advisory_xact_lock 确保多实例下只有一个进程实际执行 DELETE。
  */
 export async function maybePurgeAuditLogs(): Promise<void> {
   try {
@@ -76,9 +84,25 @@ export async function maybePurgeAuditLogs(): Promise<void> {
     const last = cfg.lastPurgeAt ? new Date(cfg.lastPurgeAt).getTime() : 0;
     if (Date.now() - last < PURGE_INTERVAL_MS) return;
 
-    const cutoff = new Date(Date.now() - cfg.retentionDays * DAY_MS);
-    await db.delete(adminAuditLog).where(lt(adminAuditLog.createdAt, cutoff));
-    await upsertConfig(KEY_LAST_PURGE, new Date().toISOString());
+    // 整段裹进事务：lock + DELETE + upsert 都跑在同一 connection；
+    // xact_lock 在事务 COMMIT/ROLLBACK 时由 PG 自动释放，无需手动 unlock。
+    await db.transaction(async (tx) => {
+      const lockRows = await tx.execute<{ locked: boolean }>(
+        sql`SELECT pg_try_advisory_xact_lock(${PURGE_ADVISORY_LOCK_KEY}) AS locked`,
+      );
+      if (!lockRows[0]?.locked) return;
+
+      const cutoff = new Date(Date.now() - cfg.retentionDays * DAY_MS);
+      await tx.delete(adminAuditLog).where(lt(adminAuditLog.createdAt, cutoff));
+      const nowIso = new Date().toISOString();
+      await tx
+        .insert(systemConfig)
+        .values({ key: KEY_LAST_PURGE, value: nowIso as never })
+        .onConflictDoUpdate({
+          target: systemConfig.key,
+          set: { value: nowIso as never },
+        });
+    });
   } catch (err) {
     console.error('[audit-purge] 自动清理失败:', err);
   }

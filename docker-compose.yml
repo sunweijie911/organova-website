@@ -43,8 +43,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: organova
+    # PG18+ 要求挂在 /var/lib/postgresql（让镜像自己在子目录建版本化目录），
+    # 不再支持直接挂 /var/lib/postgresql/data。详见 docker-library/postgres#1259
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
 
 volumes:
   postgres_data:

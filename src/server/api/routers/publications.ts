@@ -8,7 +8,7 @@ import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 const publicationWriteSchema = z.object({
   year: z.number().int().min(1900).max(2100),
   journal: z.string().min(1).max(256),
-  title: z.string().min(1),
+  title: z.string().min(1).max(2000),
   authors: z.string().min(1).max(512),
   citationCount: z.string().max(64).optional(),
   doi: z.string().max(256).optional(),
@@ -92,7 +92,9 @@ export const publicationsRouter = createTRPCRouter({
 
   adminUpdateSort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {

@@ -157,7 +157,22 @@
     "argb",
     "openxmlformats",
     "officedocument",
-    "spreadsheetml"
+    "spreadsheetml",
+    "xact",
+    "ioredis",
+    "ZREMRANGEBYSCORE",
+    "ZCARD",
+    "ZADD",
+    "ZRANGE",
+    "WITHSCORES",
+    "PEXPIRE",
+    "ratelimit",
+    "ISR",
+    "tabnabbing",
+    "rediss",
+    "pincode",
+    "verif",
+    "ication"
   ],
   "patterns": [
     {

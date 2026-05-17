@@ -82,10 +82,7 @@ export default function AdminLeadsView() {
     status,
   });
 
-  const exportQuery = api.leads.adminExportAll.useQuery(
-    { search: search || undefined, source, status },
-    { enabled: false },
-  );
+  const exportMutation = api.leads.adminExportAll.useMutation();
 
   const updateStatus = api.leads.adminUpdateStatus.useMutation({
     onSuccess: (_, vars) => {
@@ -107,15 +104,17 @@ export default function AdminLeadsView() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const result = await exportQuery.refetch();
-      if (result.data) {
-        await exportToXlsx({
-          filename: 'leads',
-          sheetName: '用户咨询',
-          columns: LEAD_EXPORT_COLUMNS,
-          rows: result.data as Lead[],
-        });
-      }
+      const rows = await exportMutation.mutateAsync({
+        search: search || undefined,
+        source,
+        status,
+      });
+      await exportToXlsx({
+        filename: 'leads',
+        sheetName: '用户咨询',
+        columns: LEAD_EXPORT_COLUMNS,
+        rows: rows as Lead[],
+      });
     } catch {
       message.error('导出失败');
     } finally {

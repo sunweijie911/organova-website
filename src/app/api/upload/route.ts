@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     }
     const rateLimitKey = session.user.id;
 
-    const rateCheck = uploadLimiter.check(rateLimitKey);
+    const rateCheck = await uploadLimiter.check(rateLimitKey);
     if (!rateCheck.allowed) {
       return NextResponse.json(
         {
@@ -123,7 +123,15 @@ export async function POST(request: Request) {
       : 'misc';
 
     const fileName = `${Date.now()}-${nanoid()}.${detected.ext}`;
-    const fileUrl = await uploadFile(module, fileName, buffer, detected.mime);
+    // PDF 强制下载（避免浏览器内联渲染 + 潜在 PDF JS 引擎风险）；图片仍内联展示
+    const downloadName = detected.kind === 'pdf' ? file.name : undefined;
+    const fileUrl = await uploadFile(
+      module,
+      fileName,
+      buffer,
+      detected.mime,
+      downloadName,
+    );
 
     return NextResponse.json({ url: fileUrl, name: file.name });
   } catch (err) {

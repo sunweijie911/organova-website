@@ -14,12 +14,8 @@ export function PortalStickyNav() {
     if (!el) return;
 
     lastScrollY.current = window.scrollY;
-
-    const isFooterVisible = () => {
-      const footer = document.getElementById('site-footer');
-      const rect = footer?.getBoundingClientRect();
-      return rect ? rect.top < window.innerHeight : false;
-    };
+    // footer 可见性由 IntersectionObserver 推送，避免每次 scroll 都 getBoundingClientRect 强制 layout
+    let footerInView = false;
 
     const apply = (nextVisible: boolean) => {
       if (nextVisible === isVisible.current) return;
@@ -33,34 +29,48 @@ export function PortalStickyNav() {
       );
     };
 
-    // 初始状态
-    apply(!isFooterVisible());
-
-    const handleScroll = () => {
+    const recompute = () => {
       const currentScrollY = window.scrollY;
       const scrollingUp = currentScrollY < lastScrollY.current;
-      const footerVisible = isFooterVisible();
       const nextVisible =
-        !footerVisible && (currentScrollY === 0 || scrollingUp);
+        !footerInView && (currentScrollY === 0 || scrollingUp);
       apply(nextVisible);
       lastScrollY.current = currentScrollY;
     };
 
-    const handleResize = () => {
-      const footerVisible = isFooterVisible();
-      const nextVisible =
-        !footerVisible && (window.scrollY === 0 || isVisible.current);
-      apply(nextVisible);
-    };
+    // 监听 footer，footer 进入视口时隐藏 sticky nav
+    const footer = document.getElementById('site-footer');
+    const io = footer
+      ? new IntersectionObserver(
+          (entries) => {
+            const entry = entries[0];
+            if (!entry) return;
+            footerInView = entry.isIntersecting;
+            recompute();
+          },
+          { rootMargin: '0px', threshold: 0 },
+        )
+      : null;
+    io?.observe(footer as Element);
 
-    const ro = new ResizeObserver(handleResize);
-    const main = document.querySelector('main');
-    if (main) ro.observe(main);
+    // 初始状态：footer 通常不在视口，nav 应该展开
+    apply(true);
+
+    // scroll 用 rAF 节流，每帧最多触发一次
+    let rafId = 0;
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        recompute();
+      });
+    };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      ro.disconnect();
+      io?.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 

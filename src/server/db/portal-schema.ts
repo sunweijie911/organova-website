@@ -36,6 +36,14 @@ export const leads = createTable(
     // rfq 专有 - Step 2
     phone: d.varchar({ length: 64 }),
     ip: d.text(),
+    // 通知邮件发送状态：pending（待发送）/ sent（已发送）/ failed（发送失败）
+    // 用于运营在 admin/leads 列表看到 email 是否成功通知，失败时可手动补发或排查。
+    emailSendStatus: d
+      .varchar('email_send_status', { length: 16 })
+      .notNull()
+      .default('pending'),
+    emailError: d.text('email_error'),
+    emailSentAt: d.timestamp('email_sent_at', { withTimezone: true }),
     createdAt: d
       .timestamp('created_at', { withTimezone: true })
       .$defaultFn(() => new Date())
@@ -45,6 +53,7 @@ export const leads = createTable(
     index('lead_source_idx').on(t.source),
     index('lead_status_idx').on(t.status),
     index('lead_created_at_idx').on(t.createdAt),
+    index('lead_email_send_status_idx').on(t.emailSendStatus),
   ],
 );
 

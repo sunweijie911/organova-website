@@ -24,7 +24,7 @@ export async function proxy(request: NextRequest) {
 
   // API 全局 IP 限流
   if (pathname.startsWith('/api/')) {
-    const globalCheck = globalIpLimiter.check(ip);
+    const globalCheck = await globalIpLimiter.check(ip);
     if (!globalCheck.allowed) {
       return rateLimitResponse(
         globalCheck.retryAfterMs,
@@ -38,7 +38,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/api/auth/sign-in') ||
     pathname.startsWith('/api/auth/email-otp/')
   ) {
-    const authCheck = authIpLimiter.check(ip);
+    const authCheck = await authIpLimiter.check(ip);
     if (!authCheck.allowed) {
       return rateLimitResponse(
         authCheck.retryAfterMs,

@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Roboto, Roboto_Serif } from 'next/font/google';
 import { Suspense } from 'react';
 import { Toaster } from 'sonner';
-import '@unocss/reset/tailwind.css';
 import '@/styles/globals.css';
 import { DebugPanel } from '@/components/DebugPanel';
 import { env } from '@/env';

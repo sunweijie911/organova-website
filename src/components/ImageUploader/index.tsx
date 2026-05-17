@@ -62,6 +62,7 @@ export function ImageUploader({
   placeholder,
 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const limit = maxSize ?? DEFAULT_MAX_SIZE[accept];
   const inputAccept = ACCEPT_INPUT_MAP[accept];
@@ -155,13 +156,18 @@ export function ImageUploader({
   }
 
   // 已有图片：预览 + hover 遮罩
+  // hover 状态挂在最外层容器，保证鼠标移出图片但还在容器内时遮罩不会粘住
   if (value) {
     return (
-      <div
+      // figure 是预览图的语义元素；hover 仅装饰性显示遮罩，键盘用户通过遮罩内图标按钮交互
+      <figure
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{
           position: 'relative',
           width,
           height,
+          margin: 0,
           borderRadius: 8,
           overflow: 'hidden',
           border: '1px solid #d9d9d9',
@@ -184,12 +190,6 @@ export function ImageUploader({
           type="file"
         />
         <div
-          onMouseEnter={(e) => {
-            e.currentTarget.style.opacity = '1';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.opacity = '0';
-          }}
           role="toolbar"
           style={{
             position: 'absolute',
@@ -199,7 +199,8 @@ export function ImageUploader({
             justifyContent: 'center',
             gap: 16,
             background: 'rgba(0,0,0,0.45)',
-            opacity: 0,
+            opacity: hovered || uploading ? 1 : 0,
+            pointerEvents: hovered || uploading ? 'auto' : 'none',
             transition: 'opacity 0.2s',
           }}
         >
@@ -220,7 +221,7 @@ export function ImageUploader({
             </>
           )}
         </div>
-      </div>
+      </figure>
     );
   }
 

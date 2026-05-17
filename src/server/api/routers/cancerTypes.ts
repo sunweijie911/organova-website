@@ -3,6 +3,7 @@ import { and, asc, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { cancerTypes } from '@/server/db/schema';
 import { assertUpdated, isUniqueViolation } from '@/server/db/utils';
+import { deleteFileIfChanged } from '@/server/services/storage';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const cancerTypeWriteSchema = z.object({
@@ -12,10 +13,10 @@ const cancerTypeWriteSchema = z.object({
   formats: z.string().max(128).optional(),
   coverImage: z.string().nullable().optional(),
   subpageTitle: z.string().max(512).optional(),
-  modelCountDetail: z.string().optional(),
-  validationMethods: z.string().optional(),
-  validatedApplications: z.string().optional(),
-  clinicalCorrelation: z.string().optional(),
+  modelCountDetail: z.string().max(50_000).optional(),
+  validationMethods: z.string().max(50_000).optional(),
+  validatedApplications: z.string().max(50_000).optional(),
+  clinicalCorrelation: z.string().max(50_000).optional(),
   cta1Label: z.string().max(128).optional(),
   cta1Url: z.string().max(512).optional(),
   cta2Label: z.string().max(128).optional(),
@@ -94,6 +95,11 @@ export const cancerTypesRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(cancerTypeWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
+      const [before] = await ctx.db
+        .select({ coverImage: cancerTypes.coverImage })
+        .from(cancerTypes)
+        .where(eq(cancerTypes.id, id))
+        .limit(1);
       let result: { id: number }[];
       try {
         result = await ctx.db
@@ -111,17 +117,24 @@ export const cancerTypesRouter = createTRPCRouter({
         throw err;
       }
       assertUpdated(result);
+      deleteFileIfChanged(before?.coverImage, data.coverImage);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
+      const [before] = await ctx.db
+        .select({ coverImage: cancerTypes.coverImage })
+        .from(cancerTypes)
+        .where(eq(cancerTypes.id, input.id))
+        .limit(1);
       const result = await ctx.db
         .delete(cancerTypes)
         .where(eq(cancerTypes.id, input.id))
         .returning({ id: cancerTypes.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.coverImage, null);
       return { success: true };
     }),
 
@@ -139,7 +152,9 @@ export const cancerTypesRouter = createTRPCRouter({
 
   adminUpdateSort: adminProcedure
     .input(
-      z.array(z.object({ id: z.number().int(), sortOrder: z.number().int() })),
+      z
+        .array(z.object({ id: z.number().int(), sortOrder: z.number().int() }))
+        .max(500),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.db.transaction(async (tx) => {

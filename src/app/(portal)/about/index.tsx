@@ -31,7 +31,7 @@ export default function AboutView() {
 
   return (
     <div className={styles.page}>
-      <BrandLogo variant="dark" />
+      <BrandLogo bg="dark" />
 
       <HeroBanner />
 

@@ -3,20 +3,21 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { news } from '@/server/db/schema';
 import { assertUpdated } from '@/server/db/utils';
+import { deleteFileIfChanged } from '@/server/services/storage';
 import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const newsWriteSchema = z.object({
   title: z.string().min(1).max(512),
   publishedAt: z.date(),
   location: z.string().max(256).optional(),
-  content: z.string().optional(),
+  content: z.string().max(50_000).optional(),
   coverImage: z.string().nullable().optional(),
   isPublished: z.boolean().default(false),
 });
 
 export const newsRouter = createTRPCRouter({
   list: publicProcedure
-    .input(z.object({ year: z.number().int().optional() }))
+    .input(z.object({ year: z.number().int().min(1900).max(2100).optional() }))
     .query(async ({ input, ctx }) => {
       return ctx.db
         .select()
@@ -106,23 +107,35 @@ export const newsRouter = createTRPCRouter({
     .input(z.object({ id: z.number().int() }).merge(newsWriteSchema))
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;
+      const [before] = await ctx.db
+        .select({ coverImage: news.coverImage })
+        .from(news)
+        .where(eq(news.id, id))
+        .limit(1);
       const result = await ctx.db
         .update(news)
         .set(data)
         .where(eq(news.id, id))
         .returning({ id: news.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.coverImage, data.coverImage);
       return { success: true };
     }),
 
   adminDelete: adminProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ input, ctx }) => {
+      const [before] = await ctx.db
+        .select({ coverImage: news.coverImage })
+        .from(news)
+        .where(eq(news.id, input.id))
+        .limit(1);
       const result = await ctx.db
         .delete(news)
         .where(eq(news.id, input.id))
         .returning({ id: news.id });
       assertUpdated(result);
+      deleteFileIfChanged(before?.coverImage, null);
       return { success: true };
     }),
 

@@ -22,6 +22,27 @@
       "when": 1778400000000,
       "tag": "0002_drop_lead_additional_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779100000000,
+      "tag": "0003_lead_email_status_and_drop_unused",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1779200000000,
+      "tag": "0004_audit_log_fk_and_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779300000000,
+      "tag": "0005_system_config_updated_at_notnull",
+      "breakpoints": true
     }
   ]
 }

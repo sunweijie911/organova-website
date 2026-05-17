@@ -15,7 +15,6 @@ import { auth } from '@/server/better-auth';
 import { db } from '@/server/db';
 import { adminAuditLog } from '@/server/db/schema';
 import { isAdminEmail } from '@/server/services/admin-check';
-import { maybePurgeAuditLogs } from '@/server/services/audit-purge';
 import { getClientIp } from '@/server/services/get-client-ip';
 
 /**
@@ -118,18 +117,33 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 function sanitizeInput(input: unknown): unknown {
   if (!input || typeof input !== 'object') return input;
   if (Array.isArray(input)) return input.map(sanitizeInput);
-  const sensitiveKeys = ['password', 'secret', 'token', 'otp', 'code'];
+  // 子串匹配，覆盖 newPassword / confirmPassword / apiToken 等驼峰命名。
+  // 注意：不要用 endsWith('code')，会误伤 zipCode / countryCode / errorCode /
+  // productCode 等业务字段。验证码用更精确的命名匹配：verificationCode /
+  // verifyCode / authCode / otpCode（"verify*Code" / "*OtpCode"）。
+  const sensitivePatterns = ['password', 'secret', 'token', 'otp'];
+  const exactSensitiveKeys = new Set(['code', 'pin', 'pincode', 'captcha']);
   const sanitized: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(input as Record<string, unknown>)) {
-    sanitized[key] = sensitiveKeys.includes(key) ? '***' : sanitizeInput(value);
+    const lower = key.toLowerCase();
+    const isSensitive =
+      sensitivePatterns.some((p) => lower.includes(p)) ||
+      exactSensitiveKeys.has(lower) ||
+      /(?:verif(?:y|ication)|auth|otp)code$/.test(lower);
+    sanitized[key] = isSensitive ? '***' : sanitizeInput(value);
   }
   return sanitized;
 }
 
 /**
  * 审计日志中间件 —— 记录所有 admin mutation 操作到 adminAuditLog 表。
- * 同步 await 写入，确保在 serverless 环境下函数返回前 flush 完成；
- * 写入失败仅记录到 console，不阻断业务请求。
+ *
+ * 设计：写入采用 fire-and-forget（不 await），让业务响应不被 DB I/O 阻塞。
+ * Standalone 长进程下，Node 事件循环会自然 flush 写入；如果未来迁移到 serverless
+ * 需要响应后保活异步任务，请改用 next/server 的 after() 包裹 writeLog。
+ *
+ * 日志清理（保留窗口）已从此中间件移除：原先每条 mutation 都额外查 systemConfig
+ * 3 个 key，吞性能。改为按需在 getAuditLogStats / setAuditPurgeConfig 入口触发。
  */
 const auditMiddleware = t.middleware(
   async ({ ctx, next, path, type, getRawInput }) => {
@@ -142,19 +156,16 @@ const auditMiddleware = t.middleware(
     const ip = rawIp === 'unknown' ? null : rawIp;
     const ua = ctx.headers.get('user-agent') ?? null;
 
-    const writeLog = async (values: typeof adminAuditLog.$inferInsert) => {
-      try {
-        await db.insert(adminAuditLog).values(values);
-        // 写入成功后顺带触发懒清理（自带 24h 频次保护，失败已被 service 自吞）
-        await maybePurgeAuditLogs();
-      } catch (err) {
-        console.error('[AuditLog] 写入失败:', err);
-      }
+    const writeLog = (values: typeof adminAuditLog.$inferInsert) => {
+      void db
+        .insert(adminAuditLog)
+        .values(values)
+        .catch((err) => console.error('[AuditLog] 写入失败:', err));
     };
 
     try {
       const result = await next({ ctx });
-      await writeLog({
+      writeLog({
         userId: sessionUser.id,
         userEmail: sessionUser.email,
         action: path,
@@ -165,7 +176,7 @@ const auditMiddleware = t.middleware(
       });
       return result;
     } catch (error) {
-      await writeLog({
+      writeLog({
         userId: sessionUser.id,
         userEmail: sessionUser.email,
         action: path,

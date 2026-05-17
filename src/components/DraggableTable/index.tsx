@@ -103,7 +103,7 @@ export function DraggableTable<T extends WithId>({
   }, [dataSource]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 1 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
   );
 
   const handleDragEnd = useCallback(

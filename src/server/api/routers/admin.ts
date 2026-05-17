@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, gte, like, lt, lte, min } from 'drizzle-orm';
+import { and, count, desc, eq, gte, ilike, lt, lte, min } from 'drizzle-orm';
 import { z } from 'zod';
 import { ACTION_LABELS } from '@/server/api/audit-action-labels';
 import {
@@ -9,12 +9,18 @@ import {
 } from '@/server/api/trpc';
 import { auth } from '@/server/better-auth';
 import { user } from '@/server/db/auth-schema';
-import { adminAuditLog, systemConfig } from '@/server/db/schema';
+import { adminAuditLog } from '@/server/db/schema';
 import { isAdminEmail } from '@/server/services/admin-check';
 import {
   getAuditPurgeConfig,
+  maybePurgeAuditLogs,
   setAuditPurgeConfig,
 } from '@/server/services/audit-purge';
+
+// 转义 LIKE/ILIKE 通配符，避免用户输入 % / _ 把过滤变成全表匹配
+function escapeLikePattern(value: string): string {
+  return value.replace(/[\\%_]/g, (m) => `\\${m}`);
+}
 
 // 构建审计日志查询的 where 条件（listAuditLogs 和 exportAuditLogs 共用）
 function buildAuditLogWhere(input: {
@@ -34,7 +40,9 @@ function buildAuditLogWhere(input: {
     conditions.push(eq(adminAuditLog.action, input.action));
   }
   if (input.userEmail) {
-    conditions.push(like(adminAuditLog.userEmail, `%${input.userEmail}%`));
+    conditions.push(
+      ilike(adminAuditLog.userEmail, `%${escapeLikePattern(input.userEmail)}%`),
+    );
   }
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
@@ -127,10 +135,10 @@ export const adminRouter = createTRPCRouter({
       z.object({
         page: z.number().min(1).default(1),
         pageSize: z.number().min(1).max(100).default(20),
-        startDate: z.string().optional(),
-        endDate: z.string().optional(),
-        action: z.string().optional(),
-        userEmail: z.string().optional(),
+        startDate: z.iso.datetime().optional(),
+        endDate: z.iso.datetime().optional(),
+        action: z.string().max(128).optional(),
+        userEmail: z.string().max(256).optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -151,17 +159,17 @@ export const adminRouter = createTRPCRouter({
       return { logs, total: countResult[0]?.total ?? 0 };
     }),
 
-  // 导出审计日志（返回全量数据，前端转 Excel）
+  // 导出审计日志（返回全量数据，前端转 Excel）；改为 mutation 以走 auditMiddleware 留痕
   exportAuditLogs: adminProcedure
     .input(
       z.object({
-        startDate: z.string().optional(),
-        endDate: z.string().optional(),
-        action: z.string().optional(),
-        userEmail: z.string().optional(),
+        startDate: z.iso.datetime().optional(),
+        endDate: z.iso.datetime().optional(),
+        action: z.string().max(128).optional(),
+        userEmail: z.string().max(256).optional(),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const where = buildAuditLogWhere(input);
       // 限制单次导出上限，避免长期运行后全表扫描导致 OOM
       return ctx.db
@@ -174,8 +182,9 @@ export const adminRouter = createTRPCRouter({
 
   // ---- 审计日志清理 ----
 
-  // 日志统计（总数 + 最早记录时间）
+  // 日志统计（总数 + 最早记录时间）；顺手触发懒清理（24h 频次保护，失败已被 service 自吞）
   getAuditLogStats: adminProcedure.query(async ({ ctx }) => {
+    void maybePurgeAuditLogs();
     const [countResult, minResult] = await Promise.all([
       ctx.db.select({ total: count() }).from(adminAuditLog),
       ctx.db
@@ -220,42 +229,7 @@ export const adminRouter = createTRPCRouter({
       return { deleted: deleted.length };
     }),
 
-  // ---- 系统配置 ----
-
-  getConfig: adminProcedure
-    .input(z.object({ key: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const config = await ctx.db.query.systemConfig.findFirst({
-        where: eq(systemConfig.key, input.key),
-      });
-
-      return config ?? { key: input.key, value: null, description: null };
-    }),
-
-  setConfig: adminProcedure
-    .input(
-      z.object({
-        key: z.string(),
-        value: z.union([z.string(), z.number(), z.boolean()]),
-        description: z.string().optional(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db
-        .insert(systemConfig)
-        .values({
-          key: input.key,
-          value: input.value,
-          description: input.description,
-        })
-        .onConflictDoUpdate({
-          target: systemConfig.key,
-          set: {
-            value: input.value,
-            description: input.description,
-          },
-        });
-
-      return { success: true };
-    }),
+  // 通用的 getConfig / setConfig 已移除：
+  // 所有系统配置都应通过专用接口（saveFrontendConfig / setAuditPurgeConfig / adminSetFilterTags 等）
+  // 写入，以保证 zod 校验与 audit 留痕，避免泛 key/value 写入绕过类型与约束。
 });
