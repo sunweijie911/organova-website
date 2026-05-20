@@ -26,7 +26,18 @@ if [ -f "build_info.sh" ]; then
     set -a; source build_info.sh; set +a
 fi
 
-PORT="${HOST_PORT:-5000}"
+# 端口默认值必须与 docker-compose.yml 中 ${HOST_PORT:-80} 保持一致，
+# 否则健康检查会去探一个根本没有暴露的端口
+PORT="${HOST_PORT:-80}"
+
+# 自动叠加 HTTPS override：当部署目录存在 docker-compose.https.yml 时启用 SSL
+# （AWS EC2 走这个；阿里云 ECS 不拷该文件，自然按 HTTP 部署）
+# docker compose 原生通过 COMPOSE_FILE 环境变量按顺序合并多份 compose 文件
+COMPOSE_FILE="docker-compose.yml"
+if [ -f "docker-compose.https.yml" ]; then
+    COMPOSE_FILE="${COMPOSE_FILE}:docker-compose.https.yml"
+fi
+export COMPOSE_FILE
 
 # 日志函数
 log_info() { echo -e "${GREEN}[INFO]${NC} $*"; }
@@ -473,7 +484,7 @@ ${GREEN}版本回退:${NC}
   回退方式：上传旧版本部署包，执行 ./manage.sh update <旧版本.tar.gz>
 
 ${GREEN}环境变量:${NC}
-  HOST_PORT         Nginx 监听端口（在 .env 中配置，默认 5000）
+  HOST_PORT         Nginx 容器对宿主机暴露的 HTTP 端口（默认 80，与 docker-compose.yml 一致）
 
 ${GREEN}文件说明:${NC}
   .env              应用配置（数据库、密钥、HOST_PORT 等）—— 手动管理，update 不会覆盖

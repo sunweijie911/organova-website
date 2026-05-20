@@ -174,6 +174,7 @@ jobs:
       image_app: ${{ needs.build.outputs.image_app }}
       image_nginx: ${{ needs.build.outputs.image_nginx }}
       git_ref: ${{ needs.prepare.outputs.git_ref }}
+      enable_https: false
     secrets:
       HOST: ${{ secrets.ALIYUN_HOST }}
       USER: ${{ secrets.ALIYUN_USER }}
@@ -197,6 +198,7 @@ jobs:
       image_app: ${{ needs.build.outputs.image_app }}
       image_nginx: ${{ needs.build.outputs.image_nginx }}
       git_ref: ${{ needs.prepare.outputs.git_ref }}
+      enable_https: true
     secrets:
       HOST: ${{ secrets.AWS_HOST }}
       USER: ${{ secrets.AWS_USER }}

@@ -29,6 +29,11 @@ on:
         description: '用于 checkout 的 git ref'
         required: true
         type: string
+      enable_https:
+        description: '是否启用 HTTPS（叠加 docker-compose.https.yml，需要宿主机有 letsencrypt 证书）'
+        required: false
+        type: boolean
+        default: false
     secrets:
       HOST:
         required: true
@@ -81,7 +86,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "manage.sh,docker-compose.yml,nginx.conf,.env.example"
+          source: "manage.sh,docker-compose.yml,docker-compose.https.yml,nginx.conf,nginx.https.conf,.env.example"
           target: ${{ secrets.DEPLOY_PATH }}
           overwrite: true
 
@@ -91,10 +96,16 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          envs: REGISTRY_TOKEN,IMAGE_APP,IMAGE_NGINX
+          envs: REGISTRY_TOKEN,IMAGE_APP,IMAGE_NGINX,ENABLE_HTTPS
           script: |
             set -e
             cd "${{ secrets.DEPLOY_PATH }}"
+            # 根据 enable_https 决定是否启用 HTTPS override：
+            # 不启用时必须删除 https.yml 和 nginx.https.conf，否则 manage.sh 会自动叠加
+            # 导致 443 端口绑定 / 证书路径解析失败
+            if [ "${ENABLE_HTTPS}" != "true" ]; then
+              rm -f docker-compose.https.yml nginx.https.conf
+            fi
             chmod +x ./manage.sh
             echo "${REGISTRY_TOKEN}" | docker login "${{ inputs.registry }}" -u "${{ inputs.actor }}" --password-stdin
             ./manage.sh pull-deploy "${IMAGE_APP}" "${IMAGE_NGINX}"
@@ -102,3 +113,4 @@ jobs:
           REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
           IMAGE_APP: ${{ inputs.image_app }}
           IMAGE_NGINX: ${{ inputs.image_nginx }}
+          ENABLE_HTTPS: ${{ inputs.enable_https }}
