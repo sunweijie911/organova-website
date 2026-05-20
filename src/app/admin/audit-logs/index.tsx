@@ -97,9 +97,9 @@ export default function AdminAuditLogsView() {
     onError: (err) => message.error(err.message ?? '清理失败'),
   });
 
-  const purgeConfigQuery = api.sys.getAuditPurgeConfig.useQuery(undefined, {
-    enabled: configOpen,
-  });
+  // 始终加载：handlePurgeNow 也需要 retentionDays 的真实值来展示和计算 beforeDate，
+  // 不能等到「自动清理设置」弹窗被打开后才请求
+  const purgeConfigQuery = api.sys.getAuditPurgeConfig.useQuery();
   const setPurgeConfig = api.sys.setAuditPurgeConfig.useMutation({
     onSuccess: () => {
       message.success('已保存自动清理设置');
@@ -139,16 +139,26 @@ export default function AdminAuditLogsView() {
     }
   };
 
-  const handlePurgeNow = () => {
-    const days = purgeConfigQuery.data?.retentionDays ?? 90;
+  const handlePurgeNow = async () => {
+    // 在弹确认框之前确保配置已加载，避免读到硬编码兜底值导致清理范围与展示不符
+    let days = purgeConfigQuery.data?.retentionDays;
+    if (typeof days !== 'number') {
+      const { data } = await purgeConfigQuery.refetch();
+      days = data?.retentionDays;
+    }
+    if (typeof days !== 'number') {
+      message.error('无法获取清理保留天数配置，请稍后重试');
+      return;
+    }
+    const purgeDays = days;
     modal.confirm({
       title: '立即清理',
-      content: `将删除 ${days} 天前的所有审计日志，此操作不可恢复。是否继续？`,
+      content: `将删除 ${purgeDays} 天前的所有审计日志，此操作不可恢复。是否继续？`,
       okText: '确认清理',
       okButtonProps: { danger: true },
       cancelText: '取消',
       onOk: () => {
-        const before = dayjs().subtract(days, 'day').toISOString();
+        const before = dayjs().subtract(purgeDays, 'day').toISOString();
         purgeMutation.mutate({ beforeDate: before });
       },
     });
@@ -289,7 +299,9 @@ export default function AdminAuditLogsView() {
           <Button
             danger
             loading={purgeMutation.isPending}
-            onClick={handlePurgeNow}
+            onClick={() => {
+              void handlePurgeNow();
+            }}
           >
             立即清理
           </Button>

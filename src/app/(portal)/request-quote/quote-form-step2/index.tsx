@@ -47,6 +47,7 @@ function LineInput({
   return (
     <div className={styles.field}>
       <input
+        aria-label={label}
         className={styles.input}
         id={id}
         onChange={onChange}
@@ -94,6 +95,7 @@ export default function QuoteFormStep2({
       <div className={styles.rowFull}>
         <div className={styles.field}>
           <input
+            aria-label="Email Address"
             className={styles.input}
             id="email"
             onChange={onChange('email')}
@@ -128,6 +130,7 @@ export default function QuoteFormStep2({
       <div className={styles.rowFull}>
         <div className={styles.field}>
           <input
+            aria-label="Phone (Optional)"
             className={styles.input}
             id="phone"
             onChange={onChange('phone')}

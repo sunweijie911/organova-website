@@ -104,6 +104,7 @@ export function ContactForm() {
             >
               {field.type === 'textarea' ? (
                 <textarea
+                  aria-label={field.label}
                   className={`${styles.formInput} ${styles.formTextarea}`}
                   onChange={handleChange(field.key)}
                   placeholder={field.label}
@@ -113,6 +114,7 @@ export function ContactForm() {
                 />
               ) : (
                 <input
+                  aria-label={field.label}
                   className={styles.formInput}
                   onChange={handleChange(field.key)}
                   placeholder={field.label}
