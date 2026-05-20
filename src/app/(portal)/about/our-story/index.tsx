@@ -84,11 +84,7 @@ export default function OurStory({ expanded, onToggle }: OurStoryProps) {
             </div>
 
             <div className={styles.btnRow}>
-              <ArrowButton
-                iconVisible="always"
-                onClick={onToggle}
-                variant="dark"
-              >
+              <ArrowButton onClick={onToggle} variant="dark">
                 Read Our Full Story
               </ArrowButton>
             </div>

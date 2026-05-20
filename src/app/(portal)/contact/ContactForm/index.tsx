@@ -140,7 +140,6 @@ export function ContactForm() {
       <ArrowButton
         className={styles.submitBtn}
         disabled={submit.isPending}
-        iconVisible="always"
         type="submit"
         variant="light"
       >

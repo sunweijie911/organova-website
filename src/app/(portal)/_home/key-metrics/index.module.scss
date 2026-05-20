@@ -30,10 +30,23 @@
   padding: 117px 53px 134px;
   overflow: hidden;
   transition: transform 0.3s ease;
+  border: 1px solid rgb(58 46 63 / 0.2);
   border-radius: 20px;
-  background-color: #000;
+  background-color: rgb(58 46 63 / 0.2);
+  box-shadow: 0 4px 20px 0 rgb(232 141 255 / 0.2);
   cursor: pointer;
   gap: 20px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    transition: opacity 0.4s ease;
+    border-radius: 20px;
+    background-color: rgb(58 46 63 / 0.2);
+    inset: 0;
+    pointer-events: none;
+  }
 
   &:hover {
     transform: translateY(-4px);

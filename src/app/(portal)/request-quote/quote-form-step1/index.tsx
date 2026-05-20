@@ -165,9 +165,7 @@ export default function QuoteFormStep1({
 
       {/* 提交按钮：右对齐 */}
       <div className={styles.actions}>
-        <ArrowButton iconVisible="always" type="submit">
-          Next Step
-        </ArrowButton>
+        <ArrowButton type="submit">Next Step</ArrowButton>
       </div>
     </form>
   );

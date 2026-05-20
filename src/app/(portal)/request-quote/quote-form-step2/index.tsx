@@ -151,17 +151,12 @@ export default function QuoteFormStep2({
       {/* 操作按钮区 */}
       <div className={styles.actions}>
         {/* Back 按钮 — 左侧，箭头朝左 */}
-        <ArrowButton
-          iconPosition="left"
-          iconVisible="always"
-          onClick={onBack}
-          type="button"
-        >
+        <ArrowButton iconPosition="left" onClick={onBack} type="button">
           Back
         </ArrowButton>
 
         {/* Submit 按钮 — 右侧 */}
-        <ArrowButton disabled={isPending} iconVisible="always" type="submit">
+        <ArrowButton disabled={isPending} type="submit">
           {isPending ? 'Submitting...' : 'Submit Project Brief'}
         </ArrowButton>
       </div>

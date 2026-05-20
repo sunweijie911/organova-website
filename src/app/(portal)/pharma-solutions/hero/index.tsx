@@ -12,7 +12,7 @@ export default function PharmaSolutionsHero() {
       titleGap={152}
       titleMaxWidth={1231}
     >
-      <ArrowButton href="/contact" iconVisible="always" variant="dark">
+      <ArrowButton href="/contact" variant="dark">
         Discuss Your Program
       </ArrowButton>
     </PageHero>
