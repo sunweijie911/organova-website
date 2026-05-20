@@ -5,52 +5,51 @@
 
 .article {
   background: #fff;
-  padding: 60px 240px 120px;
-  max-width: 1696px;
+  /* Figma News tag y=275，BrandLogo 底 y=157，留约 118px 顶距 */
+  padding: 118px var(--portal-content-pad-x) 120px;
   display: flex;
   flex-direction: column;
 }
 
-/* "News" 小标 Roboto SemiBold 20，#000 */
+/* "News" 小标 Roboto SemiBold 20，#000；至标题底 34px（Figma y:298 → 332） */
 .tag {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
   font-weight: 600;
   color: #000;
-  margin: 0 0 24px;
-  line-height: 1.4;
+  margin: 0 0 34px;
+  line-height: 1.15;
 }
 
-/* 主标题 Roboto Serif 36，#000 */
+/* 主标题 Roboto Serif Regular 36，#000，Figma 容器宽 1216 */
 .title {
   font-family: 'Roboto Serif', serif;
   font-size: 36px;
   font-weight: 400;
   color: #000;
-  line-height: 1.3;
-  margin: 0 0 32px;
+  line-height: 1.17;
+  margin: 0 0 34px;
   max-width: 1216px;
-  letter-spacing: -0.005em;
 }
 
-/* 日期 Roboto Light 16，#000 */
+/* 日期 Roboto Light 16，#000；至正文 67px */
 .date {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   font-weight: 300;
   color: #000;
-  margin: 0 0 56px;
-  line-height: 1.4;
+  margin: 0 0 67px;
+  line-height: 1.2;
 }
 
-/* 正文 Roboto Regular 24，#000，最大 959px（Figma 比例） */
+/* 正文 Roboto Regular 24，#000，最大 959px（Figma layout_F4KEKV） */
 .content {
   font-family: 'Roboto', sans-serif;
   font-size: 24px;
   font-weight: 400;
   line-height: 1.5;
   color: #000;
-  max-width: 960px;
+  max-width: 959px;
 
   p {
     margin: 0 0 28px;
@@ -129,7 +128,7 @@
 /* loading & not-found */
 .loading,
 .notFound {
-  padding: 100px 240px;
+  padding: 100px var(--portal-content-pad-x);
   text-align: left;
   font-size: 16px;
   color: #979ba5;

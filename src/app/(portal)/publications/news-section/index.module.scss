@@ -1,17 +1,18 @@
 /* News 区域样式
  * Figma 节点 581-10714
- * 白色背景，x:236 y:719，内容 1440px 宽
- * Filter: column gap:39px；条目网格 2列×3行
- * 条目卡片：452px 宽，column gap:18px，含图占位+日期+标题+footers
+ * 白色背景，Frame 84 容器 x:236 y:719，内容 1440px 宽
+ * 整体结构：column gap:39px → [Filter Frame 80] + [News 网格 Frame 86]
+ * Frame 86 内是 2 个 Frame 81/82（row）每行 3 卡片，纵向 gap 162px
+ * 卡片宽 452px，column gap:18px：日期/期刊 meta + 标题 + Read more
  */
 
 .section {
   background: #fff;
-  padding: 80px 240px;
+  padding: 80px var(--portal-content-pad-x) 120px;
 }
 
 .inner {
-  max-width: 1440px;
+  max-width: var(--portal-content-max);
   display: flex;
   flex-direction: column;
   gap: 39px;
@@ -65,30 +66,35 @@
   }
 }
 
-/* 两列新闻网格：对应 Frame 86（column, gap:162px）+ Frame 85（row, justify-between） */
-/* 实际是 2 列×N 行，对应 Figma 中左右各一个 column group */
+/* 新闻网格：Figma Frame 86 包含两个 Frame 81/82（row, justify-between，3×452 卡片）
+ * 1440 - 452*3 = 84 / 2 = 42px 列间隙；行间 162px → 视觉上保留较大留白
+ * 这里实现为 3 列 × N 行
+ */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 46px 162px;
+  grid-template-columns: repeat(3, 452px);
+  justify-content: space-between;
+  column-gap: 42px;
+  row-gap: 80px;
 }
 
-/* 单个条目：column，gap:18px，宽 452px */
+/* 单个条目（Group 17）：column，gap:18px，宽 452px */
 .item {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  max-width: 452px;
+  width: 452px;
 }
 
-/* 日期+期刊/来源 meta：column，gap:5px，宽 219px */
+/* 日期+期刊/来源 meta：column，gap:5px，宽 219px（Frame 76） */
 .itemMeta {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  width: 219px;
 }
 
-/* 日期：Roboto Regular 16px，黑色 */
+/* 日期：Roboto Regular 16px，黑色（style_F17K8V） */
 .itemDate {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;

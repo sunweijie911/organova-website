@@ -1,54 +1,58 @@
-/* Publications 列表样式
- * Figma: 白色背景，内容区 x:240 y:719，1440px 宽
- * 两列网格排列，每列 3 个卡片，gap:46px（列间）
- * 卡片：452×511，边框 1px #DCDEE5，圆角 0，padding 0
+/* Publications 列表样式 — Figma 545:6055
+ * 白色背景，Frame 84 容器位置 x:240 y:719，宽 1440
+ * Frame 81 列容器宽 1440，内含两组 Frame 75/76（row, justify-between，3 张卡）
+ * 整体为 2 列 × 3 行 网格；列间 gap=Figma 中两卡 x 差 = 1440-452*3 = 84/2 = 实际 row gap 46px
+ * 卡片：452×511，1px 边框 #DCDEE5，无圆角；内含 452×280 灰色占位图 + Frame 79
  */
 
 .section {
   background: #fff;
-  padding: 80px 240px;
+  /* y:719 - hero 上方约 638（402+236） ≈ 80px 留白；padding-x 沿用 portal token */
+  padding: 80px var(--portal-content-pad-x) 120px;
 }
 
 .inner {
-  max-width: 1440px;
+  max-width: var(--portal-content-max);
 }
 
-/* 两列网格，对应 Figma 中 Frame 85（row, justify-between，两列各3个item） */
+/* 网格：Figma Frame 81 包含两个 row（Frame 75/76），row 间 column-gap=46
+ * 每个 row: row justify-between 3×452 卡片，宽 1440 → 列间隙 (1440-1356)/2 ≈ 42px
+ * 即 3 列 × 2 行
+ */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 46px 18px;
+  grid-template-columns: repeat(3, 452px);
+  justify-content: space-between;
+  column-gap: 42px;
+  row-gap: 46px;
 }
 
-/* 卡片：白色背景，1px 边框 #DCDEE5 */
+/* 卡片 Group 17：宽 452 高 511，无边框、无圆角（Figma 中只有图+文本块） */
 .card {
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid #dcdee5;
+  width: 452px;
+  background: transparent;
+  border: none;
   border-radius: 0;
-  overflow: hidden;
   transition: box-shadow 0.2s;
-
-  &:hover {
-    box-shadow: 0 4px 20px rgb(0 0 0 / 0.08);
-  }
 }
 
-/* 占位图：灰色矩形 452×280 */
+/* 占位图：灰色矩形 452×280，对应 Figma Rectangle 55 fill #D9D9D9 */
 .imgPlaceholder {
   width: 100%;
-  aspect-ratio: 452 / 280;
+  height: 280px;
   background: #d9d9d9;
   flex-shrink: 0;
 }
 
-/* 卡片内容区，对应 Figma Frame 79，gap:16px */
+/* 卡片内容区 Frame 79：column gap:16，宽 452，相对父 y:298（图 280 + 18 留白） */
 .body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px;
+  /* Figma Frame 79 起点 y:298（280 + 18），左右无内边距（与图同宽） */
+  padding: 18px 0 24px;
   flex: 1;
 }
 
@@ -78,7 +82,7 @@
   line-height: 1.3;
 }
 
-/* 标题：Roboto Serif Regular 20px，黑色 */
+/* 标题：Roboto Serif Regular 20px，黑色，宽度跟随父级 452 */
 .title {
   font-family: 'Roboto Serif', serif;
   font-weight: 400;
@@ -86,7 +90,8 @@
   color: #000;
   line-height: 1.4;
   margin: 0;
-  flex: 1;
+  width: 452px;
+  max-width: 100%;
 }
 
 /* 标题可点击链接 */
@@ -100,7 +105,7 @@
   }
 }
 
-/* 底部区：引用/作者 + Read more，column 布局 gap:7px */
+/* Frame 78：底部区，引用/作者 + Read more，column 布局 gap:7，宽 125 */
 .footer {
   display: flex;
   flex-direction: column;
@@ -118,7 +123,8 @@
   line-height: 1.4;
 }
 
-/* Read more 链接：Roboto Regular 14px，黑色，配箭头 */
+/* Read more 链接 Frame 77：row align-center gap:12，
+ * 文字 Roboto Regular 14 黑色，箭头 16.79×10.23 rgba(0,0,0,0.4) */
 .readMore {
   display: inline-flex;
   align-items: center;
@@ -128,7 +134,7 @@
   font-size: 14px;
   color: #000;
   text-decoration: none;
-  line-height: 1;
+  line-height: 1.2;
   transition: opacity 0.15s;
 
   &:hover {

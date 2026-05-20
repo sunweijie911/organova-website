@@ -1,8 +1,10 @@
-/* CTA — Figma: 白底黑字，padding 左 240px */
+/* CTA — Figma 545-6624：白底黑字，padding 左 240px，Frame 106 在 x=240,y=5887
+   layout_CWYQ05：column gap 37，hug，左下到底部装饰区前留白 */
 
 .section {
   background: #fff;
-  padding: 0 240px 140px;
+  /* Timeline 区 padding-bottom 200 已含装饰底部，本段顶部再补 ≈ 80px 到 y=5887 */
+  padding: 86px 240px 140px;
   color: #000;
 }
 
@@ -22,7 +24,7 @@
   letter-spacing: 0.02em;
 }
 
-/* Frame 105 — row alignItems center gap 77 */
+/* Frame 105 — row alignItems center gap 77；箭头按钮与装饰线之间用更小的 gap */
 .titleWrap {
   display: flex;
   align-items: center;
@@ -53,4 +55,39 @@
   height: 4px;
   background: rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
+}
+
+/* 圆形箭头按钮 — 跳转到 /contact
+   黑色描边圆形，悬浮时填充黑底白箭头 */
+.arrowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid #000;
+  background: transparent;
+  color: #000;
+  flex-shrink: 0;
+  margin-left: 32px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+    transform: translateX(4px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1a4c6e;
+    outline-offset: 4px;
+  }
+}
+
+.arrowIcon {
+  color: inherit;
 }

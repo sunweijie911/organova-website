@@ -7,12 +7,14 @@
   background: #ffffff;
   box-shadow: 0px 2px 4px 0px rgba(33, 46, 56, 0.15);
   border-bottom: 1px solid #dcdee5;
+  /* 与 detail-body 保持一致：外层 section 负责水平 240px gutter，
+     内层 .inner 用 max-width 1440 居中。这样 hero 内容起点与 body 内容起点对齐 */
+  padding: 24px 240px;
 }
 
 .inner {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 24px 240px;
   display: flex;
   flex-direction: column;
   gap: 36px;

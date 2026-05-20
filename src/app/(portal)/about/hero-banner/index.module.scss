@@ -11,13 +11,16 @@
   max-width: var(--portal-content-max);
 }
 
+/* Figma 545-6620：x=240,y=402,w=1080,h=150；Roboto Serif Regular 64px */
 .title {
   font-family: var(--portal-hero-font-family);
   font-size: var(--portal-hero-title-size);
   font-weight: 400;
-  line-height: 1.18;
+  /* Figma 文本框高 150 / 64px = 2.34 行（多行）；视觉 line-height 约 1.17 */
+  line-height: 1.17;
   color: #fff;
-  margin: 0 0 80px;
+  /* 标题底部 y=552，副标题 y=630 → 间距 78px */
+  margin: 0 0 78px;
   max-width: 1080px;
   letter-spacing: -0.005em;
 }

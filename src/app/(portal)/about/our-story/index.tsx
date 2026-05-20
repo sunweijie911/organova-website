@@ -41,7 +41,9 @@ const FULL_STORY = [
 
 export default function OurStory({ expanded, onToggle }: OurStoryProps) {
   return (
-    <section className={styles.section}>
+    <section
+      className={`${styles.section} ${expanded ? styles.sectionExpanded : ''}`}
+    >
       <div className={styles.container}>
         {!expanded ? (
           <>
@@ -95,8 +97,9 @@ export default function OurStory({ expanded, onToggle }: OurStoryProps) {
           <>
             {/* Back 按钮：Roboto Regular 20px，#979BA5，左箭头 */}
             <button className={styles.backBtn} onClick={onToggle} type="button">
+              {/* Figma：Icon/右箭头（实际是左箭头镜像）尺寸 28×28，颜色 #979BA5 */}
               <span aria-hidden="true" className={styles.backArrow}>
-                <SvgIcon height={14} name="arrow-thin-left" width={28} />
+                <SvgIcon height={28} name="arrow-thin-left" width={28} />
               </span>
               Back
             </button>

@@ -1,6 +1,10 @@
 /* Step 2 表单区域
  * Figma: Frame 114 — 简约线条风格输入框（虚线底部）
- * 布局: column, gap 50px，每行宽度 1440px，两列间距 128px
+ * 父 Frame 在 x:240 y:765, mode:column, gap:50
+ * 每行 (Frame 110/114/115/116) width:1440, mode:row, align center, gap:128
+ * 每个输入 (Frame 107): mode:column, gap:17, fill horizontal
+ * 文本: Roboto 24/400, 占位色 rgba(0,0,0,0.4)
+ * 虚线: stroke rgba(0,0,0,0.5), 1px, dashes 2,2
  */
 
 .formSection {
@@ -13,7 +17,7 @@
 .row {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   gap: 128px;
   width: 100%;
 }
@@ -29,7 +33,7 @@
   }
 }
 
-/* 每个字段容器 */
+/* 每个字段容器 — Figma: Frame 107, gap 17px */
 .field {
   display: flex;
   flex-direction: column;
@@ -40,6 +44,7 @@
 /* 线条风格输入框
  * Figma: Vector 8 — 虚线底部 (stroke dashes: 2,2), color rgba(0,0,0,0.5)
  * 字段文本: fontSize 24, fontFamily Roboto, fontWeight 400, color rgba(0,0,0,0.4)
+ * 输入态文字色保持深色（rgba(0,0,0,0.85)）以便区分占位文字
  */
 .input {
   width: 100%;
@@ -47,11 +52,12 @@
   border: none;
   border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
   border-radius: 0;
-  padding: 8px 0 12px;
-  font-family: Roboto, sans-serif;
+  padding: 0 0 17px;
+  font-family: var(--portal-body-font-family);
   font-size: 24px;
   font-weight: 400;
-  color: #000;
+  line-height: 1.17;
+  color: rgba(0, 0, 0, 0.85);
   outline: none;
   transition: border-color 0.2s;
 
@@ -67,7 +73,7 @@
 
 /* 错误提示 */
 .error {
-  font-family: Roboto, sans-serif;
+  font-family: var(--portal-body-font-family);
   font-size: 14px;
   color: #dc2626;
   margin: 0;
@@ -75,11 +81,12 @@
 
 /* 操作按钮区 — Back 在左，Submit 在右
  * Figma: Back x:240 y:1242, Submit x:1384 y:1242
+ * Phone (R4) bottom ≈ 765 + 3*96 + 46 ≈ 1099 → 间距 ~143。formSection gap 50 占 50, padding-top 补 93
  */
 .actions {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 8px;
+  padding-top: 93px;
 }

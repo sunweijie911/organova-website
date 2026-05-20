@@ -1,8 +1,11 @@
-/* TeamSection — Figma: 白底黑字，标题 y=2341，卡片网格 y=2465 */
+/* TeamSection — Figma 545-6643 起：白底黑字
+   标题 545-6643 在 x=240,y=2341,w=942；卡片网格 layout_S2I1B5 在 x=240,y=2465,w=1440
+   行 Frame 87/88/89 layout_5IXYSR：row gap 54；列 layout_S2I1B5：column gap 77 */
 
 .section {
   background: #fff;
-  padding: 100px 240px;
+  /* 上方 Timeline-Story 黑底（结束于 y=2159），团队标题在 y=2341 → padding-top 182px ≈ 180 */
+  padding: 180px 240px 100px;
   color: #000;
 }
 
@@ -16,19 +19,22 @@
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 40px;
   font-weight: 400;
+  line-height: 1.18;
   color: #000;
+  /* 标题底部 ≈ y=2388，网格 y=2465 → 间距 77px */
   margin: 0 0 77px;
-  line-height: 1.2;
   max-width: 942px;
   letter-spacing: -0.005em;
 }
 
-/* 卡片网格：3 列，列 gap 54 行 gap 77 */
+/* 卡片网格：3 列 × 3 行，列 gap 54px 行 gap 77px
+   Figma 卡片固定宽 444：3×444 + 2×54 = 1440 ✓ 完全填满容器 */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 444px));
   column-gap: 54px;
   row-gap: 77px;
+  justify-content: start;
 }
 
 /* 单张卡片 — column gap 26px，宽 444（由网格控制） */

@@ -100,12 +100,17 @@
   transition: color 0.3s;
 }
 
-/* 默认状态：灰色 */
+/* 默认状态（尚未到达）：灰色 */
 .stepLabelDefault {
   color: #898f8f;
 }
 
-/* 活跃状态：黑色 */
+/* 活跃状态（当前步骤）：黑色 */
 .stepLabelActive {
   color: #000;
+}
+
+/* 已完成状态：灰色（与默认相同，但语义不同） */
+.stepLabelDone {
+  color: #898f8f;
 }

@@ -1,10 +1,21 @@
 /* Our Story — About 页面故事区域 */
 /* Figma: 黑底白字（白色矩形从 y=2159 起，本段 y < 2159） */
+/* 默认态 545-6619：标题 y=1261，故事栈 y=1387，按钮 y=1922 */
+/* 展开态 581-11177：Back 按钮 y=1152，正文 y=1227 */
 
 .section {
   background: #000;
-  padding: 60px 240px 90px;
+  /* Figma：Hero 副标题底部 y=658，Our Story 标题 y=1261 → 间距 603px；
+     白色背景 Rectangle 11 在 y=2159 开始，本黑底需延伸到此处。
+     Hero section 内已有 padding-bottom 250px，本段顶部补足 353px。
+     底部按钮底端 y≈1986，到 y=2159 需 padding-bottom ≈ 173px */
+  padding: 353px 240px 173px;
   color: #fff;
+}
+
+/* 展开态：Back 按钮位于 y=1152，比标题位置 y=1261 上移 109px */
+.sectionExpanded {
+  padding-top: 244px;
 }
 
 .container {
@@ -12,29 +23,32 @@
   margin: 0 auto;
 }
 
-/* Figma: Roboto Serif Regular 40px，#fff */
+/* Figma: Roboto Serif Regular 40px，#fff，文本框 576×47 */
 .sectionTitle {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 40px;
   font-weight: 400;
+  line-height: 1.18;
   color: #fff;
-  margin: 0 0 60px;
+  /* 标题底部 ≈ y=1308，故事栈 y=1387 → 间距 79px */
+  margin: 0 0 79px;
   letter-spacing: -0.005em;
 }
 
-/* 三段故事 — Figma 为 column 堆叠，gap 69px */
+/* 三段故事 — Figma layout_1FLNAB：column gap 69px，宽 1440 */
 .storyStack {
   display: flex;
   flex-direction: column;
   gap: 69px;
-  margin-bottom: 80px;
+  /* 故事栈末尾到按钮 y=1922 ≈ 62px 间距 */
+  margin-bottom: 62px;
 }
 
+/* 单段故事 — layout_UQ146Z：column gap 8 */
 .storyBlock {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-width: 1440px;
 }
 
 /* Figma: Roboto Bold 32px */
@@ -61,7 +75,8 @@
 
 /* ---- 展开态 ---- */
 
-/* Back 按钮：Roboto Regular 20px，#979BA5，左箭头 */
+/* Back 按钮 — Figma 581-11581：row gap 6，箭头 28×28 + 文本，
+   Roboto Regular 20px，#979BA5；位于 x=240,y=1152 */
 .backBtn {
   display: inline-flex;
   align-items: center;
@@ -69,9 +84,11 @@
   background: transparent;
   border: none;
   padding: 0;
-  margin: 0 0 50px;
+  /* 与正文 y=1227 间距：1227-1152-28(按钮行高) ≈ 47px */
+  margin: 0 0 47px;
   color: #979ba5;
   font-size: 20px;
+  line-height: 1.2;
   font-weight: 400;
   cursor: pointer;
   transition: color 0.2s;
@@ -81,23 +98,26 @@
   }
 }
 
+/* 箭头容器 — 28×28 内嵌左箭头 SVG */
 .backArrow {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   width: 28px;
   height: 28px;
-  justify-content: center;
+  color: inherit;
 }
 
-/* 完整故事容器 — Figma: column gap 8px（实际段间靠空行），落地用 32px */
+/* 完整故事容器 — Figma layout_UBK91P：column gap 69px，宽 1440 */
 .fullStory {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 69px;
   max-width: 1440px;
   animation: fadeIn 0.3s ease;
 }
 
+/* 单段（标题 + 正文）— Figma layout_SBM93T：column gap 8 */
 .fullParagraph {
   display: flex;
   flex-direction: column;

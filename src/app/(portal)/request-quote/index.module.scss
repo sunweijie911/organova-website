@@ -3,10 +3,13 @@
  * Figma 关键 y 坐标（相对父 frame）：
  *   Top Utility Bar 0–60
  *   BrandLogo  y:105 (60 utility + 45 padding)
- *   标题       y:402
- *   副标题     y:566
- *   Stepper    y:683
- *   表单       y:765
+ *   标题       y:402 (高 75)
+ *   副标题     y:566 (高 28)
+ *   Stepper    y:683 (高 ~42)
+ *   表单 R1    y:765
+ *   表单 R2    y:906
+ *   表单 R3    y:1047
+ *   Next 按钮  y:1242
  */
 .page {
   position: relative;
@@ -16,40 +19,44 @@
 }
 
 .content {
-  padding: 0 240px;
+  padding: 0 var(--portal-content-pad-x, 240px);
 }
 
-/* 标题区 — Figma 标题 y:402；上方累计 60(utility) + 95(BrandLogo 45+50) = 155，故 padding-top 247 */
+/* 标题区 — Figma: 标题 y:402；累计 60(utility) + 95(BrandLogo 45+50) = 155，故 padding-top 247
+ * 副标题 y:566；标题 bottom = 402+75 = 477，故标题下方间距 = 89px
+ * Stepper y:683；副标题 bottom = 566+28 = 594，故 header margin-bottom = 89px */
 .header {
   padding-top: 247px;
   margin-bottom: 89px;
 }
 
-/* Figma: fontSize 64, Roboto Serif 400, color #000 */
+/* Figma: fontSize 64, Roboto Serif 400, color #000, 高 75 → line-height ≈ 1.17 */
 .title {
-  font-family: 'Roboto Serif', Georgia, serif;
-  font-size: 64px;
+  font-family: var(--portal-hero-font-family);
+  font-size: var(--portal-hero-title-size, 64px);
   font-weight: 400;
   color: #000;
-  line-height: 1.17;
-  margin: 0 0 24px;
+  line-height: var(--portal-hero-title-line, 1.17);
+  /* 标题 bottom (y:477) → 副标题 (y:566) = 89px 间距 */
+  margin: 0 0 89px;
 }
 
-/* Figma: fontSize 24, Roboto 400, color #000 */
+/* Figma: fontSize 24, Roboto 400, color #000, 高 28 → line-height ≈ 1.17 */
 .subtitle {
-  font-family: Roboto, sans-serif;
-  font-size: 24px;
+  font-family: var(--portal-body-font-family);
+  font-size: var(--portal-hero-subtitle-size, 24px);
   font-weight: 400;
   color: #000;
   line-height: 1.17;
   margin: 0;
 }
 
-/* Stepper 居中 — Figma 宽 618px */
+/* Stepper 居中 — Figma 宽 618px
+ * Stepper bottom = 683 + 42 = 725，表单 y:765 → margin-bottom = 40px */
 .stepperWrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 56px;
+  margin-bottom: 40px;
 }
 
 .formArea {

@@ -95,44 +95,54 @@ export function ContactForm() {
           className={row.length > 1 ? styles.formRow : undefined}
           key={row.map((f) => f.key).join('-')}
         >
-          {row.map((field) => (
-            <div
-              className={
-                row.length > 1 ? styles.formField : styles.formFieldFull
-              }
-              key={field.key}
-            >
-              {field.type === 'textarea' ? (
-                <textarea
-                  aria-label={field.label}
-                  className={`${styles.formInput} ${styles.formTextarea}`}
-                  onChange={handleChange(field.key)}
-                  placeholder={field.label}
-                  required={field.key === 'message'}
-                  rows={4}
-                  value={form[field.key]}
-                />
-              ) : (
-                <input
-                  aria-label={field.label}
-                  className={styles.formInput}
-                  onChange={handleChange(field.key)}
-                  placeholder={field.label}
-                  required={['firstName', 'lastName', 'email'].includes(
-                    field.key,
-                  )}
-                  type={field.type}
-                  value={form[field.key]}
-                />
-              )}
-            </div>
-          ))}
+          {row.map((field) => {
+            const isFilled = form[field.key].length > 0;
+            const fieldClass = [
+              row.length > 1 ? styles.formField : styles.formFieldFull,
+              isFilled ? styles.isFilled : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
+            const inputId = `contact-${field.key}`;
+            return (
+              <label className={fieldClass} htmlFor={inputId} key={field.key}>
+                <span className={styles.floatingLabel}>{field.label}</span>
+                {field.type === 'textarea' ? (
+                  <textarea
+                    aria-label={field.label}
+                    className={`${styles.formInput} ${styles.formTextarea}`}
+                    id={inputId}
+                    onChange={handleChange(field.key)}
+                    placeholder={field.label}
+                    required={field.key === 'message'}
+                    rows={4}
+                    value={form[field.key]}
+                  />
+                ) : (
+                  <input
+                    aria-label={field.label}
+                    className={styles.formInput}
+                    id={inputId}
+                    onChange={handleChange(field.key)}
+                    placeholder={field.label}
+                    required={['firstName', 'lastName', 'email'].includes(
+                      field.key,
+                    )}
+                    type={field.type}
+                    value={form[field.key]}
+                  />
+                )}
+              </label>
+            );
+          })}
         </div>
       ))}
       <ArrowButton
         className={styles.submitBtn}
         disabled={submit.isPending}
+        iconVisible="always"
         type="submit"
+        variant="light"
       >
         {submit.isPending ? 'Submitting...' : 'Submit'}
       </ArrowButton>

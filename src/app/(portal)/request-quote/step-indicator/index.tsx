@@ -46,8 +46,9 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
             className={`${styles.connectorLine} ${currentStep > 1 ? styles.connectorLineDone : ''}`}
           />
         </div>
+        {/* Figma: 当前步骤标签为 #000，已完成的步骤标签变灰 (#898F8F) */}
         <div
-          className={`${styles.stepLabel} ${currentStep >= 1 ? styles.stepLabelActive : styles.stepLabelDefault}`}
+          className={`${styles.stepLabel} ${currentStep === 1 ? styles.stepLabelActive : styles.stepLabelDone}`}
         >
           YOUR PROGRAM
         </div>

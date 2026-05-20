@@ -1,7 +1,19 @@
+/* Figma 节点 545:7272 Group 21 - 宽 127，高 252
+ * - Office 1 / Office 2 / Email labels: Roboto Bold 16 / 700
+ * - 地址值: Roboto Regular 16 / 400
+ * - Email 值: Roboto Regular 16 / 400 underline
+ * - label ↔ value 间距 8px
+ * - section ↔ section 间距 38px
+ */
+
 .contactInfo {
   display: flex;
   flex-direction: column;
   gap: 38px;
+  width: 127px;
+  flex-shrink: 0;
+  font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
+  color: #000;
 }
 
 .infoItem {
@@ -13,19 +25,23 @@
 .infoLabel {
   font-size: 16px;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1.2;
+  color: #000;
 }
 
 .infoValue {
+  margin: 0;
   font-size: 16px;
   font-weight: 400;
-  line-height: normal;
+  line-height: 1.2;
   white-space: pre-line;
+  color: #000;
 }
 
 .infoEmail {
   color: #000;
   font-size: 16px;
   font-weight: 400;
+  line-height: 1.2;
   text-decoration: underline;
 }

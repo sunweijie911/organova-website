@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useEffect } from 'react';
-import { ArrowButton } from '@/components/ArrowButton';
 import SafeHtml from '@/components/SafeHtml';
 import styles from './dialog.module.scss';
 
@@ -50,12 +49,15 @@ export default function TeamMemberDialog({ member, onClose }: DialogProps) {
         type="button"
       />
       <div className={styles.card}>
-        {/* 右上 Close 按钮 */}
-        <div className={styles.closeBtn}>
-          <ArrowButton iconVisible="always" onClick={onClose} variant="light">
-            Close
-          </ArrowButton>
-        </div>
+        {/* 右上 Close 按钮 — 纯文字按钮（无图标） */}
+        <button
+          aria-label="Close"
+          className={styles.closeBtn}
+          onClick={onClose}
+          type="button"
+        >
+          Close
+        </button>
 
         {/* 左侧文字内容 */}
         <div className={styles.left}>

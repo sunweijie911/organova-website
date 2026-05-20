@@ -1,39 +1,48 @@
-/* Hero Banner — Figma 545:6055
- * 白底；内容区 x:240 y:402 宽 1216
- * 三栏列结构：标题 64 → tab 导航 → 副标题 24
+/* Hero Banner — Figma 545:6055 / 545:6284 / 581:10714
+ * 白底；Frame 83 位置 x:240 y:402 宽 1216 高 236（column space-between）
+ * Header/StickyNav 由 portal 父级渲染，hero 自身只控顶/底 padding
+ * 三段结构：标题(Roboto Serif 64) → tab 导航(20px gap48 下划线) → 副标题(Roboto 24)
  */
 
 .hero {
   background: #fff;
-  padding: 0 var(--portal-content-pad-x) 60px;
+  /* 顶部 200px 与其他 portal hero 一致（faq 同款），底部 60px 留白 */
+  padding: 200px var(--portal-content-pad-x) 60px;
 }
 
 .inner {
-  max-width: var(--portal-content-max);
+  /* Figma 容器宽度 1216；这里在 1216 与 1440(--portal-content-max) 之间取 Figma 值 */
+  max-width: 1216px;
   display: flex;
   flex-direction: column;
+  /* Figma frame 83 高 236，三块内容：64 + 24 + (24 三行≈72) 间距共约 76px，采用 space-between
+   * 现实现近似为固定 gap 40px，副标题保留独立 margin-top 控制 */
   gap: 40px;
 }
 
 .title {
   font-family: var(--portal-hero-font-family);
   font-weight: 400;
+  /* Figma fontSize: 64 */
   font-size: var(--portal-hero-title-size);
   color: #000;
-  line-height: 1.1;
+  line-height: 1.17; /* 与 portal-hero-title-line 对齐 */
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
+/* Tab 导航 Frame 82：row, gap:48, alignItems:center */
 .tabNav {
   display: flex;
   align-items: center;
   gap: 48px;
+  flex-wrap: wrap;
 }
 
 .tabActive,
 .tabLink {
   font-family: var(--portal-body-font-family);
+  /* Figma fontSize: 20 */
   font-size: 20px;
   color: #000;
   background: none;
@@ -42,30 +51,33 @@
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  line-height: 1.2;
   transition: opacity 0.15s ease;
 }
 
+/* 激活 tab：Roboto Medium 500（Figma style_WT1E9Z / style_TWMWLJ / style_B9BXZG）*/
 .tabActive {
   font-weight: 500;
-  text-decoration-thickness: 1.5px;
 }
 
+/* 未激活 tab：Roboto Light 300（Figma style_0ELBUE / style_HZJ8U5 / style_W9L21K）*/
 .tabLink {
   font-weight: 300;
-  text-decoration-thickness: 1px;
-  opacity: 0.85;
 
   &:hover {
-    opacity: 1;
+    opacity: 0.7;
   }
 }
 
 .subtitle {
   font-family: var(--portal-body-font-family);
   font-weight: 400;
+  /* Figma fontSize: 24 */
   font-size: var(--portal-hero-subtitle-size);
   color: #000;
   line-height: var(--portal-hero-subtitle-line);
-  max-width: 1100px;
+  /* Figma 宽度 1216 ≈ 容器宽 */
+  max-width: 1216px;
   margin: 0;
 }

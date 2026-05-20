@@ -1,33 +1,44 @@
-/* Resources 区域样式
- * Figma: Frame 66，row，gap:18px，3张卡片
- * 整体在 Frame 84 中，位置 x:240 y:719
- * 卡片：width 468px，padding 24px，border 1px #DCDEE5，border-radius 16px
- * 内容：column，gap:24px（cardBody vs footer），内部 gap:16px（title）和 10px（footer行）
+/* Resources 区域样式 — Figma 545:6284 Frame 84
+ * 位置 x:240 y:719；外层 Frame 81 column gap:46（仅当有多行）
+ * Frame 66 row align-center gap:18，含 3 张 page7 CARD
+ * 卡片 layout_1XQ3DS：column gap:10 padding:24 width:468
+ *   stroke 1px #DCDEE5  borderRadius 16  fill #FFF
+ * Frame 64 内部 column gap:24（cardBody 与 footer 间距）
+ * Frame 61：column gap:16，宽 420（标题占位）
+ * 标题 Roboto SemiBold 20 #313238
+ * 描述 Roboto 16 line 24 #4D4F56 (vertical-align bottom)
+ * CTA Frame 63: row align-center gap:4
+ * CTA 文本 Roboto 14 line 20 #3A84FF，箭头 16×16
  */
 
 .section {
   background: #fff;
-  padding: 80px 240px;
-  /* 上方如果紧接 publications-list 则上 padding 可调整，此处保持一致 */
+  padding: 80px var(--portal-content-pad-x) 120px;
 }
 
 .inner {
-  max-width: 1440px;
+  max-width: var(--portal-content-max);
 }
 
-/* 3列卡片网格：对应 Figma Frame 66，row，gap:18px */
+/* 3 列网格 Frame 66：row gap:18，3 张 468 宽卡 */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 468px);
   gap: 18px;
+  justify-content: start;
 }
 
-/* 单张卡片：白色背景，1px 边框 #DCDEE5，圆角 16px，padding 24px */
+/* 单张卡片 page7 CARD：白底 1px #DCDEE5 圆角 16 padding 24
+ * Figma 高度跟随内容，row 内 alignItems:center 让多卡同高
+ */
 .card {
   display: flex;
   flex-direction: column;
+  /* Figma 卡片内 Frame 64 gap:24，Frame 64 与外层卡 padding 之间另有 gap:10
+   * 这里直接用 padding 24 + 内部 gap 24 + 末尾 padding 24 = 视觉上等价 */
   gap: 24px;
   padding: 24px;
+  width: 468px;
   background: #fff;
   border: 1px solid #dcdee5;
   border-radius: 16px;

@@ -1,9 +1,13 @@
-/* Timeline — Figma: 白底黑字 */
+/* Timeline — Figma 545-6644 起：白底黑字
+   标题 y=4945；节点行 y=5173；连接线 y=5181（节点圆点中心）
+   节点 x 位置（相对 x=240 起点）：0 / 348 / 532 / 668 / 815 / 967 / 1142
+   节点宽固定 132 → 列起点间距：348 / 184 / 136 / 147 / 152 / 175 / 132 */
 
 .section {
   background: #fff;
-  /* 底部多 100px 是给绝对定位的注释（2014 论文引用）留出空间 */
-  padding: 0 240px 200px;
+  /* Figma：Team 区结束 y≈4723，Our Journey 标题 y=4945 → padding-top ≈ 222px
+     底部多 200px 给绝对定位的注释（2014 论文引用）+ Group 20 装饰留空间 */
+  padding: 222px 240px 200px;
   color: #000;
 }
 
@@ -12,52 +16,59 @@
   margin: 0 auto;
 }
 
-/* Roboto Serif Regular 40px，#000 */
+/* Roboto Serif Regular 40px，#000，框 242×47（位于 x=240,y=4945） */
 .sectionTitle {
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 40px;
   font-weight: 400;
+  line-height: 1.18;
   color: #000;
-  margin: 0 0 100px;
+  /* 标题底部 ≈ y=4992，节点行 y=5173 → 间距 181px */
+  margin: 0 0 181px;
   letter-spacing: -0.005em;
 }
 
-/* 时间线主体 */
+/* 时间线主体 — 用显式列宽还原 Figma 非均匀分布 */
 .timeline {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  /* 7 列：前 6 列对应节点起点间距，第 7 列容纳最后节点宽度 */
+  grid-template-columns: 348px 184px 136px 147px 152px 175px 132px;
   gap: 0;
-  padding-top: 4px;
+  padding-top: 0;
 }
 
-/* 横向连接线 — Figma: stroke 5px，#000 → transparent */
+/* 横向连接线 — Figma Vector 29：stroke 5px，linear-gradient #000→transparent
+   从首节点圆心 x=8（节点内）到末节点圆心，y=8（圆点中心相对节点顶部） */
 .line {
   position: absolute;
   top: 8px;
   left: 8px;
-  right: 8px;
+  /* 最后节点宽 132 → 末点圆心距右 132-8=124，故 right=124 */
+  right: 124px;
   height: 1px;
   background: linear-gradient(
     90deg,
-    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 0) 100%
   );
   pointer-events: none;
 }
 
-/* 单个节点 */
+/* 单个节点 — Figma layout_FOUN0R/各 layout_*：column gap 15，宽 132 */
 .node {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 132px;
   min-width: 0;
-  padding-right: 16px;
 }
 
+/* 当前节点 2025：年份字号 32 + 标签 "US Expansion" 较宽，允许溢出列宽 */
 .nodeCurrent {
-  /* 当前节点容器无特殊布局变化，靠子元素字号区分 */
+  width: 132px;
+  overflow: visible;
 }
 
 /* 标记容器 — 高 16px 与圆点对齐 */
@@ -107,30 +118,34 @@
   line-height: 1;
 }
 
-/* 普通标签 — Roboto Light 14px */
+/* 普通标签 — Roboto Light 14px，hug 单行不换行 */
 .label {
   font-size: 14px;
   font-weight: 300;
   color: #000;
   line-height: 1.4;
+  white-space: nowrap;
 }
 
-/* 当前节点标签 — Roboto Regular 20px */
+/* 当前节点标签 — Roboto Regular 20px，hug 单行不换行 */
 .labelCurrent {
   font-size: 20px;
   font-weight: 400;
   color: #000;
   line-height: 1.4;
+  white-space: nowrap;
 }
 
 /* 节点下方注释 — Roboto Regular 20px（用于 2014 节点下论文引用）
-   绝对定位以避免撑大节点列宽 */
+   Figma layout_VVM349：x=548,y=5423,w=801（节点 Frame 92 在 x=588,y=5173）
+   注释相对节点：左偏 40px，顶 250px；为避免撑大列宽用绝对定位 */
 .annotation {
   position: absolute;
   top: 100%;
-  left: 0;
-  margin: 36px 0 0;
-  width: 800px;
+  /* 节点宽 132，注释从节点中心略向左 → left=-40px */
+  left: -40px;
+  margin: 181px 0 0;
+  width: 801px;
   max-width: 90vw;
   font-size: 20px;
   font-weight: 400;

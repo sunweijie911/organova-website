@@ -70,7 +70,8 @@
   color: #e9f2ff;
 }
 
-/* 数据行：上分割线 1px #DCDEE5 */
+/* 数据行：上分割线 1px #DCDEE5，hover 时整行变浅蓝底 + 深色文字
+ * （Figma 529:1287 标注：「hover 文字变深，浅蓝色底」） */
 .dataRow {
   display: grid;
   grid-template-columns: 340px 1fr 1fr;
@@ -79,14 +80,30 @@
   &:first-of-type {
     border-top: none;
   }
+
+  &:hover {
+    .typeCell,
+    .descCell {
+      background: #fafcff;
+    }
+
+    .typeText,
+    .descText {
+      color: #313238;
+    }
+  }
 }
 
-/* Partnership Type 列 */
+/* Partnership Type 列（Figma layout_O1U973：padding 24px、gap 8px） */
 .typeCell {
-  padding: 20px 24px;
+  padding: 24px;
   border-right: 1px solid #dcdee5;
   display: flex;
   align-items: center;
+  background: #fff;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .typeCellInner {
@@ -111,14 +128,19 @@
   font-size: 16px;
   line-height: 20px;
   color: #4d4f56;
+  transition: color 0.15s ease;
 }
 
-/* 描述列（What You Get / Best For） */
+/* 描述列（What You Get / Best For）：Figma layout_7BW3Q6 padding 20px 24px */
 .descCell {
   padding: 20px 24px;
   border-right: 1px solid #dcdee5;
   display: flex;
   align-items: center;
+  background: #fff;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:last-child {
     border-right: none;
@@ -133,6 +155,7 @@
   line-height: 20px;
   color: #4d4f56;
   margin: 0;
+  transition: color 0.15s ease;
 }
 
 /* Alert 提示栏：背景 #F0F6FF，边框 1px #6CAEDB，圆角 16px */

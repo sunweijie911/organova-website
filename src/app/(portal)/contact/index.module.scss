@@ -3,21 +3,30 @@
   color: #000;
 }
 
+/* Figma: Frame 119 padding 0 240px，y=402（含 header 60 + 图标条 50 + 间距）
+ * 设计稿 Contact 标题位于 y≈402，距离 Header 底部 ≈ 247px。
+ */
 .contactContent {
-  padding: 200px 240px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 86px;
+  padding: 247px var(--portal-content-pad-x, 240px) 100px;
 }
 
 .contactTitle {
-  font-family: var(--font-roboto-serif), serif;
+  margin: 0;
+  font-family: var(--portal-hero-font-family, var(--font-roboto-serif)), serif;
   font-size: 64px;
   font-weight: 400;
-  line-height: normal;
-  margin-bottom: 0;
+  line-height: 1;
+  letter-spacing: 0;
+  color: #000;
 }
 
 .contentLayout {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-top: 86px;
+  gap: 32px;
+  max-width: var(--portal-content-max, 1440px);
 }

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';
 
@@ -13,11 +12,6 @@ interface Props {
   metaDrugClasses?: string | null;
   metaReadout?: string | null;
   metaValidation?: string | null;
-  // CTA 按钮
-  cta1Label?: string | null;
-  cta1Url?: string | null;
-  cta2Label?: string | null;
-  cta2Url?: string | null;
 }
 
 // 将逗号或换行分隔的字符串转为标签数组
@@ -59,14 +53,9 @@ export default function DetailBody({
   metaDrugClasses,
   metaReadout,
   metaValidation,
-  cta1Label,
-  cta1Url,
-  cta2Label,
-  cta2Url,
 }: Props) {
   const hasMetadata =
     metaModel || metaDrugClasses || metaReadout || metaValidation;
-  const hasCta = cta1Label || cta2Label;
 
   return (
     <section className={styles.section}>
@@ -126,43 +115,21 @@ export default function DetailBody({
           )}
         </div>
 
-        {/* 右侧侧边栏（Study Details + CTA） */}
-        {(hasMetadata || hasCta) && (
+        {/* 右侧侧边栏 — Study Details */}
+        {hasMetadata && (
           <aside className={styles.sidebar}>
-            {/* Study Details 卡片 */}
-            {hasMetadata && (
-              <div className={styles.sideCard}>
-                {/* 侧边栏无单独标题，Figma 直接是 metadata 行列表 */}
-                <div className={styles.metaList}>
-                  {metaModel && <MetaRow label="Model" value={metaModel} />}
-                  {metaDrugClasses && (
-                    <MetaRow label="Drug Classes" value={metaDrugClasses} />
-                  )}
-                  {metaReadout && (
-                    <MetaRow label="Readout" value={metaReadout} />
-                  )}
-                  {metaValidation && (
-                    <MetaRow label="Validation" value={metaValidation} />
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* CTA 按钮区 */}
-            {hasCta && (
-              <div className={styles.ctaBox}>
-                {cta1Label && cta1Url && (
-                  <Link className={styles.ctaBtn} href={cta1Url}>
-                    {cta1Label}
-                  </Link>
+            <div className={styles.sideCard}>
+              <div className={styles.metaList}>
+                {metaModel && <MetaRow label="Model" value={metaModel} />}
+                {metaDrugClasses && (
+                  <MetaRow label="Drug Classes" value={metaDrugClasses} />
                 )}
-                {cta2Label && cta2Url && (
-                  <Link className={styles.ctaBtnSecondary} href={cta2Url}>
-                    {cta2Label}
-                  </Link>
+                {metaReadout && <MetaRow label="Readout" value={metaReadout} />}
+                {metaValidation && (
+                  <MetaRow label="Validation" value={metaValidation} />
                 )}
               </div>
-            )}
+            </div>
           </aside>
         )}
       </div>

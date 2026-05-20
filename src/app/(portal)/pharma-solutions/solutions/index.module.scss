@@ -1,6 +1,7 @@
 .solutions {
   background: #fff;
   padding-top: 181px;
+  padding-bottom: 99px;
 }
 
 .sectionTitle {
@@ -37,25 +38,29 @@
 .cardBody {
   position: absolute;
   inset: 0;
-  padding: 30px;
+  padding: 30px 30px 54px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .cardTitle {
+  font-family: var(--portal-body-font-family);
   font-size: 28px;
   font-weight: 600;
   color: #fff;
   line-height: 1.2;
+  margin: 0;
 }
 
 .cardText {
+  font-family: var(--portal-body-font-family);
   font-size: 20px;
   font-weight: 400;
   color: #fff;
   line-height: 1.6;
   white-space: pre-line;
+  margin: 0;
 }
 
 /* ── Tabs ── */
@@ -64,8 +69,6 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin: 56px 240px 0;
-  border-left: 1px dashed rgba(0, 0, 0, 0.3);
-  border-right: 1px dashed rgba(0, 0, 0, 0.3);
 }
 
 .tabBtn {
@@ -73,17 +76,13 @@
   background: transparent;
   border: none;
   border-top: 1px dashed rgba(0, 0, 0, 0.3);
-  border-right: 1px dashed rgba(0, 0, 0, 0.3);
+  font-family: var(--portal-body-font-family);
   font-size: 32px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.3);
   cursor: pointer;
   text-align: center;
-  transition: color 0.2s;
-
-  &:last-child {
-    border-right: none;
-  }
+  transition: color 0.2s, border-color 0.2s;
 
   &:hover:not(.tabActive) {
     color: rgba(0, 0, 0, 0.55);

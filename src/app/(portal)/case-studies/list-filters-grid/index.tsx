@@ -193,21 +193,23 @@ export default function ListFiltersGrid({
                 key={cs.id}
               >
                 <div className={styles.cardBody}>
-                  {/* 标题 */}
-                  <h3 className={styles.cardTitle}>{cs.title}</h3>
+                  {/* Frame 61：标题 + chip 行，column gap 16px */}
+                  <div className={styles.cardTitleBlock}>
+                    <h3 className={styles.cardTitle}>{cs.title}</h3>
 
-                  {/* 标签 chip */}
-                  <div className={styles.cardTagRow}>
-                    {cs.cancerTypeTags.slice(0, 2).map((t) => (
-                      <span className={styles.cardChip} key={`c-${t}`}>
-                        {t}
-                      </span>
-                    ))}
-                    {cs.applicationTags.slice(0, 1).map((t) => (
-                      <span className={styles.cardChip} key={`a-${t}`}>
-                        {t}
-                      </span>
-                    ))}
+                    {/* 标签 chip 行 */}
+                    <div className={styles.cardTagRow}>
+                      {cs.cancerTypeTags.slice(0, 2).map((t) => (
+                        <span className={styles.cardChip} key={`c-${t}`}>
+                          {t}
+                        </span>
+                      ))}
+                      {cs.applicationTags.slice(0, 1).map((t) => (
+                        <span className={styles.cardChip} key={`a-${t}`}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
                   {/* 摘要 */}

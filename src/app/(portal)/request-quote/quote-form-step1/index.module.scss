@@ -106,9 +106,11 @@
   align-items: center;
 }
 
-/* 按钮操作区 — 右对齐 */
+/* 按钮操作区 — 右对齐
+ * Figma: 表单 R3 y:1047 (高 ~92) → bottom 1139；Next 按钮 y:1242
+ * 形成的间距 ≈ 103px。formSection gap:50 占其中 50px，剩余 53px 由 padding-top 提供 */
 .actions {
   display: flex;
   justify-content: flex-end;
-  padding-top: 8px;
+  padding-top: 53px;
 }

@@ -29,7 +29,9 @@
   }
 }
 
-/* 内容卡片 — 100% 铺满，padding 51px 240px（按 Figma 内容左 240，右照片右边距 1777+...） */
+/* 内容卡片 — Figma 581-11589 Card 1920×1080 白底
+   左列内容 x=240,w=636；右照片 Rectangle 56 x=988,y=51,w=543,h=817
+   → 左列与照片间距 988-(240+636)=112px；左 padding 240，右 padding 240（对称） */
 .card {
   position: relative;
   z-index: 2;
@@ -38,31 +40,58 @@
   padding: 51px 240px;
   display: grid;
   grid-template-columns: minmax(0, 636px) minmax(0, 543px);
-  column-gap: 109px;
+  column-gap: 112px;
   align-items: start;
 }
 
-/* 右上 Close 按钮 — Figma: x=1777, y=51 */
+/* 右上 Close 按钮 — Figma：x=1777,y=51（距右 1920-1777=143px）
+   纯文字按钮：黑底白字、无图标 */
 .closeBtn {
   position: absolute;
   top: 51px;
-  right: 240px;
+  right: 143px;
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 32px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 2px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    background: #1a1a1a;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1a4c6e;
+    outline-offset: 2px;
+  }
 }
 
-/* 左侧 column flex */
+/* 左侧 column flex；header 在 y=149，需在卡片 51px padding 之上再下移 98px */
 .left {
   display: flex;
   flex-direction: column;
+  /* 51(card padding-top) + 98 = 149 ✓ 对齐 Figma Frame 86 */
+  margin-top: 98px;
 }
 
-/* Frame 86 — 姓名/职位/机构，column gap 16，宽 444 */
+/* Frame 86 — 姓名/职位/机构，column gap 16，宽 444（Figma layout_JL3HF7） */
 .header {
   display: flex;
   flex-direction: column;
   gap: 16px;
   max-width: 444px;
-  margin-bottom: 84px; /* y=149 起，到 y=299 短简介 */
+  /* 头部底部 ≈ y=149+92=241，短简介 y=299 → 间距 58px */
+  margin-bottom: 58px;
 }
 
 /* Roboto Serif Regular 32px */
@@ -101,13 +130,14 @@
   line-height: 1.4;
 }
 
-/* 短简介 — Roboto Regular 32px，#000，宽 636 */
+/* 短简介 — Figma layout_XYWNX8：x=240,y=299,w=636,h=353；Roboto Regular 32px
+   → 与长简介 y=721 间距 = 721-(299+353) = 69px */
 .shortBio {
   font-size: 32px;
   font-weight: 400;
   color: #000;
   line-height: 1.35;
-  margin: 0 0 56px;
+  margin: 0 0 69px;
   max-width: 636px;
 }
 

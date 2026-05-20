@@ -50,10 +50,6 @@ export default async function CaseStudyDetailPage({
       <DetailBody
         approach={data.approach}
         challenge={data.challenge}
-        cta1Label={data.cta1Label}
-        cta1Url={data.cta1Url}
-        cta2Label={data.cta2Label}
-        cta2Url={data.cta2Url}
         implication={data.implication}
         metaDrugClasses={data.metaDrugClasses}
         metaModel={data.metaModel}

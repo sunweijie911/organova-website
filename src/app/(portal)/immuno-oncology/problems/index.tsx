@@ -34,7 +34,10 @@ export default function ImmunoOncologyProblems() {
         <h2 className={styles.title}>
           We Solve the Problems That End I-O Programs.
         </h2>
-        <ExpandableCardList items={ITEMS} />
+        {/* 包一层 wrapper 用于在 SCSS 中对共享组件 ExpandableCard 做局部覆盖 */}
+        <div className={styles.cards}>
+          <ExpandableCardList items={ITEMS} />
+        </div>
       </div>
     </section>
   );
