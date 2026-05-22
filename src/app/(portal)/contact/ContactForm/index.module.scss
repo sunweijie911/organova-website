@@ -19,11 +19,10 @@
 }
 
 .contactSubtitle {
-  margin: 0;
   font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
   font-size: 32px;
   font-weight: 400;
-  line-height: 1;
+  line-height: normal;
   color: #000;
 }
 
@@ -116,12 +115,12 @@
 
 .formTextarea {
   min-height: 120px;
-  resize: vertical;
+  resize: none;
 }
 
 .submitBtn {
   align-self: flex-start;
-  margin-top: 72px; /* 50(form row gap) + 72 = 122 与字段底距离 (Figma layout_LYZ1IF gap=122) */
+  margin-top: 40px; /* 50(form row gap) + 72 = 122 与字段底距离 (Figma layout_LYZ1IF gap=122) */
 }
 
 .successMessage {

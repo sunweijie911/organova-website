@@ -22,9 +22,6 @@ export default function CTA() {
             <em className={styles.titleItalic}>Discovery</em>.
           </h2>
 
-          {/* Vector 3 — 56×4，rgba(0,0,0,0.3) */}
-          <div className={styles.titleLine} />
-
           {/* 圆形箭头按钮 — 跳转到联系页 */}
           <Link
             aria-label="Contact us"

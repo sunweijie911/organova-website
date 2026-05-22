@@ -6,7 +6,6 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  /* Figma: Frame 83 起点 x=240, y=402；BrandLogo + 上方 Header 由外层渲染，这里只控 hero 内 padding */
   padding: 200px var(--portal-content-pad-x) 88px;
 }
 

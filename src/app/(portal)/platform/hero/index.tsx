@@ -15,7 +15,7 @@ export default function PlatformHero() {
         />
       </div>
       <div className={styles.overlay} />
-      <BrandLogo className={styles.brandLogo} />
+      <BrandLogo bg="dark" className={styles.brandLogo} />
       <div className={styles.content}>
         <h1 className={styles.title}>
           The World&apos;s Most Clinically-Relevant Preclinical Model.
