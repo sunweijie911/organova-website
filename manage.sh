@@ -242,6 +242,7 @@ update_deploy() {
         docker image prune -f >/dev/null 2>&1 || true
     else
         log_error "健康检查失败！"
+        dump_failure_logs
         if [ "$is_first_deploy" = true ]; then
             rm -f docker-compose.yml.bak nginx.conf.bak
             log_error "首次部署失败，请检查 .env 配置和容器日志："
@@ -355,6 +356,7 @@ EOF
         docker image prune -f >/dev/null 2>&1 || true
     else
         log_error "健康检查失败！"
+        dump_failure_logs
         if [ "$is_first_deploy" = true ]; then
             log_error "首次部署失败，请检查 .env 配置和容器日志："
             log_blue "  $0 logs"
@@ -417,6 +419,17 @@ show_logs() {
 }
 
 # ── 健康检查 ────────────────────────────────────────────────
+
+# 健康检查失败时把容器状态和日志直接吐到 stdout，让 CI 日志能看到根因
+# （否则只剩"健康检查失败"一行，必须 SSH 上去 docker logs 才能定位）
+dump_failure_logs() {
+    log_error "── 容器状态 ──"
+    docker compose ps 2>&1 || true
+    log_error "── App 日志（最近 100 行）──"
+    docker compose logs --tail=100 --no-color organova-app 2>&1 || true
+    log_error "── Nginx 日志（最近 50 行）──"
+    docker compose logs --tail=50 --no-color organova-nginx 2>&1 || true
+}
 
 health_check() {
     local max_retries="${1:-1}"

@@ -1,7 +1,10 @@
 services:
   organova-app:
     image: ${APP_IMAGE:?APP_IMAGE is required}
-    restart: unless-stopped
+    # 用 on-failure 而非 unless-stopped：配置错误（DB 密码错、env 缺项、迁移失败）时
+    # 容器会瞬崩，unless-stopped 会无限重启把磁盘日志和镜像层吃满。重试 5 次就停，
+    # 留时间排查；正常运行时崩溃同样会自愈，只是不会无限拉。
+    restart: on-failure:5
     expose:
       - "3000"
     env_file:
