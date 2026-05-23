@@ -39,6 +39,12 @@ RUN pnpm exec esbuild scripts/seed-admin.ts \
     --external:postgres \
     --tsconfig=tsconfig.json
 
+# 启动期从 Secrets Manager 取 DB 密码、拼出 DATABASE_URL（AWS 模式）
+RUN pnpm exec esbuild scripts/resolve-db-url.ts \
+    --bundle --platform=node --format=esm \
+    --outfile=resolve-db-url.mjs \
+    --tsconfig=tsconfig.json
+
 ##### NGINX - serve 静态文件 + 反代 Next.js
 FROM nginx:alpine AS nginx
 
@@ -72,6 +78,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/migrate.mjs ./migrate.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/seed.mjs ./seed.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/seed-admin.mjs ./seed-admin.mjs
+COPY --from=builder --chown=nextjs:nodejs /app/resolve-db-url.mjs ./resolve-db-url.mjs
 
 USER nextjs
 
@@ -80,4 +87,6 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["sh", "-c", "node migrate.mjs && if [ \"$RUN_SEEDS\" = 'true' ]; then node seed.mjs; fi && if [ -n \"$SEED_ADMIN_EMAIL\" ]; then node seed-admin.mjs; fi && node server.js"]
+# 启动顺序：解析 DATABASE_URL（直传或 Secrets Manager）→ 迁移 → 可选 seed → server
+# 用 set -e 保证任一步失败立刻退容器（让 compose 的 on-failure 介入而不是带病运行）
+CMD ["sh", "-c", "set -e; DATABASE_URL=$(node resolve-db-url.mjs) || exit 1; export DATABASE_URL; node migrate.mjs; if [ \"$RUN_SEEDS\" = 'true' ]; then node seed.mjs; fi; if [ -n \"$SEED_ADMIN_EMAIL\" ]; then node seed-admin.mjs; fi; exec node server.js"]
