@@ -40,9 +40,12 @@ RUN pnpm exec esbuild scripts/seed-admin.ts \
     --tsconfig=tsconfig.json
 
 # 启动期从 Secrets Manager 取 DB 密码、拼出 DATABASE_URL（AWS 模式）
+# @aws-sdk 是 CJS 包，bundle 到 ESM 时其内部 require() 会被 esbuild shim 成抛错；
+# 用 banner 注入 createRequire，让被 bundle 的 CJS 依赖能用原生 require 加载。
 RUN pnpm exec esbuild scripts/resolve-db-url.ts \
     --bundle --platform=node --format=esm \
     --outfile=resolve-db-url.mjs \
+    --banner:js="import { createRequire } from 'module'; const require = createRequire(import.meta.url);" \
     --tsconfig=tsconfig.json
 
 ##### NGINX - serve 静态文件 + 反代 Next.js
