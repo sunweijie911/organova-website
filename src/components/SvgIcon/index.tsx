@@ -1,3 +1,5 @@
+import styles from './index.module.scss';
+
 export type IconName =
   | 'arrow-right'
   | 'arrow-down'
@@ -38,27 +40,19 @@ export function SvgIcon({
 }: SvgIconProps) {
   const w = width ?? size;
   const h = height ?? size;
-  const url = `/assets/icons/icon-${name}.svg`;
 
   return (
     <span
       aria-hidden="true"
-      className={className}
-      style={{
-        display: 'inline-block',
-        flexShrink: 0,
-        width: typeof w === 'number' ? `${w}px` : w,
-        height: typeof h === 'number' ? `${h}px` : h,
-        backgroundColor: color,
-        maskImage: `url('${url}')`,
-        maskSize: 'contain',
-        maskRepeat: 'no-repeat',
-        maskPosition: 'center',
-        WebkitMaskImage: `url('${url}')`,
-        WebkitMaskSize: 'contain',
-        WebkitMaskRepeat: 'no-repeat',
-        WebkitMaskPosition: 'center',
-      }}
+      className={`${styles.icon} ${className ?? ''}`}
+      style={
+        {
+          '--icon-w': typeof w === 'number' ? `${w}px` : w,
+          '--icon-h': typeof h === 'number' ? `${h}px` : h,
+          '--icon-color': color,
+          '--icon-url': `url('/assets/icons/icon-${name}.svg')`,
+        } as React.CSSProperties
+      }
     />
   );
 }

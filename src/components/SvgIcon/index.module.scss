@@ -1,0 +1,11 @@
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--icon-w);
+  height: var(--icon-h);
+  background-color: var(--icon-color);
+  mask-image: var(--icon-url);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}

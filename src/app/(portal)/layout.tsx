@@ -30,16 +30,9 @@ export default async function PortalLayout({
           } as CSSProperties
         }
       >
-        <PortalStickyNav />
         <PortalHeader />
-        <main
-          style={{
-            paddingBottom: 'var(--sticky-nav-height, 0px)',
-            transition: 'padding-bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        >
-          {children}
-        </main>
+        <main>{children}</main>
+        <PortalStickyNav />
         <PortalFooter />
       </div>
     </PortalLayoutProvider>

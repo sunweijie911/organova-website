@@ -57,7 +57,7 @@ export default function SolutionCards() {
         {CARDS.list.map((card) => (
           <div className={styles.card} key={card.title}>
             <div className={styles.iconWrapper}>
-              <SvgIcon className={styles.icon} name={card.icon} size={32} />
+              <SvgIcon className={styles.icon} name={card.icon} size={88} />
             </div>
             <div className={styles.content}>
               <h3 className={styles.cardTitle}>{card.title}</h3>

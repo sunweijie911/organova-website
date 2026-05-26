@@ -23,23 +23,17 @@ export function PortalStickyNav() {
       if (styles.visible) {
         el.classList.toggle(styles.visible, nextVisible);
       }
-      document.documentElement.style.setProperty(
-        '--sticky-nav-height',
-        nextVisible ? '114px' : '0px',
-      );
     };
+
+    const footer = document.getElementById('site-footer');
 
     const recompute = () => {
       const currentScrollY = window.scrollY;
       const scrollingUp = currentScrollY < lastScrollY.current;
-      const nextVisible =
-        !footerInView && (currentScrollY === 0 || scrollingUp);
+      const nextVisible = footerInView || currentScrollY === 0 || scrollingUp;
       apply(nextVisible);
       lastScrollY.current = currentScrollY;
     };
-
-    // 监听 footer，footer 进入视口时隐藏 sticky nav
-    const footer = document.getElementById('site-footer');
     const io = footer
       ? new IntersectionObserver(
           (entries) => {
@@ -48,7 +42,7 @@ export function PortalStickyNav() {
             footerInView = entry.isIntersecting;
             recompute();
           },
-          { rootMargin: '0px', threshold: 0 },
+          { rootMargin: '120px 0px', threshold: 0 },
         )
       : null;
     io?.observe(footer as Element);

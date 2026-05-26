@@ -5,24 +5,22 @@ import { ArrowButton } from '@/components/ArrowButton';
 import styles from './index.module.scss';
 
 const HERO = {
-  title: 'Decoding Cancer',
-  subtitle: "97% of Oncology Drugs Fail. We're Fixing the Model.",
-  description:
-    "Preclinical success on artificial models isn't success—it's a delayed failure. We give your pipeline \n the biological truth it needs to reach patients.",
+  title: {
+    line1: 'Preclinical Human Models',
+    line2: 'Organoid2.0',
+  },
+  subtitle:
+    'Functional 3D tissue models that preserve the native microenvironment for translational research',
+  description: 'Human biospecimens • Tissue arrays • Organoid biobank',
   buttons: [
     { label: 'Discover Our Platform', href: '/platform' },
     { label: 'Explore Case Studies', href: '/case-studies' },
   ],
 };
 
-const SCROLL_RANGE = 700;
-const SPEED = 1.3;
-
 export default function HeroBanner() {
-  const outerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const textGroupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -37,46 +35,38 @@ export default function HeroBanner() {
   }, []);
 
   useEffect(() => {
-    const viewportH = window.innerHeight - 60;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const animate = () => {
-      const relY = Math.max(
-        0,
-        window.scrollY - (outerRef.current?.offsetTop ?? 0),
-      );
-      if (relY > SCROLL_RANGE) return;
-
-      if (titleRef.current) {
-        titleRef.current.style.transform = `translateY(${-relY * SPEED}px)`;
-      }
-      if (textGroupRef.current) {
-        const offset = Math.max(0, viewportH - relY * SPEED);
-        textGroupRef.current.style.transform = `translateY(${offset}px)`;
-      }
+    const update = () => {
+      const heroH = section.offsetHeight;
+      const vh = window.innerHeight;
+      section.style.top = `${vh - heroH}px`;
     };
 
-    animate();
-    window.addEventListener('scroll', animate, { passive: true });
-    return () => window.removeEventListener('scroll', animate);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, []);
 
   return (
-    <div className={styles.heroOuter} ref={outerRef}>
-      <section className={styles.hero} id="home-hero">
-        <video
-          autoPlay
-          className={styles.bgWrapper}
-          loop
-          muted
-          playsInline
-          preload="auto"
-          ref={videoRef}
-          src="/assets/video/banner.mp4"
-        />
-        <h1 className={styles.title} ref={titleRef}>
-          {HERO.title}
+    <section className={styles.hero} id="home-hero" ref={sectionRef}>
+      <video
+        autoPlay
+        className={styles.bgVideo}
+        loop
+        muted
+        playsInline
+        preload="auto"
+        ref={videoRef}
+        src="/assets/video/banner.mp4"
+      />
+      <div className={styles.content}>
+        <h1 className={styles.title}>
+          <span className={styles.titleItalic}>{HERO.title.line1}</span>
+          <span className={styles.titleBold}>{HERO.title.line2}</span>
         </h1>
-        <div className={styles.textGroup} ref={textGroupRef}>
+        <div className={styles.textGroup}>
           <p className={styles.subtitle}>{HERO.subtitle}</p>
           <p className={styles.description}>{HERO.description}</p>
           <div className={styles.buttons}>
@@ -87,7 +77,8 @@ export default function HeroBanner() {
             ))}
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+      <div className={styles.bottomGradient} />
+    </section>
   );
 }
