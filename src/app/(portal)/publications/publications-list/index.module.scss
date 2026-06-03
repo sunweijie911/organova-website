@@ -123,28 +123,14 @@
   line-height: 1.4;
 }
 
-/* Read more 链接 Frame 77：row align-center gap:12，
- * 文字 Roboto Regular 14 黑色，箭头 16.79×10.23 rgba(0,0,0,0.4) */
-.readMore {
+/* Read more 链接：包裹 CardLink 组件的锚点，去除默认下划线
+ * 设计上 Read more 为黑色（区别于 Resources 的蓝色 CTA），
+ * 通过覆盖 CardLink 的颜色变量实现，hover 时略变浅 */
+.readMoreLink {
   display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  color: #000;
   text-decoration: none;
-  line-height: 1.2;
-  transition: opacity 0.15s;
-
-  &:hover {
-    opacity: 0.7;
-  }
-
-  svg {
-    flex-shrink: 0;
-    color: rgba(0, 0, 0, 0.4);
-  }
+  --card-link-color: #000;
+  --card-link-hover-color: rgba(0, 0, 0, 0.7);
 }
 
 /* 空状态 */

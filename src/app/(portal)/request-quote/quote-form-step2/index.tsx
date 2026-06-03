@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowButton } from '@/components/ArrowButton';
+import { FloatingField } from '@/components/FloatingField';
 import styles from './index.module.scss';
 
 export type Step2Data = {
@@ -17,47 +18,9 @@ interface QuoteFormStep2Props {
   errorMessage?: string;
   isError: boolean;
   isPending: boolean;
-  onChange: (
-    key: keyof Step2Data,
-  ) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (key: keyof Step2Data) => (value: string) => void;
   onBack: () => void;
   onSubmit: (e: React.FormEvent) => void;
-}
-
-interface LineInputProps {
-  id: string;
-  label: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-  required?: boolean;
-  type?: string;
-  value: string;
-}
-
-/* 带底部虚线的输入框组件（对应 Figma 中的 Frame 107 风格） */
-function LineInput({
-  id,
-  label,
-  onChange,
-  placeholder,
-  required,
-  type = 'text',
-  value,
-}: LineInputProps) {
-  return (
-    <div className={styles.field}>
-      <input
-        aria-label={label}
-        className={styles.input}
-        id={id}
-        onChange={onChange}
-        placeholder={placeholder || label}
-        required={required}
-        type={type}
-        value={value}
-      />
-    </div>
-  );
 }
 
 export default function QuoteFormStep2({
@@ -73,19 +36,19 @@ export default function QuoteFormStep2({
     <form className={styles.formSection} onSubmit={onSubmit}>
       {/* 第一行：First Name + Last Name */}
       <div className={styles.row}>
-        <LineInput
+        <FloatingField
+          className={styles.fieldEqual}
           id="firstName"
           label="First Name"
           onChange={onChange('firstName')}
-          placeholder="First Name"
           required
           value={data.firstName}
         />
-        <LineInput
+        <FloatingField
+          className={styles.fieldEqual}
           id="lastName"
           label="Last Name"
           onChange={onChange('lastName')}
-          placeholder="Last Name"
           required
           value={data.lastName}
         />
@@ -93,52 +56,46 @@ export default function QuoteFormStep2({
 
       {/* 第二行：Email Address（全宽） */}
       <div className={styles.rowFull}>
-        <div className={styles.field}>
-          <input
-            aria-label="Email Address"
-            className={styles.input}
-            id="email"
-            onChange={onChange('email')}
-            placeholder="Email Address"
-            required
-            type="email"
-            value={data.email}
-          />
-        </div>
+        <FloatingField
+          className={styles.fieldFull}
+          id="email"
+          label="Email Address"
+          onChange={onChange('email')}
+          required
+          type="email"
+          value={data.email}
+        />
       </div>
 
       {/* 第三行：Company + Job Title */}
       <div className={styles.row}>
-        <LineInput
+        <FloatingField
+          className={styles.fieldEqual}
           id="company"
           label="Company"
           onChange={onChange('company')}
-          placeholder="Company"
           required
           value={data.company}
         />
-        <LineInput
+        <FloatingField
+          className={styles.fieldEqual}
           id="jobTitle"
           label="Job Title"
           onChange={onChange('jobTitle')}
-          placeholder="Job Title"
           value={data.jobTitle}
         />
       </div>
 
       {/* 第四行：Phone (Optional)（全宽） */}
       <div className={styles.rowFull}>
-        <div className={styles.field}>
-          <input
-            aria-label="Phone (Optional)"
-            className={styles.input}
-            id="phone"
-            onChange={onChange('phone')}
-            placeholder="Phone (Optional)"
-            type="tel"
-            value={data.phone}
-          />
-        </div>
+        <FloatingField
+          className={styles.fieldFull}
+          id="phone"
+          label="Phone (Optional)"
+          onChange={onChange('phone')}
+          type="tel"
+          value={data.phone}
+        />
       </div>
 
       {/* 错误提示 */}
@@ -148,14 +105,12 @@ export default function QuoteFormStep2({
         </p>
       )}
 
-      {/* 操作按钮区 */}
+      {/* 操作按钮区 — Back 在左，Submit 在右 */}
       <div className={styles.actions}>
-        {/* Back 按钮 — 左侧，箭头朝左 */}
         <ArrowButton iconPosition="left" onClick={onBack} type="button">
           Back
         </ArrowButton>
 
-        {/* Submit 按钮 — 右侧 */}
         <ArrowButton disabled={isPending} type="submit">
           {isPending ? 'Submitting...' : 'Submit Project Brief'}
         </ArrowButton>

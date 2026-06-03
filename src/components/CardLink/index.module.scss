@@ -20,7 +20,8 @@
 }
 
 // 组件自身 hover（独立使用时生效）
+// hover 颜色走变量 + fallback，父级可通过 --card-link-hover-color 覆盖（如黑色 Read more）
 .cardLink:hover {
-  --card-link-color: #1768ef;
+  --card-link-color: var(--card-link-hover-color, #1768ef);
   --card-link-arrow-shift: 4px;
 }

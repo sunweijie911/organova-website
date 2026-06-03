@@ -83,24 +83,8 @@
   align-items: center;
 }
 
-/* CTA 链接：Roboto Regular 14px，line-height 20px，颜色 #3A84FF，带右箭头，gap:4px */
-.cta {
+/* CTA：包裹 CardLink 组件的锚点，去除默认下划线 */
+.ctaLink {
   display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #3a84ff;
   text-decoration: none;
-  transition: opacity 0.15s;
-
-  &:hover {
-    opacity: 0.75;
-  }
-
-  svg {
-    flex-shrink: 0;
-  }
 }

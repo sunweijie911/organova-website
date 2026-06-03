@@ -1,0 +1,44 @@
+/* 通用 Tab 导航 — FAQ 与 Publications 共用
+ * row, gap 48, 可换行；文本 20px，默认 Light 300、选中 Medium 500；
+ * 选中/未选中底部统一虚线下划线（dotted），颜色 inherit 由父级控制
+ */
+.nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  font-family: var(--portal-body-font-family);
+  font-size: 20px;
+  font-weight: 300; /* 默认文字 Light */
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1.2;
+  /* 底部虚线下划线，选中态保持一致 */
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-skip-ink: auto;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+/* 选中态：仅加粗到 Medium，下划线仍为虚线 */
+.tabActive {
+  font-weight: 500;
+  opacity: 1;
+
+  &:hover {
+    opacity: 1;
+  }
+}

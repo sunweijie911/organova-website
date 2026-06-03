@@ -19,39 +19,7 @@
   letter-spacing: 0;
 }
 
+/* 深色 hero：Tab 文本为白色，布局/虚线下划线由 Tabs 组件统一控制 */
 .tabs {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 48px;
-  flex-wrap: wrap;
-}
-
-/* tab 在 Figma 中带 0 0 3px 的底部内边距，保留下划线与文本基线之间的空间 */
-.tab {
-  font-family: var(--portal-body-font-family);
-  font-size: 20px;
-  font-weight: 300;
   color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0 0 3px;
-  line-height: 1.2;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.75;
-  }
-}
-
-.tabActive {
-  font-weight: 500;
-  opacity: 1;
-
-  &:hover {
-    opacity: 1;
-  }
 }

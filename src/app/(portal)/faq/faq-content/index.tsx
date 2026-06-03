@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import SafeHtml from '@/components/SafeHtml';
 import styles from './index.module.scss';
 
@@ -16,26 +15,16 @@ interface FaqCategory {
   items: FaqItem[];
 }
 
-function AccordionItem({ question, answer }: FaqItem) {
-  const [open, setOpen] = useState(false);
-
+/** 问题与答案直接平铺展示，无展开/收起切换 */
+function FaqEntry({ question, answer }: FaqItem) {
   return (
     <>
       <div className={styles.divider} />
-      <div className={`${styles.item} ${open ? styles.itemOpen : ''}`}>
+      <div className={styles.item}>
         <div className={styles.questionCol}>
-          <button
-            className={styles.questionBtn}
-            onClick={() => setOpen((v) => !v)}
-            type="button"
-          >
-            <span className={styles.questionText}>{question}</span>
-            <span className={styles.indicator}>{open ? '−' : '+'}</span>
-          </button>
+          <h3 className={styles.questionText}>{question}</h3>
         </div>
-        {open && (
-          <SafeHtml className={`${styles.answerCol} rich-text`} html={answer} />
-        )}
+        <SafeHtml className={`${styles.answerCol} rich-text`} html={answer} />
       </div>
     </>
   );
@@ -66,7 +55,7 @@ export default function FaqContent({
             )}
             <div className={styles.items}>
               {category.items.map((item) => (
-                <AccordionItem
+                <FaqEntry
                   answer={item.answer}
                   id={item.id}
                   key={item.id}

@@ -1,0 +1,39 @@
+/* 通用 Select — Figma 545:6098 (Frame 74)
+ * 边框 0.5px #000，圆角 2px，padding 8px 10px；文本与箭头间留白，箭头绝对定位在右侧
+ */
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-width: 160px;
+  /* 右侧留出箭头空间（10px padding + 箭头 + 间距） */
+  padding: 8px 34px 8px 10px;
+  border: 0.5px solid #000;
+  border-radius: 2px;
+  background: transparent;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #000;
+  line-height: 1.4;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #3a84ff;
+    outline-offset: 1px;
+  }
+}
+
+/* 下拉箭头：不拦截点击，交由原生 select 处理 */
+.chevron {
+  position: absolute;
+  right: 10px;
+  color: #000;
+  pointer-events: none;
+}

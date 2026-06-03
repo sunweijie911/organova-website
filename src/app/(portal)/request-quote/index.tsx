@@ -41,10 +41,9 @@ export default function RequestQuoteView() {
     (k: keyof Step1Data) => (e: React.ChangeEvent<HTMLSelectElement>) =>
       setS1((p) => ({ ...p, [k]: e.target.value }));
 
-  /* Step 2 输入框 onChange 工厂函数 */
-  const handleS2Change =
-    (k: keyof Step2Data) => (e: React.ChangeEvent<HTMLInputElement>) =>
-      setS2((p) => ({ ...p, [k]: e.target.value }));
+  /* Step 2 输入框 onChange 工厂函数（FloatingField 回传字符串值） */
+  const handleS2Change = (k: keyof Step2Data) => (value: string) =>
+    setS2((p) => ({ ...p, [k]: value }));
 
   /* Step 1 提交 → 前往 Step 2 */
   const handleStep1Submit = (e: React.FormEvent) => {

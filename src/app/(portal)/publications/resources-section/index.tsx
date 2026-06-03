@@ -1,4 +1,4 @@
-import { SvgIcon } from '@/components/SvgIcon';
+import { CardLink } from '@/components/CardLink';
 import styles from './index.module.scss';
 
 /**
@@ -67,18 +67,16 @@ export default function ResourcesSection({ resources }: ResourcesSectionProps) {
                   )}
                 </div>
 
-                {/* CTA 按钮：Roboto Regular 14px，颜色 #3A84FF，带右箭头 */}
+                {/* CTA：统一用 CardLink 组件（如 Download PDF / Request Access） */}
                 {cta && (
                   <div className={styles.cardFooter}>
                     <a
-                      className={styles.cta}
+                      className={styles.ctaLink}
                       href={cta.href}
                       rel={cta.rel}
                       target={cta.target}
                     >
-                      {r.ctaLabel}
-                      {/* 右箭头，对应 Figma Icon/右箭头 */}
-                      <SvgIcon name="arrow-right" size={16} />
+                      <CardLink label={r.ctaLabel ?? ''} />
                     </a>
                   </div>
                 )}

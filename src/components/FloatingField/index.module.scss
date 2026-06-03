@@ -1,0 +1,72 @@
+/* 浮动 label 线条输入框 —— contact 与 request-quote step2 共享
+ * 依设计稿 Figma 757:9241（分隔线在顶部），三态：
+ * - 空闲态：顶边虚线 rgba(0,0,0,0.5)；label 24px/rgba(0,0,0,0.4) 充当占位文字
+ * - 输入时(focus)：顶边实线 #313238；label 上浮缩为 10px/#313238
+ * - 填入态(filled)：顶边实线；label 保持上浮；输入值 20px/#313238
+ * 组件本身不限定宽度/行布局，由各页面通过 className 控制。
+ */
+
+.field {
+  position: relative;
+  display: block;
+  padding-top: 28px;
+  border-top: 1px dashed rgb(0 0 0 / 0.5);
+  transition:
+    border-color 0.2s ease,
+    border-style 0.2s ease;
+}
+
+/* 输入时(focus)或填入完毕：顶边变实线高亮 */
+.field:focus-within,
+.isFilled {
+  border-top-color: #313238;
+  border-top-style: solid;
+}
+
+/* 浮动 label：默认充当占位文字（大号灰），停在输入位 */
+.floatingLabel {
+  position: absolute;
+  left: 0;
+  top: 28px; /* 与输入文字位置对齐（= 容器 padding-top） */
+  font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: rgb(0 0 0 / 0.4);
+  pointer-events: none;
+  transition:
+    top 0.18s ease,
+    font-size 0.18s ease,
+    color 0.18s ease;
+}
+
+/* 上浮态：输入时(focus)与输入完毕(filled)共用 */
+.field:focus-within .floatingLabel,
+.isFilled .floatingLabel {
+  top: 4px;
+  font-size: 10px;
+  color: #313238;
+}
+
+.input {
+  width: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #313238;
+  font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+
+  /* 占位文字交由浮动 label 承担，隐藏原生 placeholder */
+  &::placeholder {
+    color: transparent;
+  }
+}
+
+.textarea {
+  min-height: 120px;
+  resize: none;
+}

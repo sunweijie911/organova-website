@@ -2,16 +2,53 @@
 
 import { useState } from 'react';
 import { ArrowButton } from '@/components/ArrowButton';
+import { FloatingField } from '@/components/FloatingField';
 import { api } from '@/lib/trpc/react';
 import styles from './index.module.scss';
 
 const FIELDS = [
-  { key: 'firstName', label: 'First Name', type: 'text', half: true },
-  { key: 'lastName', label: 'Last Name', type: 'text', half: true },
-  { key: 'email', label: 'Email Address', type: 'email', half: false },
-  { key: 'company', label: 'Company', type: 'text', half: true },
-  { key: 'jobTitle', label: 'Job Title', type: 'text', half: true },
-  { key: 'message', label: 'Message', type: 'textarea', half: false },
+  {
+    key: 'firstName',
+    label: 'First Name',
+    type: 'text',
+    half: true,
+    required: true,
+  },
+  {
+    key: 'lastName',
+    label: 'Last Name',
+    type: 'text',
+    half: true,
+    required: true,
+  },
+  {
+    key: 'email',
+    label: 'Email Address',
+    type: 'email',
+    half: false,
+    required: true,
+  },
+  {
+    key: 'company',
+    label: 'Company',
+    type: 'text',
+    half: true,
+    required: false,
+  },
+  {
+    key: 'jobTitle',
+    label: 'Job Title',
+    type: 'text',
+    half: true,
+    required: false,
+  },
+  {
+    key: 'message',
+    label: 'Message',
+    type: 'textarea',
+    half: false,
+    required: true,
+  },
 ] as const;
 
 type FormKey = (typeof FIELDS)[number]['key'];
@@ -57,10 +94,8 @@ export function ContactForm() {
     },
   });
 
-  const handleChange =
-    (key: FormKey) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      setForm((prev) => ({ ...prev, [key]: e.target.value }));
+  const handleChange = (key: FormKey) => (value: string) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,46 +130,19 @@ export function ContactForm() {
           className={row.length > 1 ? styles.formRow : undefined}
           key={row.map((f) => f.key).join('-')}
         >
-          {row.map((field) => {
-            const isFilled = form[field.key].length > 0;
-            const fieldClass = [
-              row.length > 1 ? styles.formField : styles.formFieldFull,
-              isFilled ? styles.isFilled : '',
-            ]
-              .filter(Boolean)
-              .join(' ');
-            const inputId = `contact-${field.key}`;
-            return (
-              <label className={fieldClass} htmlFor={inputId} key={field.key}>
-                <span className={styles.floatingLabel}>{field.label}</span>
-                {field.type === 'textarea' ? (
-                  <textarea
-                    aria-label={field.label}
-                    className={`${styles.formInput} ${styles.formTextarea}`}
-                    id={inputId}
-                    onChange={handleChange(field.key)}
-                    placeholder={field.label}
-                    required={field.key === 'message'}
-                    rows={4}
-                    value={form[field.key]}
-                  />
-                ) : (
-                  <input
-                    aria-label={field.label}
-                    className={styles.formInput}
-                    id={inputId}
-                    onChange={handleChange(field.key)}
-                    placeholder={field.label}
-                    required={['firstName', 'lastName', 'email'].includes(
-                      field.key,
-                    )}
-                    type={field.type}
-                    value={form[field.key]}
-                  />
-                )}
-              </label>
-            );
-          })}
+          {row.map((field) => (
+            <FloatingField
+              className={row.length > 1 ? styles.fieldHalf : styles.fieldFull}
+              id={`contact-${field.key}`}
+              key={field.key}
+              label={field.label}
+              multiline={field.type === 'textarea'}
+              onChange={handleChange(field.key)}
+              required={field.required}
+              type={field.type === 'textarea' ? 'text' : field.type}
+              value={form[field.key]}
+            />
+          ))}
         </div>
       ))}
       <ArrowButton

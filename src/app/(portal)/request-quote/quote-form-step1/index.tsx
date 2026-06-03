@@ -71,7 +71,7 @@ function SelectField({
       </label>
       <div className={styles.selectWrapper}>
         <select
-          className={styles.select}
+          className={`${styles.select} ${value ? styles.selectFilled : ''}`}
           id={id}
           onChange={onChange}
           required={required}

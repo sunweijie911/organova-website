@@ -1,5 +1,6 @@
 'use client';
 
+import { type TabItem, Tabs } from '@/components/Tabs';
 import styles from './index.module.scss';
 
 export type PublicationsTab = 'publications' | 'resources' | 'news';
@@ -9,7 +10,7 @@ interface HeroBannerProps {
   onTabChange: (tab: PublicationsTab) => void;
 }
 
-const TABS: { key: PublicationsTab; label: string }[] = [
+const TABS: TabItem<PublicationsTab>[] = [
   { key: 'publications', label: 'Key Publications' },
   { key: 'resources', label: 'Resources for Your Research' },
   { key: 'news', label: 'News' },
@@ -29,18 +30,13 @@ export default function HeroBanner({
       <div className={styles.inner}>
         <h1 className={styles.title}>The Science Behind the Platform.</h1>
 
-        <nav aria-label="Publications tabs" className={styles.tabNav}>
-          {TABS.map(({ key, label }) => (
-            <button
-              className={activeTab === key ? styles.tabActive : styles.tabLink}
-              key={key}
-              onClick={() => onTabChange(key)}
-              type="button"
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        <Tabs
+          activeKey={activeTab}
+          ariaLabel="Publications tabs"
+          className={styles.tabNav}
+          items={TABS}
+          onChange={onTabChange}
+        />
 
         <p className={styles.subtitle}>
           Our technology is grounded in over a decade of peer-reviewed research.

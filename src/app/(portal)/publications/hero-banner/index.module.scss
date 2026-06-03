@@ -31,43 +31,9 @@
   letter-spacing: 0;
 }
 
-/* Tab 导航 Frame 82：row, gap:48, alignItems:center */
+/* 浅色 hero：Tab 文本为黑色，布局/虚线下划线由 Tabs 组件统一控制 */
 .tabNav {
-  display: flex;
-  align-items: center;
-  gap: 48px;
-  flex-wrap: wrap;
-}
-
-.tabActive,
-.tabLink {
-  font-family: var(--portal-body-font-family);
-  /* Figma fontSize: 20 */
-  font-size: 20px;
   color: #000;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
-  line-height: 1.2;
-  transition: opacity 0.15s ease;
-}
-
-/* 激活 tab：Roboto Medium 500（Figma style_WT1E9Z / style_TWMWLJ / style_B9BXZG）*/
-.tabActive {
-  font-weight: 500;
-}
-
-/* 未激活 tab：Roboto Light 300（Figma style_0ELBUE / style_HZJ8U5 / style_W9L21K）*/
-.tabLink {
-  font-weight: 300;
-
-  &:hover {
-    opacity: 0.7;
-  }
 }
 
 .subtitle {

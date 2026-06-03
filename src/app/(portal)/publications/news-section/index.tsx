@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Select } from '@/components/Select';
 import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
@@ -39,35 +40,24 @@ export default function NewsSection({
   selectedYear,
   onYearChange,
 }: NewsSectionProps) {
+  // Select 选项：All Years + 可用年份；value 用字符串，'all' 表示不过滤
+  const yearOptions = [
+    { label: 'All Years', value: 'all' },
+    ...(years?.map((y) => ({ label: String(y), value: String(y) })) ?? []),
+  ];
+
   return (
     <section className={styles.section} id="news">
       <div className={styles.inner}>
         {/* Year filter */}
         <div className={styles.filterBlock}>
           <span className={styles.filterLabel}>Filter by year:</span>
-          <div className={styles.filterDropdown}>
-            <button
-              className={`${styles.filterBtn} ${
-                !selectedYear ? styles.filterBtnActive : ''
-              }`}
-              onClick={() => onYearChange(undefined)}
-              type="button"
-            >
-              All Years
-            </button>
-            {years?.map((y) => (
-              <button
-                className={`${styles.filterBtn} ${
-                  selectedYear === y ? styles.filterBtnActive : ''
-                }`}
-                key={y}
-                onClick={() => onYearChange(y)}
-                type="button"
-              >
-                {y}
-              </button>
-            ))}
-          </div>
+          <Select
+            ariaLabel="Filter by year"
+            onChange={(v) => onYearChange(v === 'all' ? undefined : Number(v))}
+            options={yearOptions}
+            value={selectedYear ? String(selectedYear) : 'all'}
+          />
         </div>
 
         {/* 两列新闻网格 */}

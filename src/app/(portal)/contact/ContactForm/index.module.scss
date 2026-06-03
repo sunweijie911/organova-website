@@ -1,20 +1,14 @@
-/* Figma 节点 545:7209（默认态）+ 757:9241（输入后态）
- * - subtitle: Roboto 32 / 400
- * - 字段 wrapper(Frame 116) 宽 1040px，row gap 50px
- * - row: justify space-between，half=456px，余隙 128px
- * - field column gap 18px（label↔input）
- * - dashed border: stroke rgba(0,0,0,0.5) dashes [2,2]
- * - placeholder: Roboto 24 / 400，color rgba(0,0,0,0.4)
- * - 填入值: Roboto 20 / 400，color #313238，border 变实线
- * - filled label: Roboto 10 / 400，color #313238
- * - submit(button)↔fields wrapper 间距: 122px（Figma layout_LYZ1IF gap）
+/* Contact 表单布局
+ * 字段交互（顶部线 + 浮动 label）已抽到共享组件 @/components/FloatingField
+ * 这里只负责表单整体布局与字段宽度。
+ * 布局：wrapper 1040px，row gap 50px；half=456px；submit↔fields gap 122px（Figma layout_8S08QP）
  */
 
 .form {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 50px; /* Figma layout_C71P1P 字段 rows 间距 */
+  gap: 50px; /* Figma layout_RHW0DX 字段 rows 间距 */
   max-width: 1040px;
 }
 
@@ -26,12 +20,7 @@
   color: #000;
 }
 
-/* 字段 rows wrapper: column gap 50px */
-.form > :global(.row-wrap),
-.form > div {
-  /* 单字段 row 也走通用 styling；半幅行通过 .formRow class */
-}
-
+/* 两列行：half=456px，space-between */
 .formRow {
   display: flex;
   align-items: flex-start;
@@ -39,88 +28,22 @@
   gap: 128px;
 }
 
-.formField,
-.formFieldFull {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  position: relative;
-}
-
-.formField {
+/* 半幅字段（两列行内） */
+.fieldHalf {
   flex: 0 0 456px;
   width: 456px;
   max-width: 456px;
 }
 
-.formFieldFull {
+/* 全幅字段（email / message） */
+.fieldFull {
   width: 100%;
   max-width: 1040px;
 }
 
-/* 浮动 label：默认态隐藏，filled 时显示在上方 */
-.floatingLabel {
-  display: block;
-  font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
-  font-size: 10px;
-  font-weight: 400;
-  line-height: 1.2;
-  color: #313238;
-  height: 12px;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  pointer-events: none;
-}
-
-.isFilled .floatingLabel {
-  opacity: 1;
-}
-
-.formInput {
-  width: 100%;
-  padding: 0;
-  padding-bottom: 0;
-  /* 默认 dashed 顶边线（Figma stroke 2-2 dashes） */
-  border: none;
-  border-top: 1px dashed rgb(0 0 0 / 0.5);
-  padding-top: 12px;
-  outline: none;
-  background: transparent;
-  color: rgb(0 0 0 / 0.4);
-  font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.2;
-  transition:
-    border-color 0.2s ease,
-    border-style 0.2s ease,
-    color 0.2s ease,
-    font-size 0.15s ease;
-
-  &::placeholder {
-    color: rgb(0 0 0 / 0.4);
-  }
-
-  /* 填入态：border 变实线、字号 20、颜色 #313238 */
-  &:not(:placeholder-shown) {
-    border-top: 1px solid #313238;
-    color: #313238;
-    font-size: 20px;
-  }
-
-  &:focus {
-    border-top: 1px solid #313238;
-  }
-}
-
-.formTextarea {
-  min-height: 120px;
-  resize: none;
-}
-
 .submitBtn {
   align-self: flex-start;
-  margin-top: 40px; /* 50(form row gap) + 72 = 122 与字段底距离 (Figma layout_LYZ1IF gap=122) */
+  margin-top: 72px; /* 50(form gap) + 72 = 122 与字段底距离（Figma layout_8S08QP gap=122） */
 }
 
 .successMessage {

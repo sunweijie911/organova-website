@@ -1,4 +1,4 @@
-import { SvgIcon } from '@/components/SvgIcon';
+import { CardLink } from '@/components/CardLink';
 import styles from './index.module.scss';
 
 /**
@@ -77,16 +77,15 @@ export default function PublicationsList({
                       <span className={styles.authors}>{pub.authors}</span>
                     )}
 
-                    {/* Read more 链接 */}
+                    {/* Read more 链接：仅在有 DOI 时显示，统一用 CardLink 组件 */}
                     {doiHref && (
                       <a
-                        className={styles.readMore}
+                        className={styles.readMoreLink}
                         href={doiHref}
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        Read more
-                        <SvgIcon name="arrow-right" size={16} />
+                        <CardLink label="Read more" />
                       </a>
                     )}
                   </div>

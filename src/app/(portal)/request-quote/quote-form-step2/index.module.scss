@@ -1,10 +1,7 @@
-/* Step 2 表单区域
- * Figma: Frame 114 — 简约线条风格输入框（虚线底部）
- * 父 Frame 在 x:240 y:765, mode:column, gap:50
- * 每行 (Frame 110/114/115/116) width:1440, mode:row, align center, gap:128
- * 每个输入 (Frame 107): mode:column, gap:17, fill horizontal
- * 文本: Roboto 24/400, 占位色 rgba(0,0,0,0.4)
- * 虚线: stroke rgba(0,0,0,0.5), 1px, dashes 2,2
+/* Step 2 表单布局
+ * 字段交互（顶部线 + 浮动 label）已抽到共享组件 @/components/FloatingField
+ * 这里只负责行布局与字段宽度。
+ * Figma: 父 Frame x:240 y:765, column gap:50；每行 mode:row, gap:128
  */
 
 .formSection {
@@ -17,7 +14,7 @@
 .row {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   gap: 128px;
   width: 100%;
 }
@@ -27,48 +24,17 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-
-  .field {
-    flex: 1;
-  }
 }
 
-/* 每个字段容器 — Figma: Frame 107, gap 17px */
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 17px;
+/* 等宽字段（两列行内） */
+.fieldEqual {
   flex: 1;
 }
 
-/* 线条风格输入框
- * Figma: Vector 8 — 虚线底部 (stroke dashes: 2,2), color rgba(0,0,0,0.5)
- * 字段文本: fontSize 24, fontFamily Roboto, fontWeight 400, color rgba(0,0,0,0.4)
- * 输入态文字色保持深色（rgba(0,0,0,0.85)）以便区分占位文字
- */
-.input {
+/* 全宽字段（Email / Phone） */
+.fieldFull {
+  flex: 1;
   width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
-  border-radius: 0;
-  padding: 0 0 17px;
-  font-family: var(--portal-body-font-family);
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.17;
-  color: rgba(0, 0, 0, 0.85);
-  outline: none;
-  transition: border-color 0.2s;
-
-  &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-  }
-
-  &:focus {
-    border-bottom-color: rgba(0, 0, 0, 0.9);
-    border-bottom-style: solid;
-  }
 }
 
 /* 错误提示 */
@@ -81,7 +47,6 @@
 
 /* 操作按钮区 — Back 在左，Submit 在右
  * Figma: Back x:240 y:1242, Submit x:1384 y:1242
- * Phone (R4) bottom ≈ 765 + 3*96 + 46 ≈ 1099 → 间距 ~143。formSection gap 50 占 50, padding-top 补 93
  */
 .actions {
   display: flex;
