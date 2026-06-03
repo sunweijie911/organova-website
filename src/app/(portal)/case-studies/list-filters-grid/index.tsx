@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { CardLink } from '@/components/CardLink';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 interface FilterOptions {
@@ -33,28 +35,6 @@ interface Props {
   onApplicationChange: (value: string) => void;
   data?: CaseStudy[];
   isLoading?: boolean;
-}
-
-// 卡片右下角箭头
-function ArrowIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="16"
-      viewBox="0 0 16 16"
-      width="16"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
 }
 
 // 单个过滤标签：根据 active / disabled 状态切换样式
@@ -110,6 +90,29 @@ export default function ListFiltersGrid({
   data,
   isLoading,
 }: Props) {
+  // 当前已选中的过滤项（用于 Active 行）
+  const activeFilters: { key: string; label: string; clear: () => void }[] = [];
+  if (cancerType !== 'All') {
+    activeFilters.push({
+      key: 'cancer',
+      label: cancerType,
+      clear: () => onCancerTypeChange('All'),
+    });
+  }
+  if (application !== 'All') {
+    activeFilters.push({
+      key: 'app',
+      label: application,
+      clear: () => onApplicationChange('All'),
+    });
+  }
+  const hasActive = activeFilters.length > 0;
+
+  const clearAll = () => {
+    onCancerTypeChange('All');
+    onApplicationChange('All');
+  };
+
   return (
     <section className={styles.section}>
       {/* 区块标题 */}
@@ -147,8 +150,10 @@ export default function ListFiltersGrid({
             </div>
           </div>
 
-          {/* Application 行（带阴影分隔） */}
-          <div className={`${styles.filterRow} ${styles.filterRowShadow}`}>
+          {/* Application 行：无 Active 行时自带阴影分隔，否则由 Active 行承担阴影 */}
+          <div
+            className={`${styles.filterRow} ${hasActive ? '' : styles.filterRowShadow}`.trim()}
+          >
             <div className={styles.filterInner}>
               <span className={styles.filterLabel}>Application</span>
               <div className={styles.tagList}>
@@ -171,6 +176,40 @@ export default function ListFiltersGrid({
             </div>
           </div>
         </>
+      )}
+
+      {/* Active 行：展示当前选中的过滤标签，可单独移除或一键清空 */}
+      {hasActive && (
+        <div className={styles.activeRow}>
+          <div className={styles.activeInner}>
+            <span className={styles.activeLabel}>Active</span>
+            <div className={styles.activeBody}>
+              <div className={styles.activeTags}>
+                {activeFilters.map((f) => (
+                  <button
+                    className={styles.activeTag}
+                    key={f.key}
+                    onClick={f.clear}
+                    type="button"
+                  >
+                    <span>{f.label}</span>
+                    <span className={styles.activeTagClose}>
+                      <SvgIcon name="close" size={11} />
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <button
+                className={styles.clearAll}
+                onClick={clearAll}
+                type="button"
+              >
+                <SvgIcon name="trash" size={16} />
+                <span>Clear all</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* 卡片区 */}
@@ -218,10 +257,10 @@ export default function ListFiltersGrid({
                   )}
 
                   {/* 跳转链接 */}
-                  <div className={styles.cardLink}>
-                    <span>Read Full Case Study</span>
-                    <ArrowIcon />
-                  </div>
+                  <CardLink
+                    className={styles.cardLink}
+                    label="Read Full Case Study"
+                  />
                 </div>
               </Link>
             ))}

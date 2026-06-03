@@ -173,7 +173,8 @@
     "rediss",
     "pincode",
     "verif",
-    "ication"
+    "ication",
+    "codev"
   ],
   "patterns": [
     {

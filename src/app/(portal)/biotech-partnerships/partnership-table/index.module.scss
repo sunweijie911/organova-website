@@ -51,14 +51,9 @@
 
 .headerCell {
   padding: 24px;
-  border-right: 1px solid #dcdee5;
   display: flex;
   align-items: center;
   gap: 4px;
-
-  &:last-child {
-    border-right: none;
-  }
 }
 
 /* 表头文字：Roboto SemiBold 20px，#E9F2FF */
@@ -97,7 +92,6 @@
 /* Partnership Type 列（Figma layout_O1U973：padding 24px、gap 8px） */
 .typeCell {
   padding: 24px;
-  border-right: 1px solid #dcdee5;
   display: flex;
   align-items: center;
   background: #fff;
@@ -112,13 +106,16 @@
   gap: 8px;
 }
 
-.sortIcon {
+/* Type 列业务图标：32×32 浅蓝圆角底块，内含 20×20 单色图标 */
+.typeIcon {
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
   width: 32px;
   height: 32px;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  background: #e9f2ff;
+  border-radius: 6px;
 }
 
 /* 类型文字：Roboto Medium 16px，#4D4F56 */
@@ -134,17 +131,12 @@
 /* 描述列（What You Get / Best For）：Figma layout_7BW3Q6 padding 20px 24px */
 .descCell {
   padding: 20px 24px;
-  border-right: 1px solid #dcdee5;
   display: flex;
   align-items: center;
   background: #fff;
   transition:
     background-color 0.15s ease,
     color 0.15s ease;
-
-  &:last-child {
-    border-right: none;
-  }
 }
 
 /* 描述文字：Roboto Regular 16px，#4D4F56 */

@@ -66,12 +66,24 @@
 /* ── Tabs ── */
 
 .tabRow {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin: 56px 240px 0;
+
+  /* 最右侧纵向虚线（闭合最后一列） */
+  &::after {
+    content: '';
+    position: absolute;
+    top: -56px;
+    right: 0;
+    bottom: -99px;
+    border-left: 1px dashed rgba(0, 0, 0, 0.3);
+  }
 }
 
 .tabBtn {
+  position: relative;
   padding: 40px 0;
   background: transparent;
   border: none;
@@ -83,6 +95,16 @@
   cursor: pointer;
   text-align: center;
   transition: color 0.2s, border-color 0.2s;
+
+  /* 每列左侧的纵向虚线，从卡片底部向下延伸 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -56px;
+    left: 0;
+    bottom: -99px;
+    border-left: 1px dashed rgba(0, 0, 0, 0.3);
+  }
 
   &:hover:not(.tabActive) {
     color: rgba(0, 0, 0, 0.55);

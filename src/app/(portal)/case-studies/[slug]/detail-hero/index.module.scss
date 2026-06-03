@@ -38,10 +38,9 @@
     color: #313238;
   }
 
-  // SVG 图标颜色跟随父元素
-  svg {
+  // 返回图标（SvgIcon mask 渲染，颜色经 currentColor 跟随父链接）
+  .backIcon {
     flex-shrink: 0;
-    color: currentColor;
   }
 }
 

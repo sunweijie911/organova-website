@@ -1,0 +1,26 @@
+// 卡片链接：Roboto Regular 14px / 20px，默认 #3A84FF（style_U65MUC + fill）
+// 颜色 / 箭头位移用自定义属性，父级 .card:hover 可覆盖 --card-link-color / --card-link-arrow-shift
+.cardLink {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--card-link-color, #3a84ff);
+  transition: color 0.15s ease;
+}
+
+// 箭头：hover 时向右平移
+.arrow {
+  transition: transform 0.15s ease;
+  transform: translateX(var(--card-link-arrow-shift, 0));
+}
+
+// 组件自身 hover（独立使用时生效）
+.cardLink:hover {
+  --card-link-color: #1768ef;
+  --card-link-arrow-shift: 4px;
+}

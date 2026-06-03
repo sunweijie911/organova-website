@@ -1,28 +1,37 @@
 'use client';
 
-import { SvgIcon } from '@/components/SvgIcon';
+import { type IconName, SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
-const PARTNERSHIP_TYPES = [
+const PARTNERSHIP_TYPES: {
+  type: string;
+  icon: IconName;
+  get: string;
+  bestFor: string;
+}[] = [
   {
     type: 'Feasibility Study',
+    icon: 'partnership-feasibility',
     get: 'A rapid, low-commitment proof-of-concept study to validate your hypothesis in our models.',
     bestFor: 'Early-stage biotechs exploring a new target or indication.',
   },
   {
     type: 'Fee-for-Service',
+    icon: 'partnership-fee',
     get: 'Custom drug screening, biomarker discovery, or I-O evaluation studies with full data reporting.',
     bestFor:
       'Companies with defined programs needing high-quality preclinical data.',
   },
   {
     type: 'Strategic Alliance',
+    icon: 'partnership-strategic',
     get: 'A long-term collaboration with dedicated model development, co-publication rights, and priority access to our biobank.',
     bestFor:
       'Biotechs with novel targets or platform technologies seeking a deep scientific collaboration.',
   },
   {
     type: 'Co-Development Program',
+    icon: 'partnership-codev',
     get: 'A true scientific partnership where we co-design the research, co-own the data, and co-publish the findings.',
     bestFor:
       'Biotechs with novel targets or platform technologies seeking a deep scientific collaboration.',
@@ -55,8 +64,8 @@ export default function PartnershipTable() {
               <div className={styles.dataRow} key={item.type}>
                 <div className={styles.typeCell}>
                   <div className={styles.typeCellInner}>
-                    <span aria-hidden="true" className={styles.sortIcon}>
-                      <SvgIcon color="#9CA3AF" name="sort" size={16} />
+                    <span aria-hidden="true" className={styles.typeIcon}>
+                      <SvgIcon color="#1A4C6E" name={item.icon} size={20} />
                     </span>
                     <span className={styles.typeText}>{item.type}</span>
                   </div>

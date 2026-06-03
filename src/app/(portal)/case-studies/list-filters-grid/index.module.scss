@@ -218,17 +218,25 @@
     border-color 0.2s ease,
     transform 0.15s ease;
 
-  // hover 态（539:1924 卡片 hover 态）：边框 #1A4C6E + 阴影 0 4 8 rgba(99,138,189,0.25)
+  // hover 态（540:5589 卡片 hover 态）：边框 #1A4C6E + 阴影 0 4 8 rgba(99,138,189,0.25)
+  // 标题 → #1A4C6E，chip 文字 → #1A4C6E，摘要 → #286996，链接由自定义属性驱动变蓝并位移
   &:hover {
     border-color: #1a4c6e;
     box-shadow: 0px 4px 8px 0px rgba(99, 138, 189, 0.25);
+
+    --card-link-color: #1768ef;
+    --card-link-arrow-shift: 4px;
 
     .cardTitle {
       color: #1a4c6e;
     }
 
-    .cardLink {
-      color: #1768ef;
+    .cardChip {
+      color: #1a4c6e;
+    }
+
+    .cardSummary {
+      color: #286996;
     }
   }
 }
@@ -281,6 +289,7 @@
   line-height: 1.2;
   color: #4d4f56;
   white-space: nowrap;
+  transition: color 0.15s ease;
 }
 
 // 摘要（style_AYZ9BQ）Roboto Regular 16px / 24px #4D4F56
@@ -292,22 +301,12 @@
   color: #4d4f56;
   margin: 0;
   flex: 1;
+  transition: color 0.15s ease;
 }
 
-// "Read Full Case Study"（style_IK6CKL）Roboto Regular 14px / 20px #3A84FF
-// 链接行 layout_Q77ZHO: row align center gap 4px
+// "Read Full Case Study" 链接：组件样式见 CardLink，这里仅负责贴底布局
 .cardLink {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 4px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: #3a84ff;
   margin-top: auto;
-  transition: color 0.15s ease;
 }
 
 .loading,
@@ -317,4 +316,114 @@
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   color: #979ba5;
+}
+
+// Active 行（540:4749 Frame 47）：白底 + 底部阴影分隔，padding 24px 240px
+.activeRow {
+  padding: 24px 240px;
+  background: #fff;
+  box-shadow: 0px 2px 4px 0px rgba(44, 56, 77, 0.15);
+}
+
+// 行内布局（Frame 44 layout_9FCS1K）：row align center，"Active" 与内容间距 90px
+.activeInner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 90px;
+}
+
+// "Active" 文案：Roboto Regular 20px #313238
+.activeLabel {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #313238;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+// 内容区（Frame 74 layout_HA9TMH）：标签列表与 Clear all 两端对齐
+.activeBody {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+// 选中标签列表（Frame 43 layout_6V5F43）：row gap 10px
+.activeTags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+// 选中标签（540:4922 TAG）：深蓝底 #1A4C6E 白字 + 叉号，padding 8px 16px / radius 21.5px
+.activeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 21.5px;
+  border: none;
+  background: #1a4c6e;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+
+  svg {
+    display: block;
+  }
+
+  &:hover {
+    background: #143b56;
+  }
+}
+
+// 选中标签上的叉号底：#286996 正圆 18x18，叉号白色居中（540:4922 Group 5）
+.activeTagClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #286996;
+  flex-shrink: 0;
+}
+
+// Clear all（Frame 73 layout_DUPQII）：删除图标 + Roboto Regular 16px #979BA5
+.clearAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #979ba5;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+
+  svg {
+    display: block;
+  }
+
+  &:hover {
+    color: #4d4f56;
+  }
 }

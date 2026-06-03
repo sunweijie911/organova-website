@@ -8,10 +8,11 @@ if (!databaseUrl) {
   process.exit(1);
 }
 
-// 与 src/server/db/index.ts 保持一致的 SSL 行为（RDS 强制 SSL 但不强制校验 CA）
-const conn = postgres(databaseUrl, {
-  ssl: { rejectUnauthorized: false },
-});
+// 与 src/server/db/index.ts 保持一致的 SSL 行为：
+// 非生产环境（本地 Postgres 默认不开 SSL）关闭 SSL，生产环境（RDS 强制 SSL）不强制校验 CA
+const ssl =
+  process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false;
+const conn = postgres(databaseUrl, { ssl });
 const db = drizzle(conn, { schema });
 
 async function seed() {
@@ -506,7 +507,7 @@ async function seed() {
     {
       name: 'Colorectal Cancer (CRC)',
       slug: 'colorectal-cancer',
-      modelCount: '300+ (China) + 190 (US)',
+      modelCount: '300+ (China)\n190 (US)',
       formats: 'PDO 1.0 & 2.0',
       sortOrder: 1,
       isPublished: true,
@@ -525,7 +526,7 @@ async function seed() {
     {
       name: 'Kidney Cancer (ccRCC)',
       slug: 'kidney-cancer',
-      modelCount: '200+ (China) + 193 (US)',
+      modelCount: '200+ (China)\n193 (US)',
       formats: 'PDO 1.0 & 2.0',
       sortOrder: 2,
       isPublished: true,
@@ -544,7 +545,7 @@ async function seed() {
     {
       name: 'Breast Cancer',
       slug: 'breast-cancer',
-      modelCount: '150+ (China) + 174 (US)',
+      modelCount: '150+ (China)\n174 (US)',
       formats: 'PDO 1.0 & 2.0',
       sortOrder: 3,
       isPublished: true,
@@ -601,7 +602,7 @@ async function seed() {
     {
       name: 'Lung Cancer (NSCLC)',
       slug: 'lung-cancer-nsclc',
-      modelCount: '100+ (China) + 11 (US)',
+      modelCount: '100+ (China)\n11 (US)',
       formats: 'PDO 1.0 & 2.0',
       sortOrder: 6,
       isPublished: true,

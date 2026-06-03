@@ -1,3 +1,4 @@
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 /**
@@ -76,22 +77,8 @@ export default function ResourcesSection({ resources }: ResourcesSectionProps) {
                       target={cta.target}
                     >
                       {r.ctaLabel}
-                      {/* 右箭头 SVG，对应 Figma Icon/右箭头，16×16 */}
-                      <svg
-                        aria-hidden="true"
-                        fill="none"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        width="16"
-                      >
-                        <path
-                          d="M3 8H13M13 8L9 4M13 8L9 12"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="1.3"
-                        />
-                      </svg>
+                      {/* 右箭头，对应 Figma Icon/右箭头 */}
+                      <SvgIcon name="arrow-right" size={16} />
                     </a>
                   </div>
                 )}

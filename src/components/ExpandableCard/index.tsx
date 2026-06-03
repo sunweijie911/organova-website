@@ -40,7 +40,7 @@ export function ExpandableCardList({ items }: ExpandableCardListProps) {
                 <div
                   className={`${styles.iconBox} ${compact ? styles.iconBoxCompact : ''}`}
                 >
-                  <SvgIcon name={item.icon} size={compact ? 34 : 48} />
+                  <SvgIcon className={styles.iconGraphic} name={item.icon} />
                 </div>
                 <div className={styles.text}>
                   <span className={styles.title}>{item.title}</span>
@@ -52,7 +52,10 @@ export function ExpandableCardList({ items }: ExpandableCardListProps) {
               <div
                 className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ''}`}
               >
-                <SvgIcon name={isOpen ? 'arrow-up' : 'arrow-down'} size={20} />
+                <SvgIcon
+                  className={styles.arrowGraphic}
+                  name={isOpen ? 'arrow-up' : 'arrow-down'}
+                />
               </div>
             </button>
             {isOpen && content.length > 0 && (

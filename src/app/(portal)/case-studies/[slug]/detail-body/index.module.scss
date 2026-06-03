@@ -11,12 +11,8 @@
 .inner {
   max-width: 1440px;
   margin: 0 auto;
-  display: grid;
-  // 左侧主内容 (约3/4宽) + 右侧侧边栏 (约1/4宽)
-  // Figma: 正文区 width 1440，侧边可推断
-  grid-template-columns: 1fr 340px;
-  gap: 24px;
-  align-items: start;
+  // 已无右侧侧边栏，主内容区铺满整行
+  display: block;
 }
 
 // 左侧主内容区
@@ -100,54 +96,6 @@
   }
 }
 
-// ─── 右侧侧边栏 ────────────────────────────────────────────────
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  position: sticky;
-  top: 24px;
-}
-
-// 侧边卡片（Study Details）
-// 与内容卡片样式一致
-.sideCard {
-  background: #ffffff;
-  border: 1px solid #dcdee5;
-  border-radius: 16px;
-  padding: 24px;
-}
-
-// metadata 列表
-// Figma layout_N2W0NC: row, gap 16px, width 1392（此处在侧边栏取 column 排列）
-.metaList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-// metadata 单行
-// Figma layout_N2W0NC: row, align-items center, gap 16px
-.metaRow {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-// metadata 标签名（Model: / Drug Classes: / Readout: / Validation:）
-// Figma style_SHAHQC: Roboto Regular 18px，fill_EE81AZ → #313238
-.metaRowLabel {
-  font-family: 'Roboto', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  color: #313238;
-  white-space: nowrap;
-  flex-shrink: 0;
-  min-width: 90px;
-}
-
 // metadata 标签值列表
 // Figma layout_1XVTJ3: row, gap 10px，wrap
 .metaTagList {
@@ -171,6 +119,36 @@
   font-weight: 400;
   color: #4d4f56;
   white-space: nowrap;
+}
+
+// 底部返回入口：在正文下方居左，样式与顶部 Hero 的 Back 链接保持一致
+.backToGallery {
+  max-width: 1440px;
+  margin: 48px auto 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+// 与 detail-hero 的 .backLink 同款：纯文本链接 + 左箭头图标
+.backToGalleryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #979ba5;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  // 图标经 currentColor 跟随链接文字色
+  .backIcon {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: #313238;
+  }
 }
 
 // CTA 按钮区

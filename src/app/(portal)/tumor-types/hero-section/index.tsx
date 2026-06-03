@@ -6,10 +6,8 @@ export default function HeroSection() {
       align="bottom"
       bgSrc="/assets/images/tumor-types/hero-bg.png"
       subtitle="1,500+ deeply characterized patient-derived organoid models. 20+ cancer types. Both PDO 1.0 and Organoid 2.0 (ALI-PDO™) formats available."
-      subtitleMaxWidth={1267}
       title="The World's Largest Living Cancer Biobank."
       titleGap={77}
-      titleMaxWidth={1231}
     />
   );
 }

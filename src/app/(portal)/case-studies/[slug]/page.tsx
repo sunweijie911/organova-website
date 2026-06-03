@@ -44,17 +44,12 @@ export default async function CaseStudyDetailPage({
       <DetailHero
         applicationTags={data.applicationTags}
         cancerTypeTags={data.cancerTypeTags}
-        summary={data.summary}
         title={data.title}
       />
       <DetailBody
         approach={data.approach}
         challenge={data.challenge}
         implication={data.implication}
-        metaDrugClasses={data.metaDrugClasses}
-        metaModel={data.metaModel}
-        metaReadout={data.metaReadout}
-        metaValidation={data.metaValidation}
         results={data.results}
       />
     </>

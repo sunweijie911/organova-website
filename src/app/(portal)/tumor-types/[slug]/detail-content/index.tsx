@@ -60,9 +60,7 @@ export default function DetailContent({ data }: { data: CancerType }) {
           <div className={styles.titleBlock}>
             <div className={styles.titleMeta}>
               <h1 className={styles.title}>{data.subpageTitle ?? data.name}</h1>
-              {data.modelCountDetail && (
-                <p className={styles.metaLine}>{data.modelCountDetail}</p>
-              )}
+
               {formats.length > 0 && (
                 <div className={styles.tags}>
                   {formats.map((f) => (
@@ -71,6 +69,9 @@ export default function DetailContent({ data }: { data: CancerType }) {
                     </span>
                   ))}
                 </div>
+              )}
+              {data.modelCountDetail && (
+                <p className={styles.metaLine}>{data.modelCountDetail}</p>
               )}
             </div>
             {data.validationMethods && (

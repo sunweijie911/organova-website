@@ -73,14 +73,6 @@
   line-height: 1.2;
 }
 
-.metaLine {
-  font-family: var(--font-roboto), sans-serif;
-  font-size: 24px;
-  font-weight: 400;
-  color: #979ba5;
-  line-height: 1.5;
-}
-
 .tags {
   display: flex;
   flex-direction: row;
@@ -100,6 +92,14 @@
   font-weight: 700;
   color: #979ba5;
   white-space: nowrap;
+}
+
+.metaLine {
+  font-family: var(--font-roboto), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #979ba5;
+  line-height: 1.5;
 }
 
 .description {

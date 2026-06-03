@@ -9,10 +9,6 @@ interface PageHeroProps {
   subtitle?: ReactNode;
   /** 额外内容（按钮、tab 等），渲染于副标题下方 */
   children?: ReactNode;
-  /** 标题宽度上限（默认 1098） */
-  titleMaxWidth?: number;
-  /** 副标题宽度上限（默认 1255） */
-  subtitleMaxWidth?: number;
   /** 标题→副标题间距（默认 80px） */
   titleGap?: number;
   /** 副标题→children 间距（默认 80px） */
@@ -34,8 +30,6 @@ export function PageHero({
   title,
   subtitle,
   children,
-  titleMaxWidth,
-  subtitleMaxWidth,
   titleGap,
   subtitleGap,
   align = 'top',
@@ -52,10 +46,6 @@ export function PageHero({
         .join(' ')}
       style={
         {
-          '--page-hero-title-mw': titleMaxWidth ? `${titleMaxWidth}px` : '',
-          '--page-hero-subtitle-mw': subtitleMaxWidth
-            ? `${subtitleMaxWidth}px`
-            : '',
           '--page-hero-title-gap': titleGap != null ? `${titleGap}px` : '',
           '--page-hero-subtitle-gap':
             subtitleGap != null ? `${subtitleGap}px` : '',

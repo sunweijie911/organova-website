@@ -1,5 +1,6 @@
 'use client';
 
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 interface StepIndicatorProps {
@@ -20,22 +21,7 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
           >
             {currentStep > 1 ? (
               /* 已完成：对勾图标 */
-              <svg
-                aria-hidden="true"
-                fill="none"
-                height="10"
-                viewBox="0 0 12 10"
-                width="12"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 5l3.5 3.5L11 1"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              <SvgIcon name="check" size={12} />
             ) : (
               /* 活跃中：实心圆点 */
               <div className={styles.activeDot} />

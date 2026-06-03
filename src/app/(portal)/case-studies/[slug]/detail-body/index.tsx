@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import SafeHtml from '@/components/SafeHtml';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 interface Props {
@@ -7,36 +9,6 @@ interface Props {
   approach?: string | null;
   results?: string | null;
   implication?: string | null;
-  // 侧边栏 metadata
-  metaModel?: string | null;
-  metaDrugClasses?: string | null;
-  metaReadout?: string | null;
-  metaValidation?: string | null;
-}
-
-// 将逗号或换行分隔的字符串转为标签数组
-function parseMetaTags(value: string): string[] {
-  return value
-    .split(/[,\n]+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
-// 侧边栏 Metadata 行
-function MetaRow({ label, value }: { label: string; value: string }) {
-  const tags = parseMetaTags(value);
-  return (
-    <div className={styles.metaRow}>
-      <span className={styles.metaRowLabel}>{label}:</span>
-      <div className={styles.metaTagList}>
-        {tags.map((t) => (
-          <span className={styles.metaTag} key={t}>
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 // 详情页正文 + 侧边栏区域
@@ -49,14 +21,7 @@ export default function DetailBody({
   approach,
   results,
   implication,
-  metaModel,
-  metaDrugClasses,
-  metaReadout,
-  metaValidation,
 }: Props) {
-  const hasMetadata =
-    metaModel || metaDrugClasses || metaReadout || metaValidation;
-
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
@@ -114,24 +79,14 @@ export default function DetailBody({
             </div>
           )}
         </div>
+      </div>
 
-        {/* 右侧侧边栏 — Study Details */}
-        {hasMetadata && (
-          <aside className={styles.sidebar}>
-            <div className={styles.sideCard}>
-              <div className={styles.metaList}>
-                {metaModel && <MetaRow label="Model" value={metaModel} />}
-                {metaDrugClasses && (
-                  <MetaRow label="Drug Classes" value={metaDrugClasses} />
-                )}
-                {metaReadout && <MetaRow label="Readout" value={metaReadout} />}
-                {metaValidation && (
-                  <MetaRow label="Validation" value={metaValidation} />
-                )}
-              </div>
-            </div>
-          </aside>
-        )}
+      {/* 底部返回入口：方便用户滑动到底部时返回画廊 */}
+      <div className={styles.backToGallery}>
+        <Link className={styles.backToGalleryBtn} href="/case-studies">
+          <SvgIcon className={styles.backIcon} name="chevron-left" size={28} />
+          <span>Back to Gallery</span>
+        </Link>
       </div>
     </section>
   );

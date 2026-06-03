@@ -1,3 +1,4 @@
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 /**
@@ -84,22 +85,8 @@ export default function PublicationsList({
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        Read more {/* 箭头图标 inline SVG */}
-                        <svg
-                          aria-hidden="true"
-                          fill="none"
-                          height="11"
-                          viewBox="0 0 17 11"
-                          width="17"
-                        >
-                          <path
-                            d="M1 5.5H15.5M15.5 5.5L11 1M15.5 5.5L11 10"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.2"
-                          />
-                        </svg>
+                        Read more
+                        <SvgIcon name="arrow-right" size={16} />
                       </a>
                     )}
                   </div>

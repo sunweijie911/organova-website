@@ -82,12 +82,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  // 尺寸写在 scss 中（而非 SvgIcon 的 size 内联 prop），
+  // 这样 px 才会被 postcss-px-to-viewport 转成 vw 实现等比缩放。
+  // 选择器 .iconBox .iconGraphic 优先级高于 SvgIcon 内部的 .icon，可覆盖其 width/height。
+  .iconGraphic {
+    width: 48px;
+    height: 48px;
+  }
 }
 
 .iconBoxCompact {
   width: 50px;
   height: 50px;
   border-radius: 10px;
+
+  .iconGraphic {
+    width: 34px;
+    height: 34px;
+  }
 }
 
 .text {
@@ -118,23 +131,23 @@
   height: 36px;
   border-radius: 50%;
   background: #f0f1f5;
+  // SvgIcon 用 mask + background-color(currentColor) 上色，
+  // 所以直接用 color 控制箭头颜色（旧的 img filter 对 <span> 无效，已移除）。
+  color: #4d4f56;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 
-  img {
-    filter: brightness(0) saturate(100%) invert(27%) sepia(7%) saturate(490%)
-      hue-rotate(185deg) brightness(92%) contrast(85%);
+  .arrowGraphic {
+    width: 20px;
+    height: 20px;
   }
 }
 
 .arrowOpen {
   background: #1a4c6e;
-
-  img {
-    filter: brightness(0) invert(1);
-  }
+  color: #fff;
 }
 
 .divider {

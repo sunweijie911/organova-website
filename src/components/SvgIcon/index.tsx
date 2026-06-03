@@ -11,6 +11,9 @@ export type IconName =
   | 'chevron-down'
   | 'sort'
   | 'info'
+  | 'close'
+  | 'trash'
+  | 'check'
   | 'beaker'
   | 'cloud-db'
   | 'database'
@@ -19,7 +22,11 @@ export type IconName =
   | 'link'
   | 'microscope'
   | 'shield'
-  | 'target';
+  | 'target'
+  | 'partnership-feasibility'
+  | 'partnership-fee'
+  | 'partnership-strategic'
+  | 'partnership-codev';
 
 interface SvgIconProps {
   name: IconName;

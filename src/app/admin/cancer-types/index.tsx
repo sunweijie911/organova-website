@@ -251,8 +251,15 @@ export default function AdminCancerTypesView() {
               value={coverImage}
             />
           </Form.Item>
-          <Form.Item label="模型数量（卡片展示）" name="modelCount">
-            <Input placeholder="400+ (China)" />
+          <Form.Item
+            extra="多行将分行展示在卡片上，每行回车换行。例如：300+ (China) ⏎ 190 (US)"
+            label="模型数量（卡片展示）"
+            name="modelCount"
+          >
+            <Input.TextArea
+              autoSize={{ minRows: 1, maxRows: 4 }}
+              placeholder={'300+ (China)\n190 (US)'}
+            />
           </Form.Item>
           <Form.Item label="可用格式" name="formats">
             <Input placeholder="PDO 1.0 & 2.0" />

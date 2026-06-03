@@ -1,33 +1,11 @@
 import Link from 'next/link';
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 interface Props {
   title: string;
-  summary?: string | null;
   cancerTypeTags: string[];
   applicationTags: string[];
-}
-
-// 右箭头（← 方向，Back 链接用）
-function BackArrowIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="28"
-      viewBox="0 0 28 28"
-      width="28"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M18 14H10M10 14L14.5 9.5M10 14L14.5 18.5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
 }
 
 // 详情页 Hero 区域
@@ -37,7 +15,6 @@ function BackArrowIcon() {
 // 标签 layout_P8ZZ3S：padding 4px 16px, border-radius 16px，fill_SM3U3C → #F0F1F5
 export default function DetailHero({
   title,
-  summary,
   cancerTypeTags,
   applicationTags,
 }: Props) {
@@ -46,7 +23,7 @@ export default function DetailHero({
       <div className={styles.inner}>
         {/* Back 链接 */}
         <Link className={styles.backLink} href="/case-studies">
-          <BackArrowIcon />
+          <SvgIcon className={styles.backIcon} name="chevron-left" size={28} />
           <span>Back to Gallery</span>
         </Link>
 
@@ -54,9 +31,6 @@ export default function DetailHero({
         <div className={styles.content}>
           {/* 标题 */}
           <h1 className={styles.title}>{title}</h1>
-
-          {/* 摘要 */}
-          {summary && <p className={styles.summary}>{summary}</p>}
 
           {/* 标签行 */}
           <div className={styles.tagRow}>
