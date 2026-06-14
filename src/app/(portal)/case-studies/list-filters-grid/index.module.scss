@@ -49,7 +49,10 @@
 }
 
 // Application 行（最后一行）：底部阴影替代边框（effect_KWP2PG）
+// 需提层级，否则向下的阴影会被随后的灰色 .gridWrapper（不透明）盖住
 .filterRowShadow {
+  position: relative;
+  z-index: 1;
   border-bottom: none;
   box-shadow: 0px 2px 4px 0px rgba(44, 56, 77, 0.15);
 }
@@ -319,7 +322,10 @@
 }
 
 // Active 行（540:4749 Frame 47）：白底 + 底部阴影分隔，padding 24px 240px
+// 同样提层级，避免阴影被随后的 .gridWrapper 盖住
 .activeRow {
+  position: relative;
+  z-index: 1;
   padding: 24px 240px;
   background: #fff;
   box-shadow: 0px 2px 4px 0px rgba(44, 56, 77, 0.15);

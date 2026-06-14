@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { BrandLogo } from '@/components/BrandLogo';
 import SafeHtml from '@/components/SafeHtml';
 import type { news } from '@/server/db/schema';
+import { BackLink } from './back-link';
 import styles from './index.module.scss';
 
 /**
@@ -38,9 +38,7 @@ export default function NewsDetailView({ news }: { news: NewsRow }) {
           />
         )}
 
-        <Link className={styles.backLink} href="/publications?tab=news">
-          ← Back to News
-        </Link>
+        <BackLink className={styles.backLink}>← Back to News</BackLink>
       </article>
     </>
   );

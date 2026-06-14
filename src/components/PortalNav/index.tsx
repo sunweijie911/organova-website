@@ -10,7 +10,8 @@ const NAV_LINKS = [
   { label: 'IMMUNO-ONCOLOGY', href: '/immuno-oncology' },
   { label: 'BIOTECH PARTNERSHIPS', href: '/biotech-partnerships' },
   { label: 'CASE STUDIES', href: '/case-studies' },
-  { label: 'MEDIA CENTER', href: '/publications' },
+  { label: 'PUBLICATIONS & RESOURCES', href: '/publications' },
+  { label: 'FAQ', href: '/faq' },
   { label: 'ABOUT', href: '/about' },
 ];
 

@@ -6,8 +6,8 @@
 .section {
   background: #fff;
   /* Figma：Team 区结束 y≈4723，Our Journey 标题 y=4945 → padding-top ≈ 222px
-     底部多 200px 给绝对定位的注释（2014 论文引用）+ Group 20 装饰留空间 */
-  padding: 222px 240px 200px;
+     注释改为 hover 时在节点上方弹出（绝对定位），底部无需再预留空间 */
+  padding: 222px 240px 120px;
   color: #000;
 }
 
@@ -38,24 +38,25 @@
   padding-top: 0;
 }
 
-/* 横向连接线 — Figma Vector 29：stroke 5px，linear-gradient #000→transparent
-   从首节点圆心 x=8（节点内）到末节点圆心，y=8（圆点中心相对节点顶部） */
+/* 横向连接线 — Figma Vector 29：stroke ~2px，linear-gradient #000→transparent
+   从首节点圆心 x=8 起，向右越过末节点后完全淡出（图中 2025 右侧渐隐） */
 .line {
   position: absolute;
   top: 8px;
   left: 8px;
-  /* 最后节点宽 132 → 末点圆心距右 132-8=124，故 right=124 */
-  right: 124px;
-  height: 1px;
+  right: 0;
+  height: 2px;
   background: linear-gradient(
     90deg,
     rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 0) 100%
   );
   pointer-events: none;
+  transition: opacity 0.25s ease;
 }
 
-/* 单个节点 — Figma layout_FOUN0R/各 layout_*：column gap 15，宽 132 */
+/* 单个节点 — Figma layout_*：column gap 15，宽 132
+   hover 时本节点高亮、其余淡出，圆点放大并在上方弹出注释 */
 .node {
   position: relative;
   display: flex;
@@ -63,6 +64,17 @@
   gap: 15px;
   width: 132px;
   min-width: 0;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+
+/* hover 任意节点：其余节点与连接线淡出至 30%（Figma Group 20 opacity 0.3） */
+.timeline:hover .node:not(:hover) {
+  opacity: 0.3;
+}
+
+.timeline:hover .line {
+  opacity: 0.3;
 }
 
 /* 当前节点 2025：年份字号 32 + 标签 "US Expansion" 较宽，允许溢出列宽 */
@@ -78,13 +90,14 @@
   height: 16px;
 }
 
-/* 普通圆点 — Figma: 16×16，#000 实心圆（设计稿黑填充+白描边在白底不可见，按视觉一致改为黑实心） */
+/* 普通圆点 — Figma: 16×16，#000 实心圆（黑填充+白描边，白底上呈黑实心） */
 .circleDot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: #000;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 /* 当前方块 — Figma: 16×16 */
@@ -93,6 +106,13 @@
   height: 16px;
   background: #000;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+/* hover 节点：圆点 16→26px（Figma layout_1CK2AV 26×26），scale 1.625 */
+.node:hover .circleDot,
+.node:hover .squareDot {
+  transform: scale(1.625);
 }
 
 /* Frame 90 — column gap 12 */
@@ -136,20 +156,28 @@
   white-space: nowrap;
 }
 
-/* 节点下方注释 — Roboto Regular 20px（用于 2014 节点下论文引用）
-   Figma layout_VVM349：x=548,y=5423,w=801（节点 Frame 92 在 x=588,y=5173）
-   注释相对节点：左偏 40px，顶 250px；为避免撑大列宽用绝对定位 */
+/* 节点上方注释 tooltip — Roboto Regular 20px（用于 2014 节点论文引用）
+   Figma：注释 x=548 相对节点 x=588 左偏 40px，位于节点上方
+   默认隐藏，hover 该节点时淡入显示 */
 .annotation {
   position: absolute;
-  top: 100%;
-  /* 节点宽 132，注释从节点中心略向左 → left=-40px */
+  bottom: calc(100% + 8px);
+  /* 注释从节点左缘略向左 → left=-40px */
   left: -40px;
-  margin: 181px 0 0;
+  margin: 0;
   width: 801px;
-  max-width: 90vw;
+  max-width: 70vw;
   font-size: 20px;
   font-weight: 400;
   color: #000;
   line-height: 1.4;
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.node:hover .annotation {
+  opacity: 1;
+  visibility: visible;
 }

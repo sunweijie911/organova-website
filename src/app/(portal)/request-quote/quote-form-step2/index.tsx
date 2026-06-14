@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { ArrowButton } from '@/components/ArrowButton';
 import { FloatingField } from '@/components/FloatingField';
 import styles from './index.module.scss';
@@ -12,6 +13,18 @@ export type Step2Data = {
   jobTitle: string;
   phone: string;
 };
+
+/* 必填字段（Job Title / Phone 为可选） */
+const REQUIRED_FIELDS: (keyof Step2Data)[] = [
+  'firstName',
+  'lastName',
+  'email',
+  'company',
+];
+
+const REQUIRED_MESSAGE = 'This field is required.';
+const EMAIL_MESSAGE = 'Please enter a valid email address.';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface QuoteFormStep2Props {
   data: Step2Data;
@@ -32,23 +45,55 @@ export default function QuoteFormStep2({
   onBack,
   onSubmit,
 }: QuoteFormStep2Props) {
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof Step2Data, string>>
+  >({});
+
+  /* 包裹父级 onChange：输入后清除该字段错误 */
+  const handleChange = (key: keyof Step2Data) => (value: string) => {
+    onChange(key)(value);
+    setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  /* 校验必填 + 邮箱格式，通过才提交 */
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const nextErrors: Partial<Record<keyof Step2Data, string>> = {};
+    for (const key of REQUIRED_FIELDS) {
+      if (!data[key].trim()) {
+        nextErrors[key] = REQUIRED_MESSAGE;
+      }
+    }
+    if (!nextErrors.email && data.email && !EMAIL_RE.test(data.email)) {
+      nextErrors.email = EMAIL_MESSAGE;
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+    setErrors({});
+    onSubmit(e);
+  };
+
   return (
-    <form className={styles.formSection} onSubmit={onSubmit}>
+    <form className={styles.formSection} noValidate onSubmit={handleSubmit}>
       {/* 第一行：First Name + Last Name */}
       <div className={styles.row}>
         <FloatingField
           className={styles.fieldEqual}
+          error={errors.firstName}
           id="firstName"
           label="First Name"
-          onChange={onChange('firstName')}
+          onChange={handleChange('firstName')}
           required
           value={data.firstName}
         />
         <FloatingField
           className={styles.fieldEqual}
+          error={errors.lastName}
           id="lastName"
           label="Last Name"
-          onChange={onChange('lastName')}
+          onChange={handleChange('lastName')}
           required
           value={data.lastName}
         />
@@ -58,9 +103,10 @@ export default function QuoteFormStep2({
       <div className={styles.rowFull}>
         <FloatingField
           className={styles.fieldFull}
+          error={errors.email}
           id="email"
           label="Email Address"
-          onChange={onChange('email')}
+          onChange={handleChange('email')}
           required
           type="email"
           value={data.email}
@@ -71,9 +117,10 @@ export default function QuoteFormStep2({
       <div className={styles.row}>
         <FloatingField
           className={styles.fieldEqual}
+          error={errors.company}
           id="company"
           label="Company"
-          onChange={onChange('company')}
+          onChange={handleChange('company')}
           required
           value={data.company}
         />
@@ -81,7 +128,7 @@ export default function QuoteFormStep2({
           className={styles.fieldEqual}
           id="jobTitle"
           label="Job Title"
-          onChange={onChange('jobTitle')}
+          onChange={handleChange('jobTitle')}
           value={data.jobTitle}
         />
       </div>
@@ -92,13 +139,13 @@ export default function QuoteFormStep2({
           className={styles.fieldFull}
           id="phone"
           label="Phone (Optional)"
-          onChange={onChange('phone')}
+          onChange={handleChange('phone')}
           type="tel"
           value={data.phone}
         />
       </div>
 
-      {/* 错误提示 */}
+      {/* 提交接口错误提示 */}
       {isError && (
         <p className={styles.error}>
           {errorMessage || 'Something went wrong. Please try again.'}

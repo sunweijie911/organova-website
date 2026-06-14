@@ -4,6 +4,7 @@ import SafeHtml from '@/components/SafeHtml';
 import { SvgIcon } from '@/components/SvgIcon';
 import type { RouterOutputs } from '@/lib/trpc/react';
 import { parseFormats } from '../utils';
+import { BackLink } from './back-link';
 import styles from './index.module.scss';
 
 type CancerType = RouterOutputs['cancerTypes']['getBySlug'];
@@ -48,10 +49,7 @@ export default function DetailContent({ data }: { data: CancerType }) {
   return (
     <div className={styles.page}>
       <div className={styles.navBar}>
-        <Link className={styles.backLink} href="/tumor-types">
-          <SvgIcon color="#979BA5" name="chevron-left" size={28} />
-          Back to Catalog
-        </Link>
+        <BackLink />
       </div>
 
       <div className={styles.body}>
@@ -103,14 +101,14 @@ export default function DetailContent({ data }: { data: CancerType }) {
             <div className={styles.ctaRow}>
               {data.cta1Label && data.cta1Url && (
                 <CtaItem className={styles.ctaLink} url={data.cta1Url}>
-                  <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                   {data.cta1Label}
+                  <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                 </CtaItem>
               )}
               {data.cta2Label && data.cta2Url && (
                 <CtaItem className={styles.ctaLink} url={data.cta2Url}>
-                  <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                   {data.cta2Label}
+                  <SvgIcon color="#3A84FF" name="chevron-right" size={24} />
                 </CtaItem>
               )}
             </div>

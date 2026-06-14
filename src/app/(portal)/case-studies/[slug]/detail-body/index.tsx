@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import SafeHtml from '@/components/SafeHtml';
 import { SvgIcon } from '@/components/SvgIcon';
+import { BackLink } from '../back-link';
 import styles from './index.module.scss';
 
 interface Props {
@@ -83,10 +83,10 @@ export default function DetailBody({
 
       {/* 底部返回入口：方便用户滑动到底部时返回画廊 */}
       <div className={styles.backToGallery}>
-        <Link className={styles.backToGalleryBtn} href="/case-studies">
+        <BackLink className={styles.backToGalleryBtn}>
           <SvgIcon className={styles.backIcon} name="chevron-left" size={28} />
           <span>Back to Gallery</span>
-        </Link>
+        </BackLink>
       </div>
     </section>
   );

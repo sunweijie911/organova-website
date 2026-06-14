@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 114px;
+  height: 100px;
   padding: 0 48px;
   background: #000;
 }
@@ -20,9 +20,7 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: 28px;
-  flex: 1;
-  justify-content: center;
+  gap: 32px;
 }
 
 .navItem {

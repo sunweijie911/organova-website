@@ -41,9 +41,9 @@ export default function CaseStudiesListView() {
 
   return (
     <>
-      {/* 顶部黑底容器：包住 BrandLogo + Hero，避免 BrandLogo 上方出现白色条 */}
+      {/* BrandLogo 透明叠加在 Hero 顶部，Hero 图直接铺满黑底容器 */}
       <div className={styles.page}>
-        <BrandLogo bg="dark" />
+        <BrandLogo bg="dark" className={styles.brandLogoOverlay} />
         <ListHero />
       </div>
 

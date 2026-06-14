@@ -28,7 +28,7 @@ const METRICS = [
 ];
 
 const CARD_OVERLAY =
-  'linear-gradient(rgb(58 46 63 / 0.2), rgb(58 46 63 / 0.2))';
+  'linear-gradient(rgb(58 46 63 / 0.55), rgb(58 46 63 / 0.55))';
 
 export default function KeyMetrics() {
   return (
@@ -40,7 +40,7 @@ export default function KeyMetrics() {
             <div
               className={styles.cardBg}
               style={{
-                backgroundImage: `${CARD_OVERLAY}, ${CARD_OVERLAY}, url(${m.bg})`,
+                backgroundImage: `${CARD_OVERLAY}, url(${m.bg})`,
               }}
             />
             <span className={styles.value}>{m.value}</span>

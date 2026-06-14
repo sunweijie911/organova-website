@@ -13,11 +13,6 @@
   color: #fff;
 }
 
-/* 展开态：Back 按钮位于 y=1152，比标题位置 y=1261 上移 109px */
-.sectionExpanded {
-  padding-top: 244px;
-}
-
 .container {
   max-width: 1440px;
   margin: 0 auto;
@@ -71,82 +66,4 @@
 
 .btnRow {
   display: flex;
-}
-
-/* ---- 展开态 ---- */
-
-/* Back 按钮 — Figma 581-11581：row gap 6，箭头 28×28 + 文本，
-   Roboto Regular 20px，#979BA5；位于 x=240,y=1152 */
-.backBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: none;
-  padding: 0;
-  /* 与正文 y=1227 间距：1227-1152-28(按钮行高) ≈ 47px */
-  margin: 0 0 47px;
-  color: #979ba5;
-  font-size: 20px;
-  line-height: 1.2;
-  font-weight: 400;
-  cursor: pointer;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #fff;
-  }
-}
-
-/* 箭头容器 — 28×28 内嵌左箭头 SVG */
-.backArrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  color: inherit;
-}
-
-/* 完整故事容器 — Figma layout_UBK91P：column gap 69px，宽 1440 */
-.fullStory {
-  display: flex;
-  flex-direction: column;
-  gap: 69px;
-  max-width: 1440px;
-  animation: fadeIn 0.3s ease;
-}
-
-/* 单段（标题 + 正文）— Figma layout_SBM93T：column gap 8 */
-.fullParagraph {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* 段首小标题 — Figma 同字号同字重，前端加粗增强可读性 */
-.fullHeading {
-  font-size: 24px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.5;
-}
-
-.fullBody {
-  font-size: 24px;
-  font-weight: 400;
-  color: #fff;
-  line-height: 1.5;
-  margin: 0;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

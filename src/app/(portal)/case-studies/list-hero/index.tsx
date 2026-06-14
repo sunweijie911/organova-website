@@ -1,20 +1,13 @@
-import styles from './index.module.scss';
+import { PageHero } from '@/components/PageHero';
 
-// 列表页 Hero 区域
-// Figma 节点：581:10262（标题）、581:10263（副标题）
-// 背景色 #1A1A1A，Hero 内容左对齐
+// 列表页 Hero —— 复用门户深色图片 Hero 模板（与 tumor-types / immuno-oncology 一致）
+// Figma 节点 539:1770：背景图 + 径向遮罩，标题 Roboto Serif 64px，副标题 Roboto 24px
 export default function ListHero() {
   return (
-    <section className={styles.hero}>
-      <div className={styles.inner}>
-        <h1 className={styles.title}>
-          From Biological Question to Clinical Insight.
-        </h1>
-        <p className={styles.subtitle}>
-          Explore real-world examples of how our platform is helping partners
-          overcome their toughest preclinical challenges.
-        </p>
-      </div>
-    </section>
+    <PageHero
+      bgSrc="/assets/images/case-studies/hero-bg.png"
+      subtitle="Explore real-world examples of how our platform is helping partners overcome their toughest preclinical challenges."
+      title={`From Biological Question to \nClinical Insight.`}
+    />
   );
 }

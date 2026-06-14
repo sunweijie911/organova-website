@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowButton } from '@/components/ArrowButton';
-import { SvgIcon } from '@/components/SvgIcon';
+import { PortalSelect } from '@/components/PortalSelect';
 import { api } from '@/lib/trpc/react';
 import styles from './index.module.scss';
 
@@ -37,59 +37,21 @@ export type Step1Data = {
   turnaround: string;
 };
 
+/* 所有字段均为必填 */
+const REQUIRED_FIELDS: (keyof Step1Data)[] = [
+  'cancerType',
+  'drugModality',
+  'studyType',
+  'numCompounds',
+  'turnaround',
+];
+
+const REQUIRED_MESSAGE = 'This field is required.';
+
 interface QuoteFormStep1Props {
   data: Step1Data;
-  onChange: (
-    key: keyof Step1Data,
-  ) => (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (key: keyof Step1Data) => (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
-}
-
-interface SelectFieldProps {
-  id: string;
-  label: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: string[];
-  placeholder: string;
-  required?: boolean;
-  value: string;
-}
-
-function SelectField({
-  id,
-  label,
-  onChange,
-  options,
-  placeholder,
-  required,
-  value,
-}: SelectFieldProps) {
-  return (
-    <div className={styles.field}>
-      <label className={styles.label} htmlFor={id}>
-        {label}
-      </label>
-      <div className={styles.selectWrapper}>
-        <select
-          className={`${styles.select} ${value ? styles.selectFilled : ''}`}
-          id={id}
-          onChange={onChange}
-          required={required}
-          value={value}
-        >
-          <option value="">{placeholder}</option>
-          {options.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-        <span aria-hidden="true" className={styles.chevron}>
-          <SvgIcon color="#000" height={5} name="chevron-down" width={10} />
-        </span>
-      </div>
-    </div>
-  );
 }
 
 export default function QuoteFormStep1({
@@ -104,61 +66,88 @@ export default function QuoteFormStep1({
     return [...names, 'Other'];
   }, [cancerTypeList]);
 
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof Step1Data, string>>
+  >({});
+
+  /* 包裹父级 onChange：选值后清除该字段错误 */
+  const handleChange = (key: keyof Step1Data) => (value: string) => {
+    onChange(key)(value);
+    setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  /* 校验全部必填项，通过才进入下一步 */
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const nextErrors: Partial<Record<keyof Step1Data, string>> = {};
+    for (const key of REQUIRED_FIELDS) {
+      if (!data[key]) {
+        nextErrors[key] = REQUIRED_MESSAGE;
+      }
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+    setErrors({});
+    onSubmit(e);
+  };
+
   return (
-    <form className={styles.formSection} onSubmit={onSubmit}>
+    <form className={styles.formSection} noValidate onSubmit={handleSubmit}>
       {/* 第一行：Cancer Type / Indication + Drug Modality */}
       <div className={styles.row}>
-        <SelectField
+        <PortalSelect
+          error={errors.cancerType}
           id="cancerType"
           label="Cancer Type / Indication"
-          onChange={onChange('cancerType')}
+          onChange={handleChange('cancerType')}
           options={cancerOptions}
           placeholder="Cancer Type / Indication"
-          required
           value={data.cancerType}
         />
-        <SelectField
+        <PortalSelect
+          error={errors.drugModality}
           id="drugModality"
           label="Drug Modality"
-          onChange={onChange('drugModality')}
+          onChange={handleChange('drugModality')}
           options={DRUG_MODALITIES}
           placeholder="Select Drug Modality"
-          required
           value={data.drugModality}
         />
       </div>
 
       {/* 第二行：Study Type + Number of Compounds */}
       <div className={styles.row}>
-        <SelectField
+        <PortalSelect
+          error={errors.studyType}
           id="studyType"
           label="Study Type"
-          onChange={onChange('studyType')}
+          onChange={handleChange('studyType')}
           options={STUDY_TYPES}
           placeholder="Select Study Type"
-          required
           value={data.studyType}
         />
-        <SelectField
+        <PortalSelect
+          error={errors.numCompounds}
           id="numCompounds"
           label="Number of Compounds to Test"
-          onChange={onChange('numCompounds')}
+          onChange={handleChange('numCompounds')}
           options={NUM_COMPOUNDS}
           placeholder="Select Number of Compounds to Test"
-          required
           value={data.numCompounds}
         />
       </div>
 
       {/* 第三行：Desired Turnaround Time（全宽） */}
       <div className={styles.rowFull}>
-        <SelectField
+        <PortalSelect
+          error={errors.turnaround}
           id="turnaround"
           label="Desired Turnaround Time"
-          onChange={onChange('turnaround')}
+          onChange={handleChange('turnaround')}
           options={TURNAROUNDS}
           placeholder="Select Desired Turnaround Time"
-          required
           value={data.turnaround}
         />
       </div>

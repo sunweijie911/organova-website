@@ -1,39 +1,135 @@
-/* Thank You 页面 — Figma 未设计该状态，配色与主页面保持一致（白底黑字） */
+/* Thank You 页面 —— Figma Frame 1207:11937
+ * 居中布局：对勾 → 标题/文案 → 两个按钮
+ */
 .section {
-  background: #fff;
-  min-height: calc(100vh - 120px);
   display: flex;
   align-items: center;
-  padding: 160px 240px;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: 120px 24px;
+  background: #fff;
 }
 
-.content {
+/* 主容器：Figma width 913，整体居中，head 与 actions 间距 99px */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 99px;
+  width: 100%;
+  max-width: 913px;
+}
+
+/* 对勾 + 文案，gap 54px */
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 54px;
+  width: 100%;
+}
+
+.checkIcon {
+  flex-shrink: 0;
+}
+
+/* 文案块：lead(标题+主文案) 与确认行，gap 48px */
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100%;
+}
+
+/* 标题 + 主文案，gap 32px */
+.lead {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  max-width: 700px;
+  width: 100%;
 }
 
-.iconWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
+/* 标题 —— Roboto Serif 64 / #000，居中 */
 .title {
+  margin: 0;
   font-family: 'Roboto Serif', Georgia, serif;
   font-size: 64px;
   font-weight: 400;
-  color: #000;
   line-height: 1.17;
-  margin: 0;
+  color: #000;
+  text-align: center;
 }
 
+/* 主文案 —— Roboto 24 / #4D4F56，居中 */
 .message {
+  margin: 0;
   font-family: Roboto, sans-serif;
   font-size: 24px;
   font-weight: 400;
-  color: #000;
   line-height: 1.5;
+  color: #4d4f56;
+  text-align: center;
+}
+
+/* 确认行 —— Roboto 24 / #979BA5，居中 */
+.confirmation {
   margin: 0;
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #979ba5;
+  text-align: center;
+}
+
+/* 按钮组：横向，gap 48px，居中 */
+.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+
+/* 按钮公共：padding 22px 30px，radius 4，Roboto 20 */
+.btnOutline,
+.btnSolid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 30px;
+  border-radius: 4px;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+/* Back To Home —— 白底，1px #313238 边框，深字 */
+.btnOutline {
+  background: #fff;
+  border: 1px solid #313238;
+  color: #313238;
+
+  &:hover {
+    background: #313238;
+    color: #fff;
+  }
+}
+
+/* Explore Our Biobank —— 深底白字，右箭头 gap 28px */
+.btnSolid {
+  gap: 28px;
+  background: #313238;
+  border: 1px solid #313238;
+  color: #fff;
+
+  &:hover {
+    background: #1f2024;
+  }
 }

@@ -6,6 +6,12 @@
  * 组件本身不限定宽度/行布局，由各页面通过 className 控制。
  */
 
+/* 外层容器：承载页面传入的宽度/布局类，并堆叠输入框与错误提示 */
+.wrapper {
+  display: block;
+  width: 100%;
+}
+
 .field {
   position: relative;
   display: block;
@@ -16,7 +22,13 @@
     border-style 0.2s ease;
 }
 
-/* 输入时(focus)或填入完毕：顶边变实线高亮 */
+/* 错误态：顶边红色虚线（Figma rgba(255,86,86,0.5)） */
+.field.hasError {
+  border-top-color: rgb(255 86 86 / 0.5);
+  border-top-style: dashed;
+}
+
+/* 输入时(focus)或填入完毕：顶边变实线高亮（置于错误规则之后，聚焦修正时优先） */
 .field:focus-within,
 .isFilled {
   border-top-color: #313238;
@@ -69,4 +81,17 @@
 .textarea {
   min-height: 120px;
   resize: none;
+}
+
+/* 错误提示行 —— 距输入框 6px，图标 + 文案 gap 4px，Roboto 14 #EA3636 */
+.error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-family: var(--portal-body-font-family, var(--font-roboto)), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #ea3636;
 }

@@ -1,5 +1,13 @@
+'use client';
+
+import { useMemo, useRef, useState } from 'react';
 import { CardLink } from '@/components/CardLink';
+import { Pagination } from '@/components/Pagination';
+import { PortalSelect } from '@/components/PortalSelect';
 import styles from './index.module.scss';
+
+// 每页条数：网格为 3 列，6 条 = 3 列 × 2 行
+const PAGE_SIZE = 6;
 
 /**
  * Publications 列表组件
@@ -30,12 +38,65 @@ function toDoiHref(doi: string): string {
 export default function PublicationsList({
   publications,
 }: PublicationsListProps) {
+  // 选中年份；undefined 表示 All Years（不过滤）
+  const [year, setYear] = useState<number | undefined>();
+  // 当前页码，从 1 开始；切换年份时重置
+  const [page, setPage] = useState(1);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // 从全量列表派生可用年份，降序去重
+  const years = useMemo(() => {
+    const set = new Set(publications?.map((p) => p.year));
+    return [...set].sort((a, b) => b - a);
+  }, [publications]);
+
+  const yearOptions = [
+    { label: 'All Years', value: 'all' },
+    ...years.map((y) => ({ label: String(y), value: String(y) })),
+  ];
+
+  // 客户端按年份过滤（全量数据已在前端）
+  const filtered = year
+    ? publications?.filter((p) => p.year === year)
+    : publications;
+
+  // 客户端分页：按 PAGE_SIZE 切片当前页
+  const totalPages = Math.ceil((filtered?.length ?? 0) / PAGE_SIZE);
+  const safePage = Math.min(page, Math.max(1, totalPages));
+  const paged = filtered?.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+
+  // 翻页：更新页码并把列表区滚回顶部
+  const handlePageChange = (next: number) => {
+    setPage(next);
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <section className={styles.section} id="publications">
+    <section className={styles.section} id="publications" ref={sectionRef}>
       <div className={styles.inner}>
-        {/* 两列卡片网格 */}
+        {/* Year filter —— PortalSelect compact 变体，仅当有数据时显示 */}
+        {!!publications?.length && (
+          <div className={styles.filterBlock}>
+            <PortalSelect
+              label="Filter by year:"
+              onChange={(v) => {
+                setYear(v === 'all' ? undefined : Number(v));
+                setPage(1);
+              }}
+              options={yearOptions}
+              placeholder="All Years"
+              value={year ? String(year) : 'all'}
+              variant="compact"
+            />
+          </div>
+        )}
+
+        {/* 卡片网格（3 列） */}
         <div className={styles.grid}>
-          {publications?.map((pub) => {
+          {paged?.map((pub) => {
             const doiHref = pub.doi ? toDoiHref(pub.doi) : null;
             return (
               <article className={styles.card} key={pub.id}>
@@ -95,9 +156,20 @@ export default function PublicationsList({
           })}
         </div>
 
-        {/* 空状态 */}
+        {/* 分页器：仅当多于一页时显示 */}
+        <Pagination
+          className={styles.pager}
+          currentPage={safePage}
+          onPageChange={handlePageChange}
+          totalPages={totalPages}
+        />
+
+        {/* 空状态：完全无数据 vs 当前年份无结果 */}
         {!publications?.length && (
           <p className={styles.empty}>Publications coming soon.</p>
+        )}
+        {!!publications?.length && filtered?.length === 0 && (
+          <p className={styles.empty}>No publications for this period.</p>
         )}
       </div>
     </section>

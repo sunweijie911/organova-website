@@ -11,7 +11,7 @@ import { getFrontendConfig, getPortalTitle } from '@/server/services/config';
 
 const roboto = Roboto({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '900'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
   style: ['normal', 'italic'],
   variable: '--font-roboto',
   display: 'swap',

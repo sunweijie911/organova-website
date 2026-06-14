@@ -1,0 +1,222 @@
+/* 门户自定义下拉框 —— Figma Listbox Component
+ * 关闭态 545:7425 / 展开态 1203:11500 / 错误态 1213:12204
+ */
+
+.field {
+  display: block;
+  width: 100%;
+}
+
+/* 字段标签 —— Roboto Medium 16 / #333 */
+.label {
+  display: block;
+  margin-bottom: 10px;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 触发器 + 下拉列表的相对定位容器 */
+.control {
+  position: relative;
+  width: 100%;
+}
+
+/* 关闭态触发器 —— 白底卡片，box-shadow，radius 8，height 60，padding 20/22/20/16 */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  width: 100%;
+  height: 60px;
+  padding: 20px 22px 20px 16px;
+  background: #fff;
+  border: 1px solid transparent; /* 占位，错误态替换为红边，避免抖动 */
+  border-radius: 8px;
+  box-shadow: 0 4px 14px 0 rgb(0 0 0 / 0.1);
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus-visible {
+    box-shadow: 0 4px 14px 0 rgb(0 0 0 / 0.18);
+  }
+}
+
+.triggerError {
+  border-color: #ff5656;
+}
+
+/* 占位文字 #C4C6CC / 选中值 #4D4F56，均 Roboto 16 */
+.placeholder,
+.valueText {
+  flex: 1;
+  overflow: hidden;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.placeholder {
+  color: #c4c6cc;
+}
+
+.valueText {
+  color: #4d4f56;
+}
+
+/* 右侧箭头：关闭态指向右(`>`)，展开态旋转 90° 指向下(`v`) */
+.arrow {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.arrowOpen {
+  transform: rotate(90deg);
+}
+
+/* 向上弹出时箭头指向上方 */
+.arrowUp {
+  transform: rotate(-90deg);
+}
+
+/* 展开下拉列表 —— 距触发器 7px，白底卡片，padding 2px 0 */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 280px;
+  margin: 0;
+  padding: 2px 0;
+  list-style: none;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px 0 rgb(0 0 0 / 0.1);
+}
+
+/* 选项 —— padding 12/16，Roboto 16 #4D4F56 */
+.item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #4d4f56;
+  text-align: left;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: #f5f7fa;
+  }
+}
+
+/* 选中项 —— 底色 #E1ECFF，字 #3A84FF */
+.itemSelected {
+  background: #e1ecff;
+  color: #3a84ff;
+
+  &:hover {
+    background: #e1ecff;
+  }
+}
+
+/* 错误提示行 —— 距控件 6px，图标 + 文案 gap 4px，Roboto 14 #EA3636 */
+.error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #ea3636;
+}
+
+/* ============================================================
+ * compact 变体 —— 年份筛选（Figma 1199:6285 关闭 / 6900 展开 / 6999 下拉）
+ * 复用 default 的交互逻辑，仅覆盖视觉：小边框盒 + Bold 外置标签 + 紧凑下拉
+ * ============================================================ */
+
+/* 字段：hug 宽度，内联排布 */
+.fieldCompact {
+  display: inline-block;
+  width: auto;
+}
+
+/* 外置标签 —— Roboto Bold 13 / #313238，与触发器间距 12 */
+.labelCompact {
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #313238;
+}
+
+/* 触发器 —— 小边框盒：1px #4D4F56、radius 4、padding 8/10、gap 24、hug 宽、无阴影 */
+.triggerCompact {
+  width: auto;
+  height: auto;
+  gap: 24px;
+  padding: 8px 10px;
+  border: 1px solid #4d4f56;
+  border-radius: 4px;
+  box-shadow: none;
+
+  &:focus-visible {
+    box-shadow: none;
+    border-color: #3a84ff;
+  }
+
+  /* compact 无独立占位灰，占位与值同色 #313238；文字按内容 hug 不撑满 */
+  .placeholder,
+  .valueText {
+    flex: 0 0 auto;
+    color: #313238;
+  }
+}
+
+/* 下拉卡片 —— 0.5px #979BA5 边框、radius 4、轻阴影、顶部 4 内边距，对齐触发器宽度 */
+.dropdownCompact {
+  top: calc(100% + 6px);
+  padding: 4px 0 0;
+  border: 0.5px solid #979ba5;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgb(25 25 41 / 0.05);
+
+  /* 选项 —— padding 6/12、字号 12px（其余颜色/选中/hover 沿用 default） */
+  .item {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+ * 向上弹出 —— 置于最后，覆盖 default / compact 的 top 定位
+ * ============================================================ */
+.dropdownTop {
+  top: auto;
+  bottom: calc(100% + 7px);
+}
+
+.dropdownCompact.dropdownTop {
+  bottom: calc(100% + 6px);
+}

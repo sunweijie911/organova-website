@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { SvgIcon } from '@/components/SvgIcon';
+import { BackLink } from '../back-link';
 import styles from './index.module.scss';
 
 interface Props {
@@ -22,10 +22,10 @@ export default function DetailHero({
     <section className={styles.hero}>
       <div className={styles.inner}>
         {/* Back 链接 */}
-        <Link className={styles.backLink} href="/case-studies">
+        <BackLink className={styles.backLink}>
           <SvgIcon className={styles.backIcon} name="chevron-left" size={28} />
           <span>Back to Gallery</span>
-        </Link>
+        </BackLink>
 
         {/* 标题 + 标签区 */}
         <div className={styles.content}>

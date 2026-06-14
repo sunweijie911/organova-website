@@ -12,14 +12,15 @@
 
 .content {
   position: absolute;
+  z-index: 2;
   inset: 0;
 }
 
 .title {
   position: absolute;
   top: 15%;
-  right: 240px;
-  left: 240px;
+  right: 180px;
+  left: 180px;
   color: #fff;
   text-align: right;
   text-shadow: 0 13px 26px rgb(0 0 0 / 0.45);
@@ -32,12 +33,14 @@
   font-style: italic;
   font-weight: 400;
   line-height: 1.15;
+  white-space: nowrap;
 }
 
 .titleBold {
   display: block;
+  font-family: var(--font-roboto), sans-serif;
   font-size: 144px;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.03em;
   line-height: 1.26;
 }
@@ -45,10 +48,20 @@
 .textGroup {
   display: flex;
   position: absolute;
-  right: 240px;
-  bottom: 25%;
-  left: 240px;
+  top: 44%;
+  right: 180px;
+  left: 180px;
   flex-direction: column;
+
+  .introGroup,
+  .ctaGroup {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ctaGroup {
+    margin-top: 300px;
+  }
 
   .subtitle {
     max-width: 1049px;
@@ -61,7 +74,7 @@
   }
 
   .description {
-    margin-top: 78px;
+    margin-top: 72px;
     max-width: 1035px;
     color: #fff;
     font-family: var(--font-roboto-serif), serif;
@@ -71,10 +84,31 @@
     text-shadow: 0 4px 8.4px rgb(0 0 0 / 0.49);
   }
 
+  .ctaHeading {
+    max-width: 1440px;
+    color: #fff;
+    font-family: var(--font-roboto-serif), serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.3;
+    text-shadow: 0 4px 8.4px rgb(0 0 0 / 0.49);
+  }
+
+  .ctaText {
+    margin-top: 48px;
+    max-width: 1440px;
+    color: #fff;
+    font-family: var(--font-roboto), sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-shadow: 0 4px 8.4px rgb(0 0 0 / 0.49);
+  }
+
   .buttons {
     display: flex;
     align-items: center;
-    margin-top: 140px;
+    margin-top: 80px;
     gap: 50px;
   }
 }
@@ -84,7 +118,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  height: 236px;
-  background: linear-gradient(0deg, rgb(0 0 0) 10%, rgb(0 0 0 / 0) 97%);
+  height: 160px;
+  background: linear-gradient(0deg, rgb(0 0 0) 0%, rgb(0 0 0 / 0) 100%);
   pointer-events: none;
 }

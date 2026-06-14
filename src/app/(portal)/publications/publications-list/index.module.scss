@@ -15,6 +15,12 @@
   max-width: var(--portal-content-max);
 }
 
+/* Year filter 区域：标签 + 触发器由 PortalSelect compact 内聚渲染，距网格 39px（对齐 News） */
+.filterBlock {
+  width: fit-content;
+  margin-bottom: 39px;
+}
+
 /* 网格：Figma Frame 81 包含两个 row（Frame 75/76），row 间 column-gap=46
  * 每个 row: row justify-between 3×452 卡片，宽 1440 → 列间隙 (1440-1356)/2 ≈ 42px
  * 即 3 列 × 2 行
@@ -129,8 +135,11 @@
 .readMoreLink {
   display: inline-flex;
   text-decoration: none;
-  --card-link-color: #000;
-  --card-link-hover-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 分页器：与网格保持 80px 间距 */
+.pager {
+  margin-top: 80px;
 }
 
 /* 空状态 */

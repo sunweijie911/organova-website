@@ -36,10 +36,9 @@ export default function RequestQuoteView() {
     onSuccess: () => setSubmitted(true),
   });
 
-  /* Step 1 下拉框 onChange 工厂函数 */
-  const handleS1Change =
-    (k: keyof Step1Data) => (e: React.ChangeEvent<HTMLSelectElement>) =>
-      setS1((p) => ({ ...p, [k]: e.target.value }));
+  /* Step 1 下拉框 onChange 工厂函数（PortalSelect 回传字符串值） */
+  const handleS1Change = (k: keyof Step1Data) => (value: string) =>
+    setS1((p) => ({ ...p, [k]: value }));
 
   /* Step 2 输入框 onChange 工厂函数（FloatingField 回传字符串值） */
   const handleS2Change = (k: keyof Step2Data) => (value: string) =>

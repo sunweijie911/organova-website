@@ -9,6 +9,8 @@ export type IconName =
   | 'chevron-left'
   | 'chevron-right'
   | 'chevron-down'
+  | 'select-arrow'
+  | 'warning-circle'
   | 'sort'
   | 'info'
   | 'close'

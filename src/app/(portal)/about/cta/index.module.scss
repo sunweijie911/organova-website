@@ -39,8 +39,8 @@
   color: #000;
   margin: 0;
   line-height: 1.15;
-  max-width: 693px;
   letter-spacing: -0.005em;
+  white-space: nowrap;
 }
 
 /* "Discovery" 斜体 */
@@ -49,41 +49,27 @@
   font-weight: 400;
 }
 
-/* Vector 3 — 56×4，rgba(0,0,0,0.3) */
-.titleLine {
-  width: 56px;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.3);
-  flex-shrink: 0;
-}
-
-/* 圆形箭头按钮 — 跳转到 /contact
-   黑色描边圆形，悬浮时填充黑底白箭头 */
-.arrowBtn {
+/* 灰色细线右箭头 — 跳转到 /contact
+   Figma：#979BA5，无圆形描边；悬浮时略向右移并加深 */
+.arrowLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: transparent;
-  color: #000;
   flex-shrink: 0;
-  margin-left: 32px;
+  color: #979ba5;
   transition:
-    background 0.2s ease,
     color 0.2s ease,
     transform 0.2s ease;
 
   &:hover {
-    background: #000;
-    color: #fff;
-    transform: translateX(4px);
+    color: #000;
+    transform: translateX(6px);
   }
 
   &:focus-visible {
     outline: 2px solid #1a4c6e;
-    outline-offset: 4px;
+    outline-offset: 6px;
+    border-radius: 4px;
   }
 }
 

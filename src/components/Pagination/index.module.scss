@@ -1,0 +1,77 @@
+/* 分页器样式 — Figma 1199:6284
+ * 三组（Previous / 页码 / Next）水平居中，组间 gap 80px
+ * 箭头图标用 SvgIcon（currentColor 跟随按钮文字色）
+ */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+}
+
+/* Previous / Next：图标 + 文案，gap 8px；可用态 #979BA5，hover 转黑，禁用态 #C4C6CC */
+.nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #979ba5;
+  transition: color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #000;
+  }
+
+  &:disabled {
+    color: #c4c6cc;
+    cursor: not-allowed;
+  }
+}
+
+/* Previous 箭头：复用右箭头旋转 180°，与 Next 对称 */
+.flip {
+  transform: rotate(180deg);
+}
+
+/* 页码组：数字间距 40px */
+.pages {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.page,
+.pageActive {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+/* 非当前页：Regular 20px #979BA5，hover 转黑 */
+.page {
+  font-weight: 400;
+  color: #979ba5;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #000;
+  }
+}
+
+/* 当前页：Bold 20px 黑色，不可点 */
+.pageActive {
+  font-weight: 700;
+  color: #000;
+  cursor: default;
+}

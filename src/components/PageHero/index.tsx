@@ -13,6 +13,8 @@ interface PageHeroProps {
   titleGap?: number;
   /** 副标题→children 间距（默认 80px） */
   subtitleGap?: number;
+  /** align=bottom 时的贴底间距（默认 395px），加大可让内容整体上移 */
+  padBottom?: number;
   /** 内容定位：top（默认 padding-top:401px）或 bottom（贴底，padding-bottom:395px） */
   align?: 'top' | 'bottom';
   /** 自定义类名，附加到 section 上 */
@@ -32,6 +34,7 @@ export function PageHero({
   children,
   titleGap,
   subtitleGap,
+  padBottom,
   align = 'top',
   className,
 }: PageHeroProps) {
@@ -49,6 +52,7 @@ export function PageHero({
           '--page-hero-title-gap': titleGap != null ? `${titleGap}px` : '',
           '--page-hero-subtitle-gap':
             subtitleGap != null ? `${subtitleGap}px` : '',
+          '--page-hero-pad-bottom': padBottom != null ? `${padBottom}px` : '',
         } as React.CSSProperties
       }
     >

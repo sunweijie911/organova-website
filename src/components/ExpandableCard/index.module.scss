@@ -82,6 +82,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  // SvgIcon 用 currentColor 上色，这里设定能力图标颜色
+  color: #1a4c6e;
 
   // 尺寸写在 scss 中（而非 SvgIcon 的 size 内联 prop），
   // 这样 px 才会被 postcss-px-to-viewport 转成 vw 实现等比缩放。
@@ -133,7 +135,7 @@
   background: #f0f1f5;
   // SvgIcon 用 mask + background-color(currentColor) 上色，
   // 所以直接用 color 控制箭头颜色（旧的 img filter 对 <span> 无效，已移除）。
-  color: #4d4f56;
+  color: #979ba5;
   display: flex;
   align-items: center;
   justify-content: center;

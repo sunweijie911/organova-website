@@ -1,9 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { Select } from '@/components/Select';
-import { SvgIcon } from '@/components/SvgIcon';
+import { useRef, useState } from 'react';
+import { CardLink } from '@/components/CardLink';
+import { Pagination } from '@/components/Pagination';
+import { PortalSelect } from '@/components/PortalSelect';
 import styles from './index.module.scss';
+
+// 每页条数：网格为 3 列，6 条 = 3 列 × 2 行
+const PAGE_SIZE = 6;
 
 /**
  * News 区域 — Figma 581:10714
@@ -40,29 +45,51 @@ export default function NewsSection({
   selectedYear,
   onYearChange,
 }: NewsSectionProps) {
+  // 当前页码，从 1 开始；切换年份时重置
+  const [page, setPage] = useState(1);
+  const sectionRef = useRef<HTMLElement>(null);
+
   // Select 选项：All Years + 可用年份；value 用字符串，'all' 表示不过滤
   const yearOptions = [
     { label: 'All Years', value: 'all' },
     ...(years?.map((y) => ({ label: String(y), value: String(y) })) ?? []),
   ];
 
+  // 客户端分页：按 PAGE_SIZE 切片当前页（年份过滤已在服务端完成）
+  const totalPages = Math.ceil((newsItems?.length ?? 0) / PAGE_SIZE);
+  const safePage = Math.min(page, Math.max(1, totalPages));
+  const paged = newsItems?.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+
+  // 翻页：更新页码并把列表区滚回顶部
+  const handlePageChange = (next: number) => {
+    setPage(next);
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <section className={styles.section} id="news">
+    <section className={styles.section} id="news" ref={sectionRef}>
       <div className={styles.inner}>
-        {/* Year filter */}
+        {/* Year filter —— PortalSelect compact 变体（Figma 1199:6285/6900/6999） */}
         <div className={styles.filterBlock}>
-          <span className={styles.filterLabel}>Filter by year:</span>
-          <Select
-            ariaLabel="Filter by year"
-            onChange={(v) => onYearChange(v === 'all' ? undefined : Number(v))}
+          <PortalSelect
+            label="Filter by year:"
+            onChange={(v) => {
+              onYearChange(v === 'all' ? undefined : Number(v));
+              setPage(1);
+            }}
             options={yearOptions}
+            placeholder="All Years"
             value={selectedYear ? String(selectedYear) : 'all'}
+            variant="compact"
           />
         </div>
 
-        {/* 两列新闻网格 */}
+        {/* 新闻网格（3 列） */}
         <div className={styles.grid}>
-          {newsItems?.map((item) => (
+          {paged?.map((item) => (
             <article className={styles.item} key={item.id}>
               <div className={styles.itemMeta}>
                 <span className={styles.itemDate}>
@@ -77,18 +104,21 @@ export default function NewsSection({
                 <h3 className={styles.itemTitle}>{item.title}</h3>
               </Link>
 
+              {/* Read more —— 复用 CardLink 组件（蓝 #3A84FF + hover 箭头右移），对齐 Figma 581:11028 */}
               <Link className={styles.readMore} href={`/news/${item.id}`}>
-                Read more
-                <SvgIcon
-                  color="rgba(0,0,0,0.4)"
-                  height={11}
-                  name="arrow-thin-right"
-                  width={17}
-                />
+                <CardLink label="Read more" />
               </Link>
             </article>
           ))}
         </div>
+
+        {/* 分页器：仅当多于一页时显示 */}
+        <Pagination
+          className={styles.pager}
+          currentPage={safePage}
+          onPageChange={handlePageChange}
+          totalPages={totalPages}
+        />
 
         {newsItems?.length === 0 && (
           <p className={styles.empty}>No news items for this period.</p>

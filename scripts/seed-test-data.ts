@@ -109,8 +109,9 @@ async function seed() {
   await db.insert(schema.resources).values([
     {
       name: 'Platform Overview',
-      description: 'ALI-PDO™ 技术与能力一页纸摘要',
-      ctaLabel: 'Download PDF →',
+      description:
+        'A one-page summary of our ALI-PDO™ technology and capabilities.',
+      ctaLabel: 'Download PDF',
       ctaType: 'contact',
       fileUrl: null,
       externalUrl: null,
@@ -119,8 +120,9 @@ async function seed() {
     },
     {
       name: 'Biobank Catalog',
-      description: '按癌种的完整模型列表，含特征数据',
-      ctaLabel: 'Request Access →',
+      description:
+        'Full listing of available models by cancer type, with characterization data.',
+      ctaLabel: 'Request Access',
       ctaType: 'contact',
       fileUrl: null,
       externalUrl: null,
@@ -129,8 +131,9 @@ async function seed() {
     },
     {
       name: 'Sample Case Study',
-      description: '从样本收到到最终报告的详细研究示例',
-      ctaLabel: 'Download PDF →',
+      description:
+        'A detailed example of a drug screening study from sample receipt to final report.',
+      ctaLabel: 'Download PDF',
       ctaType: 'contact',
       fileUrl: null,
       externalUrl: null,

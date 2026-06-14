@@ -37,7 +37,7 @@
   width: 100%;
 
   .alignBottom & {
-    padding: 0 var(--portal-content-pad-x) 395px;
+    padding: 0 var(--portal-content-pad-x) var(--page-hero-pad-bottom, 395px);
   }
 }
 

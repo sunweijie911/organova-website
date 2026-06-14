@@ -156,7 +156,7 @@ export const resources = createTable(
     id: serial('id').primaryKey(),
     name: d.varchar({ length: 256 }).notNull(), // "Platform Overview"
     description: d.text(),
-    ctaLabel: d.varchar('cta_label', { length: 128 }), // "Download PDF →"
+    ctaLabel: d.varchar('cta_label', { length: 128 }), // "Download PDF"（箭头由 CardLink 图标渲染，文案不带 →）
     ctaType: d
       .varchar('cta_type', { length: 32 })
       .$type<ResourceCtaType>()

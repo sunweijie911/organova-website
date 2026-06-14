@@ -1,4 +1,14 @@
-/* Case Studies 列表页：BrandLogo + Hero 区域统一黑底 */
+/* Case Studies 列表页：BrandLogo 叠加在 Hero 顶部 */
 .page {
+  position: relative;
   background: #000;
+}
+
+/* BrandLogo 绝对定位到 Hero 顶部，背景透明、叠在 Hero 图之上 */
+.brandLogoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }

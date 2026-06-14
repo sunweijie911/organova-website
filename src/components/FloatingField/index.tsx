@@ -1,3 +1,4 @@
+import { SvgIcon } from '@/components/SvgIcon';
 import styles from './index.module.scss';
 
 interface FloatingFieldProps {
@@ -17,6 +18,8 @@ interface FloatingFieldProps {
   /** textarea 行数 */
   rows?: number;
   name?: string;
+  /** 错误提示文案，存在时进入错误态（顶边红色虚线 + 下方警告） */
+  error?: string;
   /** 外层宽度/布局类（由各页面控制，组件本身不限定宽度） */
   className?: string;
 }
@@ -27,6 +30,7 @@ interface FloatingFieldProps {
  * - 空闲态：顶边虚线；label 以 24px 灰字充当占位文字停在输入位
  * - 输入时(focus)：顶边变实线；label 上浮缩为 10px
  * - 填入态(filled)：顶边保持实线；label 维持上浮；显示输入值 20px
+ * 错误态（Figma 1213:12225）：顶边红色虚线，下方警告图标 + 文案(#EA3636)。
  */
 export function FloatingField({
   id,
@@ -38,39 +42,55 @@ export function FloatingField({
   multiline = false,
   rows = 4,
   name,
+  error,
   className,
 }: FloatingFieldProps) {
   const isFilled = value.length > 0;
-  const fieldClass = [styles.field, isFilled ? styles.isFilled : '', className]
+  const fieldClass = [
+    styles.field,
+    isFilled ? styles.isFilled : '',
+    error ? styles.hasError : '',
+  ]
     .filter(Boolean)
     .join(' ');
 
+  const wrapperClass = [styles.wrapper, className].filter(Boolean).join(' ');
+
   return (
-    <label className={fieldClass} htmlFor={id}>
-      <span className={styles.floatingLabel}>{label}</span>
-      {multiline ? (
-        <textarea
-          aria-label={label}
-          className={`${styles.input} ${styles.textarea}`}
-          id={id}
-          name={name}
-          onChange={(e) => onChange(e.target.value)}
-          required={required}
-          rows={rows}
-          value={value}
-        />
-      ) : (
-        <input
-          aria-label={label}
-          className={styles.input}
-          id={id}
-          name={name}
-          onChange={(e) => onChange(e.target.value)}
-          required={required}
-          type={type}
-          value={value}
-        />
+    <div className={wrapperClass}>
+      <label className={fieldClass} htmlFor={id}>
+        <span className={styles.floatingLabel}>{label}</span>
+        {multiline ? (
+          <textarea
+            aria-label={label}
+            className={`${styles.input} ${styles.textarea}`}
+            id={id}
+            name={name}
+            onChange={(e) => onChange(e.target.value)}
+            required={required}
+            rows={rows}
+            value={value}
+          />
+        ) : (
+          <input
+            aria-label={label}
+            className={styles.input}
+            id={id}
+            name={name}
+            onChange={(e) => onChange(e.target.value)}
+            required={required}
+            type={type}
+            value={value}
+          />
+        )}
+      </label>
+
+      {error && (
+        <p className={styles.error}>
+          <SvgIcon color="#EA3636" name="warning-circle" size={16} />
+          <span>{error}</span>
+        </p>
       )}
-    </label>
+    </div>
   );
 }

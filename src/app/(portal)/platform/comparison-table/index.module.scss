@@ -3,11 +3,12 @@ $divider: 0.5px solid rgba(255, 255, 255, 0.2);
 
 .section {
   background: #000;
-  padding: 80px 0 100px;
+  padding: 176px 0 100px;
 }
 
 .inner {
-  padding: 0 236px;
+  // 较设计稿（左右 238px）略微收窄留白，让表格整体更宽
+  padding: 0 240px;
 }
 
 .title {
@@ -20,9 +21,12 @@ $divider: 0.5px solid rgba(255, 255, 255, 0.2);
 
 // 用单一 grid 容器模拟 table：所有单元格作为同一网格的直接项，
 // 列宽比例对应设计稿竖向分隔线位置（group 内 x = 235 / 644 / 1053 / 1444）。
+// 行高：表头 auto，6 个数据行固定等高，对应设计稿数据区 6 行 space-between 的等高效果，
+// 同时整体加高（设计稿表格区 ≈ 597px）。
 .table {
   display: grid;
   grid-template-columns: 235fr 409fr 409fr 391fr;
+  grid-template-rows: auto repeat(6, 88px);
   width: 100%;
   color: #fff;
 }
