@@ -28,13 +28,14 @@
   letter-spacing: -0.005em;
 }
 
-/* 时间线主体 — 用显式列宽还原 Figma 非均匀分布 */
+/* 时间线主体 — 8 节点等宽分布（健壮布局）
+   每个节点占满各自列，label 在列宽内换行（不再 nowrap），任意节点数都不会横向溢出重叠 */
 .timeline {
   position: relative;
   display: grid;
-  /* 7 列：前 6 列对应节点起点间距，第 7 列容纳最后节点宽度 */
-  grid-template-columns: 348px 184px 136px 147px 152px 175px 132px;
-  gap: 0;
+  /* 第一列加宽：2009→2014 为 5 年间隔，间距最大（呼应原 Figma），其余列等宽 */
+  grid-template-columns: 1.5fr repeat(7, 1fr);
+  column-gap: 16px;
   padding-top: 0;
 }
 
@@ -62,7 +63,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 132px;
+  width: 100%;
   min-width: 0;
   cursor: pointer;
   transition: opacity 0.25s ease;
@@ -77,9 +78,9 @@
   opacity: 0.3;
 }
 
-/* 当前节点 2025：年份字号 32 + 标签 "US Expansion" 较宽，允许溢出列宽 */
+/* 当前节点 2025：年份字号 32 + 标签 "US Expansion" 较大，允许溢出列宽 */
 .nodeCurrent {
-  width: 132px;
+  width: 100%;
   overflow: visible;
 }
 
@@ -138,46 +139,59 @@
   line-height: 1;
 }
 
-/* 普通标签 — Roboto Light 14px，hug 单行不换行 */
+/* 普通标签 — Roboto Light 14px，列宽内换行（避免横向溢出与相邻节点重叠） */
 .label {
   font-size: 14px;
   font-weight: 300;
   color: #000;
   line-height: 1.4;
-  white-space: nowrap;
 }
 
-/* 当前节点标签 — Roboto Regular 20px，hug 单行不换行 */
+/* 当前节点标签 — Roboto Regular 20px，列宽内换行 */
 .labelCurrent {
   font-size: 20px;
   font-weight: 400;
   color: #000;
   line-height: 1.4;
-  white-space: nowrap;
 }
 
-/* 节点上方注释 tooltip — Roboto Regular 20px（用于 2014 节点论文引用）
-   Figma：注释 x=548 相对节点 x=588 左偏 40px，位于节点上方
-   默认隐藏，hover 该节点时淡入显示 */
-.annotation {
+/* hover 时本节点提到最上层，保证 tooltip 浮层不被相邻节点遮挡 */
+.node:hover {
+  z-index: 10;
+}
+
+/* 节点上方 tooltip 卡片 — 默认隐藏，hover 该节点时淡入上浮
+   居中于节点（translateX(-50%)），白底卡片 + 阴影，避免与相邻节点文字重叠 */
+.tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
-  /* 注释从节点左缘略向左 → left=-40px */
-  left: -40px;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  z-index: 5;
   margin: 0;
-  width: 801px;
+  width: 320px;
   max-width: 70vw;
-  font-size: 20px;
+  padding: 16px 20px;
+  border: 1px solid rgb(0 0 0 / 0.08);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+  font-size: 15px;
   font-weight: 400;
   color: #000;
-  line-height: 1.4;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
-.node:hover .annotation {
+.node:hover .tooltip {
+  transform: translateX(-50%) translateY(0);
   opacity: 1;
   visibility: visible;
 }
