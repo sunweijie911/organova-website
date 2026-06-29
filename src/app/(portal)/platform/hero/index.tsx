@@ -10,7 +10,7 @@ export default function PlatformHero() {
           alt=""
           fill
           priority
-          src="/assets/images/platform/hero-bg.png"
+          src="/assets/images/platform/hero-bg.webp"
           style={{ objectFit: 'cover', objectPosition: 'center top' }}
         />
       </div>

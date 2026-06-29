@@ -5,7 +5,7 @@ import { PageHero } from '@/components/PageHero';
 export default function ListHero() {
   return (
     <PageHero
-      bgSrc="/assets/images/case-studies/hero-bg.png"
+      bgSrc="/assets/images/case-studies/hero-bg.webp"
       subtitle="Explore real-world examples of how our platform is helping partners overcome their toughest preclinical challenges."
       title={`From Biological Question to \nClinical Insight.`}
     />

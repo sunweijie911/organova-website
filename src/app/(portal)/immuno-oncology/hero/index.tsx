@@ -3,7 +3,7 @@ import { PageHero } from '@/components/PageHero';
 export default function ImmunoOncologyHero() {
   return (
     <PageHero
-      bgSrc="/assets/images/immuno-oncology/hero-bg.png"
+      bgSrc="/assets/images/immuno-oncology/hero-bg.webp"
       subtitle={
         <>
           Testing an immunotherapy in a model without immune cells is not a

@@ -26,7 +26,7 @@ interface DialogProps {
   onClose: () => void;
 }
 
-const PLACEHOLDER_PHOTO = '/assets/images/about/team-placeholder.png';
+const PLACEHOLDER_PHOTO = '/assets/images/about/team-placeholder.webp';
 
 export default function TeamMemberDialog({ member, onClose }: DialogProps) {
   // Esc 关闭
