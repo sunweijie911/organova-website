@@ -27,11 +27,20 @@ export const env = createEnv({
     SMTP_USER: z.string().optional(),
     SMTP_PASS: z.string().optional(),
 
-    // 限流
+    // 限流（格式：「次数/窗口毫秒」）
     RATE_LIMIT_UPLOAD: z.string().default('5/60000'),
     RATE_LIMIT_GLOBAL_IP: z.string().default('60/60000'),
-    RATE_LIMIT_AUTH_IP: z.string().default('5/60000'),
+    // 登录/验证端点 IP 限流：仅防暴力，验证另有 allowedAttempts 兜底，阈值放宽避免误伤共享出口 IP
+    RATE_LIMIT_AUTH_IP: z.string().default('20/60000'),
+    // 验证码发送端点（有短信/邮件成本）单独限流，与验证端点分离，防止发送 1 次 + 验证 1 次就占满登录额度
+    RATE_LIMIT_OTP_SEND: z.string().default('10/60000'),
+    // 验证码校验端点：覆盖 better-auth 内置过严规则（默认 3次/60s），暴力破解由 allowedAttempts 兜底
+    RATE_LIMIT_OTP_VERIFY: z.string().default('10/60000'),
     RATE_LIMIT_CONTACT: z.string().default('3/60000'),
+
+    // 单个验证码允许的错误次数：better-auth 默认 3 太低，达到上限后验证码会被作废，
+    // 之后即使输对也判「不正确」，必须重新获取——放宽以避免几次手误就触顶。
+    OTP_ALLOWED_ATTEMPTS: z.coerce.number().int().positive().default(5),
 
     // 是否信任 X-Real-IP / X-Forwarded-For 头来推断客户端 IP。
     // 仅当请求一定经过受信代理（nginx / CDN）时才能为 true；否则攻击者可伪造 IP 绕过限流。
@@ -81,7 +90,10 @@ export const env = createEnv({
     RATE_LIMIT_UPLOAD: stripQuotes(process.env.RATE_LIMIT_UPLOAD),
     RATE_LIMIT_GLOBAL_IP: stripQuotes(process.env.RATE_LIMIT_GLOBAL_IP),
     RATE_LIMIT_AUTH_IP: stripQuotes(process.env.RATE_LIMIT_AUTH_IP),
+    RATE_LIMIT_OTP_SEND: stripQuotes(process.env.RATE_LIMIT_OTP_SEND),
+    RATE_LIMIT_OTP_VERIFY: stripQuotes(process.env.RATE_LIMIT_OTP_VERIFY),
     RATE_LIMIT_CONTACT: stripQuotes(process.env.RATE_LIMIT_CONTACT),
+    OTP_ALLOWED_ATTEMPTS: stripQuotes(process.env.OTP_ALLOWED_ATTEMPTS),
     TRUST_PROXY_HEADERS: stripQuotes(process.env.TRUST_PROXY_HEADERS),
     REDIS_URL: stripQuotes(process.env.REDIS_URL),
     AUTH_METHOD: stripQuotes(process.env.AUTH_METHOD),

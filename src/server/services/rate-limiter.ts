@@ -166,7 +166,7 @@ export class RateLimiter {
   }
 }
 
-function parseRateLimit(
+export function parseRateLimit(
   value: string | undefined,
   defaultMax: number,
   defaultWindowMs: number,
@@ -201,4 +201,9 @@ function rl(
 export const uploadLimiter = rl(env.RATE_LIMIT_UPLOAD, 5, 60_000);
 export const contactLimiter = rl(env.RATE_LIMIT_CONTACT, 3, 60_000);
 export const globalIpLimiter = rl(env.RATE_LIMIT_GLOBAL_IP, 60, 60_000);
-export const authIpLimiter = rl(env.RATE_LIMIT_AUTH_IP, 5, 60_000);
+// 登录/验证端点限流：仅覆盖登录与验证尝试，验证本身另有 better-auth allowedAttempts 兜底，
+// 阈值可宽松，避免共享 NAT 出口 IP 时误伤正常用户。
+export const authIpLimiter = rl(env.RATE_LIMIT_AUTH_IP, 20, 60_000);
+// 验证码发送限流：仅覆盖 send-verification-otp 这类有成本（邮件）的端点，与验证端点分离，
+// 防止「发送 1 次 + 验证 1 次」就占满登录额度。
+export const otpSendLimiter = rl(env.RATE_LIMIT_OTP_SEND, 10, 60_000);

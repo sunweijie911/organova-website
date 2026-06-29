@@ -98,7 +98,7 @@ export async function sendEmailOtp(email: string, code: string): Promise<void> {
         <div style="background:#f5f5f5;border-radius:8px;padding:16px;text-align:center;font-size:32px;letter-spacing:8px;font-weight:bold;color:#333;">
           ${esc(code)}
         </div>
-        <p style="color:#999;margin-top:24px;font-size:13px;">验证码 5 分钟内有效，请勿泄露给他人。</p>
+        <p style="color:#999;margin-top:24px;font-size:13px;">验证码 10 分钟内有效，请勿泄露给他人。</p>
       </div>
     `,
   });

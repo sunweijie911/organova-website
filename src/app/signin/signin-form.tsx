@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
+import { isOtpInvalidated, resolveAuthError } from '@/lib/auth-error';
 import type { AuthMethod } from '@/lib/auth-methods';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -173,7 +174,7 @@ function EmailPasswordForm({ onSuccess }: { onSuccess: () => void }) {
     try {
       const result = await authClient.signIn.email({ email, password });
       if (result.error) {
-        setError(result.error.message ?? '登录失败');
+        setError(resolveAuthError(result.error, '登录失败，请检查邮箱和密码'));
         return;
       }
       onSuccess();
@@ -248,6 +249,8 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
   const [loading, setLoading] = useState(false);
   const { countdown, start, reset } = useCountdown();
   const formRef = useRef<HTMLFormElement>(null);
+  // 防止自动提交（验证码填满即触发 submit）与手动提交并发，导致同一验证码被二次消费而误报错误
+  const submittingRef = useRef(false);
   const code = digits.join('');
 
   const updateDigits = useCallback((next: string[]) => {
@@ -267,6 +270,8 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
       setError('邮箱格式不正确');
       return;
     }
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setError('');
     setLoading(true);
     try {
@@ -275,15 +280,16 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
         type: 'sign-in',
       });
       if (result.error) {
-        setError(result.error.message ?? '发送失败，请重试');
+        setError(resolveAuthError(result.error, '发送失败，请稍后重试'));
         return;
       }
       setStep('code');
       start();
     } catch {
-      setError('发送失败，请重试');
+      setError('发送失败，请稍后重试');
     } finally {
       setLoading(false);
+      submittingRef.current = false;
     }
   };
 
@@ -293,19 +299,28 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
       setError('请输入验证码');
       return;
     }
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setError('');
     setLoading(true);
     try {
       const result = await authClient.signIn.emailOtp({ email, otp: code });
       if (result.error) {
-        setError(result.error.message ?? '验证失败');
+        setError(resolveAuthError(result.error, '验证码错误，请重试'));
+        // 验证码已被服务端作废（错误次数过多/过期/失效）：清空旧码并放开「重新获取」，
+        // 否则用户会卡在已失效的旧码上一直提示「不正确」。
+        if (isOtpInvalidated(result.error)) {
+          setDigits(Array(OTP_LENGTH).fill(''));
+          reset();
+        }
         return;
       }
       onSuccess();
     } catch {
-      setError('操作失败，请重试');
+      setError('验证失败，请稍后重试');
     } finally {
       setLoading(false);
+      submittingRef.current = false;
     }
   };
 
