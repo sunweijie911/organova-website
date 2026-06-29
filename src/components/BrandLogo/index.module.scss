@@ -1,7 +1,10 @@
+/* 顶部 padding 含 60px：header 改为 fixed 覆盖层后不再占用文档流，
+ * 这里补回 header 高度，让 logo 落在 header 下方（y≈105 = 60 header + 45 间距）
+ */
 .brandLogo {
   display: flex;
   align-items: center;
-  padding: 45px 48px;
+  padding: 105px 48px 45px;
   gap: 14px;
 }
 

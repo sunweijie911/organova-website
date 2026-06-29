@@ -43,13 +43,21 @@ export default function HeroBanner() {
 
     const update = () => {
       const heroH = section.offsetHeight;
+      // 视频尺寸未就绪时（height:auto 解析为 0）跳过，避免把 sticky hero 推出视口造成白屏
+      if (!heroH) return;
       const vh = window.innerHeight;
       section.style.top = `${vh - heroH}px`;
     };
 
     update();
     window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    // 监听 section 高度变化：SPA 切回首页时视频重新加载，高度确定后再重算 top
+    const ro = new ResizeObserver(update);
+    ro.observe(section);
+    return () => {
+      window.removeEventListener('resize', update);
+      ro.disconnect();
+    };
   }, []);
 
   return (
