@@ -404,6 +404,11 @@ const subtitleMap: Record<string, string> = {
   'email-otp': '使用邮箱验证码登录',
 };
 
+// 仅允许站内相对路径；URL 解析会把 \ 视为 /，并剔除制表符与换行
+function isSafeCallbackUrl(url: string): boolean {
+  return /^\/(?![/\\])/.test(url) && !/[\\\t\n\r]/.test(url);
+}
+
 interface SignInFormProps {
   authMethod: AuthMethod;
   siteName: string;
@@ -413,7 +418,7 @@ function SignInFormInner({ authMethod, siteName }: SignInFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const raw = searchParams.get('callbackUrl') ?? '/';
-  const callbackUrl = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/';
+  const callbackUrl = isSafeCallbackUrl(raw) ? raw : '/';
 
   const handleSuccess = () => {
     router.push(callbackUrl);

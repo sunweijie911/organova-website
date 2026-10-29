@@ -18,7 +18,7 @@
     "type-check": "tsc --noEmit",
     "spell-check": "cspell",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node --env-file-if-exists=.env migrate.mjs",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx --env-file=.env scripts/seed-test-data.ts",
     "db:studio": "drizzle-kit studio",

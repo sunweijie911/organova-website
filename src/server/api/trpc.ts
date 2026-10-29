@@ -50,8 +50,14 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    // 未捕获异常（如 DrizzleQueryError）的 message 含 SQL 与参数，不返回给客户端
+    const isUnhandled =
+      error.code === 'INTERNAL_SERVER_ERROR' &&
+      error.cause !== undefined &&
+      !(error.cause instanceof TRPCError);
     return {
       ...shape,
+      message: isUnhandled ? 'Internal server error' : shape.message,
       data: {
         ...shape.data,
         zodError:

@@ -10,8 +10,8 @@ const publicationWriteSchema = z.object({
   journal: z.string().min(1).max(256),
   title: z.string().min(1).max(2000),
   authors: z.string().min(1).max(512),
-  citationCount: z.string().max(64).optional(),
-  doi: z.string().max(256).optional(),
+  citationCount: z.string().max(64).nullish(),
+  doi: z.string().max(256).nullish(),
   sortOrder: z.number().int().default(0),
   isVisible: z.boolean().default(true),
 });

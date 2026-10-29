@@ -10,6 +10,9 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      # 应用端口仅对 nginx expose，X-Real-IP 由 nginx 写入，可信
+      TRUST_PROXY_HEADERS: ${TRUST_PROXY_HEADERS:-true}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

@@ -9,8 +9,8 @@ import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 const newsWriteSchema = z.object({
   title: z.string().min(1).max(512),
   publishedAt: z.date(),
-  location: z.string().max(256).optional(),
-  content: z.string().max(50_000).optional(),
+  location: z.string().max(256).nullish(),
+  content: z.string().max(50_000).nullish(),
   coverImage: z.string().nullable().optional(),
   isPublished: z.boolean().default(false),
 });

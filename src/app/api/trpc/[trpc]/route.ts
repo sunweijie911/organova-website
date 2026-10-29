@@ -22,14 +22,15 @@ const handler = (req: NextRequest) =>
     router: appRouter,
     allowMethodOverride: true,
     createContext: () => createContext(req),
-    onError:
-      env.NODE_ENV === 'development'
-        ? ({ path, error }) => {
-            console.error(
-              `❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`,
-            );
-          }
-        : undefined,
+    onError: ({ path, error }) => {
+      if (env.NODE_ENV === 'development') {
+        console.error(
+          `❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`,
+        );
+      } else if (error.code === 'INTERNAL_SERVER_ERROR') {
+        console.error(`[tRPC] ${path ?? '<no-path>'}:`, error.cause ?? error);
+      }
+    },
   });
 
 export { handler as GET, handler as POST };

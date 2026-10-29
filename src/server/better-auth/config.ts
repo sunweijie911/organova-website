@@ -7,6 +7,7 @@ import { env } from '@/env';
 import { parseAuthMethod } from '@/lib/auth-methods';
 import { db } from '@/server/db';
 import { account, session, user, verification } from '@/server/db/auth-schema';
+import { isAdminEmail } from '@/server/services/admin-check';
 import { sendEmailOtp } from '@/server/services/email';
 import { parseRateLimit } from '@/server/services/rate-limiter';
 
@@ -27,6 +28,8 @@ if (method === 'email-otp') {
   plugins.push(
     emailOTP({
       async sendVerificationOTP({ email, otp }) {
+        // 仅向管理员白名单发信：后台是唯一登录入口，非白名单邮箱拿不到验证码即无法注册
+        if (!isAdminEmail(email)) return;
         await sendEmailOtp(email, otp);
       },
       otpLength: 6,
@@ -52,6 +55,8 @@ export const auth = betterAuth({
   },
   advanced: {
     useSecureCookies,
+    // nginx 以 $remote_addr 覆写 X-Real-IP；X-Forwarded-For 首段可被客户端伪造
+    ipAddress: { ipAddressHeaders: ['x-real-ip'] },
   },
   // 覆盖 better-auth 内置（生产默认开启）的 OTP 限流规则，阈值统一由 env 配置。
   // customRules 的 window 单位为「秒」，会覆盖插件自带规则，避免误伤正常用户。

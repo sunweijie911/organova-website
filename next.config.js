@@ -40,6 +40,10 @@ const config = {
   images: {
     remotePatterns: buildRemotePatterns(),
   },
+  experimental: {
+    // proxy 默认只缓冲 10MB 请求体，需覆盖上传接口的 20MB PDF 上限及 multipart 开销
+    proxyClientMaxBodySize: '25mb',
+  },
 };
 
 export default config;

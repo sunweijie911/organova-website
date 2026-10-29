@@ -8,8 +8,8 @@ import { adminProcedure, createTRPCRouter, publicProcedure } from '../trpc';
 
 const resourceWriteSchema = z.object({
   name: z.string().min(1).max(256),
-  description: z.string().max(10_000).optional(),
-  ctaLabel: z.string().max(128).optional(),
+  description: z.string().max(10_000).nullish(),
+  ctaLabel: z.string().max(128).nullish(),
   ctaType: z.enum(RESOURCE_CTA_TYPES),
   fileUrl: z.string().nullable().optional(),
   externalUrl: z.string().nullable().optional(),
