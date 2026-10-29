@@ -54,10 +54,10 @@ build_docker_images() {
     log_info "构建平台: ${platform}"
 
     log_info "Building app image (runner target)..."
-    docker build --platform "${platform}" -t "${appImageTag}" --target runner .
+    docker build --platform "${platform}" --build-arg NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmmirror.com}" -t "${appImageTag}" --target runner .
 
     log_info "Building nginx image (nginx target)..."
-    docker build --platform "${platform}" -t "${nginxImageTag}" --target nginx .
+    docker build --platform "${platform}" --build-arg NPM_REGISTRY="${NPM_REGISTRY:-https://registry.npmmirror.com}" -t "${nginxImageTag}" --target nginx .
 }
 
 # 计算文件 MD5

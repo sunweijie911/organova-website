@@ -1,6 +1,8 @@
 ##### BASE
 FROM node:22-alpine AS base
-ENV COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
+# 国内构建传入 --build-arg NPM_REGISTRY=https://registry.npmmirror.com
+ARG NPM_REGISTRY=https://registry.npmjs.org
+ENV COREPACK_NPM_REGISTRY=$NPM_REGISTRY
 RUN corepack enable && corepack prepare pnpm@10.20.0 --activate
 
 ##### DEPENDENCIES
@@ -8,7 +10,8 @@ FROM base AS deps
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm config set registry https://registry.npmmirror.com && \
+ARG NPM_REGISTRY=https://registry.npmjs.org
+RUN pnpm config set registry "$NPM_REGISTRY" && \
     pnpm install --frozen-lockfile
 
 ##### BUILDER

@@ -6,9 +6,13 @@ services:
     build:
       context: .
       target: runner
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
 
   organova-nginx:
     image: organova-nginx:local
     build:
       context: .
       target: nginx
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
