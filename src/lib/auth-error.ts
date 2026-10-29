@@ -53,6 +53,12 @@ export function resolveAuthError(
   if (code.includes('OTP_NOT_FOUND') || msg.includes('otp not found')) {
     return '验证码已失效，请重新获取';
   }
+  if (
+    code.includes('INVALID_EMAIL_OR_PASSWORD') ||
+    msg.includes('invalid email or password')
+  ) {
+    return '邮箱或密码错误';
+  }
   if (msg.includes('invalid email')) return '邮箱格式不正确';
 
   // 已是中文（自定义后端错误）直接透传，避免覆盖有用信息

@@ -1,25 +1,16 @@
 import 'server-only';
 
 import { createHydrationHelpers } from '@trpc/react-query/rsc';
-import { headers } from 'next/headers';
 import { cache } from 'react';
 
 import { type AppRouter, createCaller } from '@/server/api/root';
 import { createTRPCContext } from '@/server/api/trpc';
 import { createQueryClient } from './query-client';
 
-/**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a tRPC call from a React Server Component.
- */
-const createContext = cache(async () => {
-  const heads = new Headers(await headers());
-  heads.set('x-trpc-source', 'rsc');
-
-  return createTRPCContext({
-    headers: heads,
-  });
-});
+// RSC 只调用公开查询：不读取请求头，页面可走静态渲染 / ISR，ctx.session 恒为 null
+const createContext = cache(() =>
+  createTRPCContext({ headers: new Headers({ 'x-trpc-source': 'rsc' }) }),
+);
 
 const getQueryClient = cache(createQueryClient);
 const caller = createCaller(createContext);

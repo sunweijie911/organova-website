@@ -34,7 +34,7 @@ export const newsRouter = createTRPCRouter({
     }),
 
   getById: publicProcedure
-    .input(z.object({ id: z.number().int() }))
+    .input(z.object({ id: z.number().int().positive().max(2_147_483_647) }))
     .query(async ({ input, ctx }) => {
       const [row] = await ctx.db
         .select()

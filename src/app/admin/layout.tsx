@@ -1,3 +1,4 @@
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/server/better-auth/server';
 import { isAdminEmail } from '@/server/services/admin-check';
@@ -19,8 +20,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <AdminAntdProvider>
-      <AdminShell>{children}</AdminShell>
-    </AdminAntdProvider>
+    <AntdRegistry>
+      <AdminAntdProvider>
+        <AdminShell>{children}</AdminShell>
+      </AdminAntdProvider>
+    </AntdRegistry>
   );
 }

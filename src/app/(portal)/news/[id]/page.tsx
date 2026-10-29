@@ -1,26 +1,25 @@
-import { and, eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
-import { db } from '@/server/db';
-import { news } from '@/server/db/schema';
+import { api } from '@/lib/trpc/server';
 import NewsDetailView from '.';
 
-const INT4_MAX = 2_147_483_647;
-
-// React.cache 让 generateMetadata 与页面渲染共用同一次 DB 查询，
-// 同一请求内只会真正打一次库。
-
+// React.cache 让 generateMetadata 与页面渲染共享同一次查询结果。
+// 仅接受纯数字 id；越界或不存在均返回 404
 const getNewsRow = cache(async (rawId: string) => {
-  if (!/^[1-9]\d{0,9}$/.test(rawId)) return null;
-  const id = Number(rawId);
-  if (id > INT4_MAX) return null;
-  const [row] = await db
-    .select()
-    .from(news)
-    .where(and(eq(news.id, id), eq(news.isPublished, true)))
-    .limit(1);
-  return row ?? null;
+  if (!/^[1-9]\d*$/.test(rawId)) return null;
+  try {
+    return await api.news.getById({ id: Number(rawId) });
+  } catch (err) {
+    if (
+      err instanceof TRPCError &&
+      (err.code === 'NOT_FOUND' || err.code === 'BAD_REQUEST')
+    ) {
+      return null;
+    }
+    throw err;
+  }
 });
 
 function stripHtml(html: string): string {

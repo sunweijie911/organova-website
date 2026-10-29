@@ -6,6 +6,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { isOtpInvalidated, resolveAuthError } from '@/lib/auth-error';
 import type { AuthMethod } from '@/lib/auth-methods';
+import { isSafeCallbackUrl } from '@/lib/safe-callback-url';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const OTP_LENGTH = 6;
@@ -403,11 +404,6 @@ const subtitleMap: Record<string, string> = {
   'email-password': '使用邮箱密码登录',
   'email-otp': '使用邮箱验证码登录',
 };
-
-// 仅允许站内相对路径；URL 解析会把 \ 视为 /，并剔除制表符与换行
-function isSafeCallbackUrl(url: string): boolean {
-  return /^\/(?![/\\])/.test(url) && !/[\\\t\n\r]/.test(url);
-}
 
 interface SignInFormProps {
   authMethod: AuthMethod;

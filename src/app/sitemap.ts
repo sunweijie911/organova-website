@@ -4,6 +4,9 @@ import { api } from '@/lib/trpc/server';
 
 const BASE_URL = env.BETTER_AUTH_URL ?? 'http://localhost:3000';
 
+// 构建期无数据库时生成的是降级结果，需定期重新生成
+export const revalidate = 300;
+
 const STATIC_PATHS = [
   { path: '', priority: 1.0 },
   { path: '/about', priority: 0.8 },

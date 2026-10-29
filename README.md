@@ -6,10 +6,10 @@ Organova 官网全栈项目，包含面向用户的门户网站和内容管理�
 
 | 层级 | 技术 |
 |------|------|
-| 框架 | [Next.js 15](https://nextjs.org) (App Router + Turbopack) |
+| 框架 | [Next.js 16](https://nextjs.org) (App Router + Turbopack) |
 | API | [tRPC](https://trpc.io) — 端到端类型安全 |
 | ORM | [Drizzle ORM](https://orm.drizzle.team) |
-| 数据库 | [PostgreSQL 16](https://www.postgresql.org/) |
+| 数据库 | [PostgreSQL 18](https://www.postgresql.org/) |
 | 认证 | [Better Auth](https://www.better-auth.com/)（邮箱验证码 / 邮箱密码） |
 | CSS | [UnoCSS](https://unocss.dev/) + [Ant Design](https://ant.design/)（后台） |
 | 校验 | [Zod](https://zod.dev/) |
@@ -36,14 +36,17 @@ src/
 │   ├── api/                # API 路由（tRPC、Better Auth、文件上传）
 │   └── signin/             # 登录页
 ├── components/             # 通用组件
+├── constants/              # 前端配置 schema 等常量
+├── context/                # React Context
+├── hooks/                  # 自定义 React hooks
+├── lib/                    # 客户端/通用工具（tRPC 客户端、auth-client 等）
 ├── server/
 │   ├── api/routers/        # tRPC routers
 │   ├── db/                 # Drizzle schema & 数据库连接
+│   ├── better-auth/        # Better Auth 配置
 │   └── services/           # 业务服务层
-├── views/
-│   ├── portal/             # 门户页面视图
-│   └── admin/              # 后台页面视图
-└── hooks/                  # 自定义 React hooks
+├── styles/                 # 全局样式
+└── types/                  # 共享类型与枚举
 ```
 
 ## 功能模块
@@ -91,8 +94,8 @@ pnpm install
 cp .env.example .env
 # 编辑 .env，填入数据库连接和认证配置
 
-# 3. 启动数据库（Docker）
-docker compose --profile dev up -d db
+# 3. 启动数据库（Docker；compose 文件要求 APP_IMAGE / NGINX_IMAGE，仅起 db 时填占位值即可）
+APP_IMAGE=unused NGINX_IMAGE=unused docker compose --profile dev up -d db
 
 # 4. 执行数据库迁移
 pnpm db:migrate
@@ -116,7 +119,7 @@ pnpm dev
 
 ### 认证方式
 
-通过 `NEXT_PUBLIC_AUTH_METHOD` 切换：
+通过 `AUTH_METHOD` 切换：
 
 - `email-otp`（默认）— 邮箱验证码登录，需配置 SMTP
 - `email-password` — 邮箱密码登录
@@ -156,17 +159,16 @@ pnpm dev
 项目提供 `Dockerfile` 和 `docker-compose.yml`，支持容器化部署。
 
 ```bash
-# 构建镜像
-docker build -t organova-app .
+# 构建应用镜像与 nginx 镜像（nginx 镜像内含 Next.js 静态资源，不能直接用官方 nginx:alpine）
+docker build --target runner -t organova-app .
+docker build --target nginx -t organova-nginx .
 
-# 启动服务（需设置 APP_IMAGE、NGINX_IMAGE 环境变量）
-APP_IMAGE=organova-app NGINX_IMAGE=nginx:alpine docker compose up -d
+# 启动服务
+APP_IMAGE=organova-app NGINX_IMAGE=organova-nginx docker compose up -d
 ```
 
-生产环境默认监听 `HOST_PORT`（默认 5000），通过 Nginx 反向代理到应用容器。
+本地存在 `docker-compose.override.yml` 时，`docker compose up -d --build` 会自动构建并使用 `organova-app:local` / `organova-nginx:local`。
 
-数据库迁移在每次部署时需单独执行：
+生产环境默认监听 `HOST_PORT`（默认 80），通过 Nginx 反向代理到应用容器。线上部署走 GitHub Actions（`Build and Deploy`，仅允许默认分支且 Check Quality 通过的提交）。
 
-```bash
-pnpm db:migrate
-```
+数据库迁移在容器启动时自动执行（`node migrate.mjs`），无需单独操作；本地开发用 `pnpm db:migrate`（同一脚本）。迁移需保持向后兼容（先加后删），因为回滚只回退镜像、不回退表结构。

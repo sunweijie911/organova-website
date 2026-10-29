@@ -39,10 +39,14 @@ if (!process.env.BETTER_AUTH_SECRET) {
   process.exit(1);
 }
 
-// 与 src/server/db/index.ts 保持一致的 SSL 行为：RDS 必须开启 SSL，
-// 但项目设计上不强制校验 CA（与生产 db 连接相同）。
+// 与 migrate.mjs 一致：sslmode=disable 不走 TLS；生产开 SSL 但不校验 CA（RDS）；
+// 非生产不传 ssl，由 URL 的 sslmode 决定
 const conn = postgres(process.env.DATABASE_URL, {
-  ssl: { rejectUnauthorized: false },
+  ...(/[?&]sslmode=disable\b/.test(process.env.DATABASE_URL)
+    ? { ssl: false }
+    : process.env.NODE_ENV === 'production'
+      ? { ssl: { rejectUnauthorized: false } }
+      : {}),
 });
 const db = drizzle(conn, { schema: authSchema });
 
