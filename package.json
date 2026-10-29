@@ -74,7 +74,7 @@
     "dayjs": "^1.11.23",
     "drizzle-orm": "^0.45.4",
     "exceljs": "^4.4.0",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "isomorphic-dompurify": "^4.6.0",
     "nanoid": "^6.0.2",
     "next": "^16.4.3",
