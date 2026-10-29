@@ -13,6 +13,7 @@
 
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as authSchema from '@/server/db/auth-schema';
@@ -53,6 +54,14 @@ const db = drizzle(conn, { schema: authSchema });
 const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   emailAndPassword: { enabled: true },
+  // 管理员邮箱视为已验证；否则 better-auth 首次 OTP 登录会清除其密码并注销会话
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => ({ data: { ...user, emailVerified: true } }),
+      },
+    },
+  },
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {
@@ -87,7 +96,11 @@ async function main() {
       msg.includes('exist') ||
       msg.includes('unique')
     ) {
-      console.log(`管理员 ${email} 已存在，跳过创建`);
+      await db
+        .update(authSchema.user)
+        .set({ emailVerified: true })
+        .where(eq(authSchema.user.email, email as string));
+      console.log(`管理员 ${email} 已存在，跳过创建（已确保邮箱为已验证）`);
     } else {
       // 输出完整错误对象（含 cause / stack），便于排查 SQL/SSL/Schema 问题
       console.error('创建失败:', err);
