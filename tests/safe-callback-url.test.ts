@@ -2,14 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { isSafeCallbackUrl } from '@/lib/safe-callback-url';
 
 describe('isSafeCallbackUrl', () => {
-  it.each([
-    '/',
-    '/admin',
-    '/admin/news?page=2',
-    '/publications?tab=news#top',
-  ])('接受站内路径 %j', (url) => {
-    expect(isSafeCallbackUrl(url)).toBe(true);
-  });
+  it.each(['/', '/admin', '/admin/news?page=2', '/publications?tab=news#top'])(
+    '接受站内路径 %j',
+    (url) => {
+      expect(isSafeCallbackUrl(url)).toBe(true);
+    },
+  );
 
   it.each([
     '',

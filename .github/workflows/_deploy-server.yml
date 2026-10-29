@@ -6,31 +6,31 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'GitHub Environment 名称（如 aliyun-production）'
+        description: "GitHub Environment 名称（如 aliyun-production）"
         required: true
         type: string
       registry:
-        description: '镜像仓库地址（如 ghcr.io）'
+        description: "镜像仓库地址（如 ghcr.io）"
         required: true
         type: string
       actor:
-        description: '执行部署的 GitHub 用户名'
+        description: "执行部署的 GitHub 用户名"
         required: true
         type: string
       image_app:
-        description: 'App 镜像完整地址（含 tag）'
+        description: "App 镜像完整地址（含 tag）"
         required: true
         type: string
       image_nginx:
-        description: 'Nginx 镜像完整地址（含 tag）'
+        description: "Nginx 镜像完整地址（含 tag）"
         required: true
         type: string
       git_ref:
-        description: '用于 checkout 的 git ref'
+        description: "用于 checkout 的 git ref"
         required: true
         type: string
       enable_https:
-        description: '是否启用 HTTPS（叠加 docker-compose.https.yml，需要宿主机有 letsencrypt 证书）'
+        description: "是否启用 HTTPS（叠加 docker-compose.https.yml，需要宿主机有 letsencrypt 证书）"
         required: false
         type: boolean
         default: false

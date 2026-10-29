@@ -4,27 +4,27 @@ Organova 官网全栈项目，包含面向用户的门户网站和内容管理�
 
 ## 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| 框架 | [Next.js 16](https://nextjs.org) (App Router + Turbopack) |
-| API | [tRPC](https://trpc.io) — 端到端类型安全 |
-| ORM | [Drizzle ORM](https://orm.drizzle.team) |
-| 数据库 | [PostgreSQL 18](https://www.postgresql.org/) |
-| 认证 | [Better Auth](https://www.better-auth.com/)（邮箱验证码 / 邮箱密码） |
-| CSS | [UnoCSS](https://unocss.dev/) + [Ant Design](https://ant.design/)（后台） |
-| 校验 | [Zod](https://zod.dev/) |
-| 文件存储 | 本地 / 阿里云 OSS / AWS S3 |
+| 层级     | 技术                                                                      |
+| -------- | ------------------------------------------------------------------------- |
+| 框架     | [Next.js 16](https://nextjs.org) (App Router + Turbopack)                 |
+| API      | [tRPC](https://trpc.io) — 端到端类型安全                                  |
+| ORM      | [Drizzle ORM](https://orm.drizzle.team)                                   |
+| 数据库   | [PostgreSQL 18](https://www.postgresql.org/)                              |
+| 认证     | [Better Auth](https://www.better-auth.com/)（邮箱验证码 / 邮箱密码）      |
+| CSS      | [UnoCSS](https://unocss.dev/) + [Ant Design](https://ant.design/)（后台） |
+| 校验     | [Zod](https://zod.dev/)                                                   |
+| 文件存储 | 本地 / 阿里云 OSS / AWS S3                                                |
 
 ## 工程化
 
-| 工具 | 用途 |
-|------|------|
-| [Biome](https://biomejs.dev/) | 代码格式化与 Lint |
-| [Vitest](https://vitest.dev/) | 单元测试 |
-| [Playwright](https://playwright.dev/) | E2E 测试 |
+| 工具                                       | 用途                                            |
+| ------------------------------------------ | ----------------------------------------------- |
+| [Biome](https://biomejs.dev/)              | 代码格式化与 Lint                               |
+| [Vitest](https://vitest.dev/)              | 单元测试                                        |
+| [Playwright](https://playwright.dev/)      | E2E 测试                                        |
 | [Husky](https://typicode.github.io/husky/) | Git hooks（pre-commit / commit-msg / pre-push） |
-| [Commitlint](https://commitlint.js.org/) | 提交信息规范 (`type: subject`) |
-| [cspell](https://cspell.org/) | 拼写检查 |
+| [Commitlint](https://commitlint.js.org/)   | 提交信息规范 (`type: subject`)                  |
+| [cspell](https://cspell.org/)              | 拼写检查                                        |
 
 ## 项目结构
 
@@ -53,34 +53,34 @@ src/
 
 ### 门户网站
 
-| 页面 | 路径 |
-|------|------|
-| 首页 | `/` |
-| 关于我们 | `/about` |
-| 平台介绍 | `/platform` |
-| 免疫肿瘤学 | `/immuno-oncology` |
+| 页面         | 路径                    |
+| ------------ | ----------------------- |
+| 首页         | `/`                     |
+| 关于我们     | `/about`                |
+| 平台介绍     | `/platform`             |
+| 免疫肿瘤学   | `/immuno-oncology`      |
 | 生物科技合作 | `/biotech-partnerships` |
-| 制药解决方案 | `/pharma-solutions` |
-| 肿瘤类型 | `/tumor-types` |
-| 案例研究 | `/case-studies` |
-| 出版物 | `/publications` |
-| 常见问题 | `/faq` |
-| 联系我们 | `/contact` |
-| 报价申请 | `/request-quote` |
+| 制药解决方案 | `/pharma-solutions`     |
+| 肿瘤类型     | `/tumor-types`          |
+| 案例研究     | `/case-studies`         |
+| 出版物       | `/publications`         |
+| 常见问题     | `/faq`                  |
+| 联系我们     | `/contact`              |
+| 报价申请     | `/request-quote`        |
 
 ### 管理后台
 
-| 模块 | 说明 |
-|------|------|
-| 癌症类型 | 肿瘤分类数据管理 |
-| 案例研究 | 案例内容的增删改查 |
-| 常见问题 | FAQ 分类与条目管理 |
+| 模块     | 说明                    |
+| -------- | ----------------------- |
+| 癌症类型 | 肿瘤分类数据管理        |
+| 案例研究 | 案例内容的增删改查      |
+| 常见问题 | FAQ 分类与条目管理      |
 | 线索管理 | 用户提交的联系/报价表单 |
-| 新闻资讯 | 新闻内容发布与管理 |
-| 出版物 | 学术出版物管理 |
-| 资源管理 | 页面资源配置 |
-| 团队成员 | 团队信息管理 |
-| 系统设置 | 站点配置 |
+| 新闻资讯 | 新闻内容发布与管理      |
+| 出版物   | 学术出版物管理          |
+| 资源管理 | 页面资源配置            |
+| 团队成员 | 团队信息管理            |
+| 系统设置 | 站点配置                |
 
 ## 快速开始
 
@@ -110,12 +110,12 @@ pnpm dev
 
 完整配置说明见 [.env.example](.env.example)，以下为必填项：
 
-| 变量 | 说明 |
-|------|------|
-| `DATABASE_URL` | PostgreSQL 连接字符串 |
+| 变量                 | 说明                         |
+| -------------------- | ---------------------------- |
+| `DATABASE_URL`       | PostgreSQL 连接字符串        |
 | `BETTER_AUTH_SECRET` | JWT 签发密钥（生产环境必填） |
-| `BETTER_AUTH_URL` | 应用访问地址 |
-| `ADMIN_EMAILS` | 管理员邮箱白名单（逗号分隔） |
+| `BETTER_AUTH_URL`    | 应用访问地址                 |
+| `ADMIN_EMAILS`       | 管理员邮箱白名单（逗号分隔） |
 
 ### 认证方式
 
@@ -134,25 +134,25 @@ pnpm dev
 
 ## 常用命令
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev` | 启动开发服务器（Turbopack） |
-| `pnpm build` | 生产构建 |
-| `pnpm start` | 启动生产服务器 |
-| `pnpm lint` | Biome lint 检查 |
-| `pnpm lint:fix` | Biome 自动修复 |
-| `pnpm type-check` | TypeScript 类型检查 |
-| `pnpm spell-check` | 拼写检查 |
-| `pnpm test` | 运行单元测试 |
-| `pnpm test:watch` | 监听模式运行测试 |
-| `pnpm test:coverage` | 测试覆盖率报告 |
-| `pnpm test:e2e` | 运行 E2E 测试 |
-| `pnpm db:generate` | 生成数据库迁移文件 |
-| `pnpm db:migrate` | 执行数据库迁移 |
-| `pnpm db:push` | 推送 schema 到数据库（开发用） |
-| `pnpm db:seed` | 导入测试数据 |
-| `pnpm db:studio` | 打开 Drizzle Studio |
-| `pnpm commit` | 交互式规范提交（czg） |
+| 命令                 | 说明                           |
+| -------------------- | ------------------------------ |
+| `pnpm dev`           | 启动开发服务器（Turbopack）    |
+| `pnpm build`         | 生产构建                       |
+| `pnpm start`         | 启动生产服务器                 |
+| `pnpm lint`          | Biome lint 检查                |
+| `pnpm lint:fix`      | Biome 自动修复                 |
+| `pnpm type-check`    | TypeScript 类型检查            |
+| `pnpm spell-check`   | 拼写检查                       |
+| `pnpm test`          | 运行单元测试                   |
+| `pnpm test:watch`    | 监听模式运行测试               |
+| `pnpm test:coverage` | 测试覆盖率报告                 |
+| `pnpm test:e2e`      | 运行 E2E 测试                  |
+| `pnpm db:generate`   | 生成数据库迁移文件             |
+| `pnpm db:migrate`    | 执行数据库迁移                 |
+| `pnpm db:push`       | 推送 schema 到数据库（开发用） |
+| `pnpm db:seed`       | 导入测试数据                   |
+| `pnpm db:studio`     | 打开 Drizzle Studio            |
+| `pnpm commit`        | 交互式规范提交（czg）          |
 
 ## 部署
 

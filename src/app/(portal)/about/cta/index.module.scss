@@ -33,7 +33,7 @@
 
 /* Roboto Serif Regular 64px，#000，宽 693 */
 .title {
-  font-family: 'Roboto Serif', Georgia, serif;
+  font-family: "Roboto Serif", Georgia, serif;
   font-size: 64px;
   font-weight: 400;
   color: #000;
@@ -57,9 +57,7 @@
   justify-content: center;
   flex-shrink: 0;
   color: #979ba5;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 
   &:hover {
     color: #000;

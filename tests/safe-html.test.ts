@@ -44,12 +44,13 @@ describe('sanitizeRichHtml', () => {
     expect(sanitizeRichHtml(SANITIZE_CASES[name])).toBe(EXPECTED[name]);
   });
 
-  it.each(
-    Object.keys(SANITIZE_CASES),
-  )('%s 的输出不含危险标签、事件与协议', (name) => {
-    const out = sanitizeRichHtml(SANITIZE_CASES[name]);
-    for (const re of DANGEROUS) expect(out).not.toMatch(re);
-  });
+  it.each(Object.keys(SANITIZE_CASES))(
+    '%s 的输出不含危险标签、事件与协议',
+    (name) => {
+      const out = sanitizeRichHtml(SANITIZE_CASES[name]);
+      for (const re of DANGEROUS) expect(out).not.toMatch(re);
+    },
+  );
 
   it('target=_blank 链接强制 rel=noopener noreferrer', () => {
     expect(sanitizeRichHtml(SANITIZE_CASES.targetBlank)).toContain(

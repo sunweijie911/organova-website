@@ -141,7 +141,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </Tooltip>
             ) : (
               <Link
-                className="flex items-center gap-2 text-gray-500 text-sm hover:text-gray-900"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
                 href="/"
                 target="_blank"
               >

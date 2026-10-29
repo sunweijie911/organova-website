@@ -21,7 +21,7 @@
 
 // 标题：Roboto Serif 64px Regular #000（style_ZQ2Y2D + fill_27M6XO）
 .sectionTitle {
-  font-family: var(--font-roboto-serif), 'Roboto Serif', Georgia, serif;
+  font-family: var(--font-roboto-serif), "Roboto Serif", Georgia, serif;
   font-size: 64px;
   font-weight: 400;
   color: #000;
@@ -32,7 +32,7 @@
 
 // 描述：Roboto Regular 24px #4D4F56（style_VYNVSB + fill_L4YWPH）
 .sectionDesc {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 24px;
   font-weight: 400;
   line-height: 1.4;
@@ -67,7 +67,7 @@
 
 // 行标签 "Cancer Type" / "Application"：Roboto Regular 20px #313238（style_WC2IKB + fill_DRE10K）
 .filterLabel {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 400;
   color: #313238;
@@ -94,7 +94,7 @@
   border-radius: 21.5px;
   border: 1px solid #dcdee5;
   background: #fff;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.2;
@@ -132,7 +132,7 @@
   border-radius: 9px;
   background: #eaebf0;
   color: #4d4f56;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
@@ -187,7 +187,7 @@
 // "Showing X of Y case studies" 文案：Roboto Regular 20px #979BA5（style_WC2IKB + fill_MNCRHH）
 // 数字加粗 Medium 500（ts1 boldWeight）
 .resultCount {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 400;
   line-height: 1.2;
@@ -227,6 +227,7 @@
     border-color: #1a4c6e;
     box-shadow: 0px 4px 8px 0px rgba(99, 138, 189, 0.25);
 
+    // biome-ignore lint/correctness/noUnknownUnit: 误把十六进制颜色 #1768ef 解析为单位 ef
     --card-link-color: #1768ef;
     --card-link-arrow-shift: 4px;
 
@@ -254,7 +255,7 @@
 
 // 标题区（Frame 61 layout_G4JHVQ）column gap 16px，包含标题 + chip 行
 .cardTitle {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 600;
   color: #313238;
@@ -286,7 +287,7 @@
   padding: 4px 16px;
   border-radius: 16px;
   background: #f0f1f5;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.2;
@@ -297,7 +298,7 @@
 
 // 摘要（style_AYZ9BQ）Roboto Regular 16px / 24px #4D4F56
 .cardSummary {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -316,7 +317,7 @@
 .empty {
   padding: 80px 0;
   text-align: center;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   color: #979ba5;
 }
@@ -341,7 +342,7 @@
 
 // "Active" 文案：Roboto Regular 20px #313238
 .activeLabel {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 400;
   color: #313238;
@@ -378,7 +379,7 @@
   border: none;
   background: #1a4c6e;
   color: #fff;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.2;
@@ -415,7 +416,7 @@
   padding: 0;
   border: none;
   background: none;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.2;

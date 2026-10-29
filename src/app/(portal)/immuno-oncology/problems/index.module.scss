@@ -17,7 +17,7 @@
 
 /* 区块标题：Roboto Serif Regular 40px, center, color #000 */
 .title {
-  font-family: var(--font-roboto-serif), 'Roboto Serif', Georgia, serif;
+  font-family: var(--font-roboto-serif), "Roboto Serif", Georgia, serif;
   font-size: 40px;
   font-weight: 400;
   color: #000;
@@ -78,11 +78,6 @@
 }
 
 /* 展开态 icon box 背景由 #E9F2FF 改为 #E7EEF8（Figma 标注差异） */
-.cards
-  > div
-  > div:has(> p)
-  > button
-  > div:first-child
-  > div:first-child {
+.cards > div > div:has(> p) > button > div:first-child > div:first-child {
   background: #e7eef8 !important;
 }

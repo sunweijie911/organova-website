@@ -136,7 +136,7 @@ function OtpBoxes({
         {digits.map((digit, i) => (
           <input
             aria-label={`验证码第 ${i + 1} 位`}
-            className="h-12 w-12 flex-1 rounded-lg border border-gray-300 text-center font-semibold text-lg transition-colors focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+            className="h-12 w-12 flex-1 rounded-lg border border-gray-300 text-center text-lg font-semibold transition-colors focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 focus:outline-none"
             inputMode="numeric"
             key={i}
             maxLength={1}
@@ -189,14 +189,14 @@ function EmailPasswordForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <>
       {error && (
-        <div className="mb-4 rounded-lg bg-red-50 p-3 text-center text-red-600 text-sm">
+        <div className="mb-4 rounded-lg bg-red-50 p-3 text-center text-sm text-red-600">
           {error}
         </div>
       )}
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label
-            className="mb-1 block font-medium text-gray-700 text-sm"
+            className="mb-1 block text-sm font-medium text-gray-700"
             htmlFor="ep-email"
           >
             邮箱
@@ -214,7 +214,7 @@ function EmailPasswordForm({ onSuccess }: { onSuccess: () => void }) {
         </div>
         <div>
           <label
-            className="mb-1 block font-medium text-gray-700 text-sm"
+            className="mb-1 block text-sm font-medium text-gray-700"
             htmlFor="ep-password"
           >
             密码
@@ -328,7 +328,7 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <>
       {error && (
-        <div className="mb-4 rounded-lg bg-red-50 p-3 text-center text-red-600 text-sm">
+        <div className="mb-4 rounded-lg bg-red-50 p-3 text-center text-sm text-red-600">
           {error}
         </div>
       )}
@@ -336,7 +336,7 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
         <form className="space-y-4" onSubmit={handleSend}>
           <div>
             <label
-              className="mb-1 block font-medium text-gray-700 text-sm"
+              className="mb-1 block text-sm font-medium text-gray-700"
               htmlFor="eo-email"
             >
               邮箱
@@ -362,12 +362,12 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
         </form>
       ) : (
         <form className="space-y-4" onSubmit={handleVerify} ref={formRef}>
-          <p className="mb-2 text-center text-gray-500 text-sm">
+          <p className="mb-2 text-center text-sm text-gray-500">
             验证码已发送至 {email}
           </p>
           <div>
             <label
-              className="mb-2 block font-medium text-gray-700 text-sm"
+              className="mb-2 block text-sm font-medium text-gray-700"
               htmlFor="eo-otp-hidden"
             >
               验证码
@@ -382,7 +382,7 @@ function EmailOtpForm({ onSuccess }: { onSuccess: () => void }) {
             {loading ? '验证中...' : '验证'}
           </button>
           <button
-            className="w-full text-center text-gray-400 text-sm disabled:opacity-40"
+            className="w-full text-center text-sm text-gray-400 disabled:opacity-40"
             disabled={countdown > 0}
             onClick={() => {
               setStep('input');
@@ -425,15 +425,15 @@ function SignInFormInner({ authMethod, siteName }: SignInFormProps) {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <Link className="font-bold text-3xl text-gray-900" href="/">
+          <Link className="text-3xl font-bold text-gray-900" href="/">
             {siteName}
           </Link>
         </div>
         <div className="rounded-2xl bg-white p-8 shadow-lg">
-          <h1 className="mb-2 text-center font-semibold text-2xl text-gray-900">
+          <h1 className="mb-2 text-center text-2xl font-semibold text-gray-900">
             登录
           </h1>
-          <p className="mb-6 text-center text-gray-500 text-sm">
+          <p className="mb-6 text-center text-sm text-gray-500">
             {subtitleMap[authMethod]}
           </p>
           {authMethod === 'email-password' && (

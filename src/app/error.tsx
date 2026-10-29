@@ -9,10 +9,10 @@ export default function ErrorPage({
   return (
     <main className="flex min-h-screen items-center justify-center bg-white px-4">
       <div className="text-center">
-        <h1 className="font-bold text-6xl text-gray-900">
+        <h1 className="text-6xl font-bold text-gray-900">
           Something went wrong
         </h1>
-        <p className="mt-4 text-gray-600 text-lg">
+        <p className="mt-4 text-lg text-gray-600">
           Sorry, an unexpected error occurred while loading this page.
         </p>
         <button

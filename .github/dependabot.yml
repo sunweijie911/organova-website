@@ -9,36 +9,36 @@ updates:
     groups:
       react:
         patterns:
-          - 'react'
-          - 'react-dom'
-          - '@types/react'
-          - '@types/react-dom'
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
       nextjs:
         patterns:
-          - 'next'
+          - "next"
       trpc:
         patterns:
-          - '@trpc/*'
-          - '@tanstack/react-query'
+          - "@trpc/*"
+          - "@tanstack/react-query"
       drizzle:
         patterns:
-          - 'drizzle-orm'
-          - 'drizzle-kit'
+          - "drizzle-orm"
+          - "drizzle-kit"
       biome:
         patterns:
-          - '@biomejs/*'
+          - "@biomejs/*"
       unocss:
         patterns:
-          - 'unocss'
-          - '@unocss/*'
+          - "unocss"
+          - "@unocss/*"
       vitest:
         patterns:
-          - 'vitest'
-          - '@vitest/*'
-          - '@testing-library/*'
+          - "vitest"
+          - "@vitest/*"
+          - "@testing-library/*"
       playwright:
         patterns:
-          - '@playwright/*'
+          - "@playwright/*"
 
   - package-ecosystem: github-actions
     directory: /

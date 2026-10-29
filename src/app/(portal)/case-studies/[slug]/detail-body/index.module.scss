@@ -43,7 +43,7 @@
 // 内容标签（Challenge / Approach / Results: / Implication）
 // Figma style_08VLU9: Roboto Medium 500 24px，fill_EE81AZ → #313238
 .contentLabel {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 24px;
   font-weight: 500;
   color: #313238;
@@ -54,7 +54,7 @@
 // Rich-text 内容区
 // Figma style_T2YO9S / style_QK27QM: Roboto Regular 16px, line-height 24px, fill_6I43LG → #4D4F56
 .richText {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -63,10 +63,13 @@
   // 内嵌富文本常见元素
   p {
     margin: 0 0 12px;
-    &:last-child { margin-bottom: 0; }
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding-left: 24px;
     margin: 0 0 12px;
 
@@ -84,12 +87,14 @@
     list-style-type: disc;
   }
 
-  strong, b {
+  strong,
+  b {
     font-weight: 600;
     color: #313238;
   }
 
-  h3, h4 {
+  h3,
+  h4 {
     font-weight: 600;
     color: #313238;
     margin: 16px 0 8px;
@@ -114,7 +119,7 @@
   padding: 4px 16px;
   border-radius: 16px;
   background: #f0f1f5;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: #4d4f56;
@@ -134,7 +139,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 400;
   color: #979ba5;
@@ -167,7 +172,7 @@
   border-radius: 8px;
   background: #1a4c6e;
   color: #ffffff;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;
@@ -189,7 +194,7 @@
   background: transparent;
   border: 1px solid #1a4c6e;
   color: #1a4c6e;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;

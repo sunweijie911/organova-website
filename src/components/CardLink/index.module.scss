@@ -5,7 +5,7 @@
   flex-direction: row;
   align-items: center;
   gap: 4px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -22,6 +22,7 @@
 // 组件自身 hover（独立使用时生效）
 // hover 颜色走变量 + fallback，父级可通过 --card-link-hover-color 覆盖（如黑色 Read more）
 .cardLink:hover {
+  // biome-ignore lint/correctness/noUnknownUnit: 误把十六进制颜色 #1768ef 解析为单位 ef
   --card-link-color: var(--card-link-hover-color, #1768ef);
   --card-link-arrow-shift: 4px;
 }

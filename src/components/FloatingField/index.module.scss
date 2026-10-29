@@ -17,9 +17,7 @@
   display: block;
   padding-top: 28px;
   border-top: 1px dashed rgb(0 0 0 / 0.5);
-  transition:
-    border-color 0.2s ease,
-    border-style 0.2s ease;
+  transition: border-color 0.2s ease, border-style 0.2s ease;
 }
 
 /* 错误态：顶边红色虚线（Figma rgba(255,86,86,0.5)） */
@@ -46,10 +44,7 @@
   line-height: 1.2;
   color: rgb(0 0 0 / 0.4);
   pointer-events: none;
-  transition:
-    top 0.18s ease,
-    font-size 0.18s ease,
-    color 0.18s ease;
+  transition: top 0.18s ease, font-size 0.18s ease, color 0.18s ease;
 }
 
 /* 上浮态：输入时(focus)与输入完毕(filled)共用 */

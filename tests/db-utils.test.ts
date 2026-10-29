@@ -16,14 +16,10 @@ describe('isUniqueViolation', () => {
     expect(isUniqueViolation(err)).toBe(true);
   });
 
-  it.each([
-    null,
-    undefined,
-    'x',
-    {},
-    { code: '23503' },
-    new Error('other'),
-  ])('其他错误返回 false：%j', (err) => {
-    expect(isUniqueViolation(err)).toBe(false);
-  });
+  it.each([null, undefined, 'x', {}, { code: '23503' }, new Error('other')])(
+    '其他错误返回 false：%j',
+    (err) => {
+      expect(isUniqueViolation(err)).toBe(false);
+    },
+  );
 });

@@ -9,16 +9,16 @@
   "assist": {
     "enabled": true,
     "actions": {
-      "recommended": true,
+      "preset": "recommended",
       "source": {
-        "recommended": true,
+        "preset": "recommended",
         "organizeImports": "on",
         "useSortedAttributes": "on"
       }
     }
   },
   "files": {
-    "includes": ["**", "!drizzle"]
+    "includes": ["**", "!drizzle", "!**/*.svg"]
   },
   "formatter": {
     "enabled": true,
@@ -28,7 +28,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "suspicious": {
         // 数组索引作为 key 在只读列表中可接受
         "noArrayIndexKey": "off",
@@ -46,12 +46,9 @@
         "noImgElement": "off"
       },
       "nursery": {
-        "useSortedClasses": {
+        "useTailwindSortedClasses": {
           "level": "warn",
-          "fix": "safe",
-          "options": {
-            "functions": ["clsx", "cva", "cn"]
-          }
+          "fix": "safe"
         }
       }
     }
@@ -86,5 +83,6 @@
     "parser": {
       "cssModules": true
     }
-  }
+  },
+  "tailwind": { "mergeFunctions": ["clsx", "cn"], "variantFunctions": ["cva"] }
 }

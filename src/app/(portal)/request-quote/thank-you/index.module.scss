@@ -52,7 +52,7 @@
 /* 标题 —— Roboto Serif 64 / #000，居中 */
 .title {
   margin: 0;
-  font-family: 'Roboto Serif', Georgia, serif;
+  font-family: "Roboto Serif", Georgia, serif;
   font-size: 64px;
   font-weight: 400;
   line-height: 1.17;
@@ -105,9 +105,7 @@
   line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    background 0.25s ease,
-    color 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 /* Back To Home —— 白底，1px #313238 边框，深字 */

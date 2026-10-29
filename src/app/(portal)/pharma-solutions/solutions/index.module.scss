@@ -32,7 +32,11 @@
 .cardOverlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%);
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
 }
 
 .cardBody {
@@ -73,7 +77,7 @@
 
   /* 最右侧纵向虚线（闭合最后一列） */
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -56px;
     right: 0;
@@ -98,7 +102,7 @@
 
   /* 每列左侧的纵向虚线，从卡片底部向下延伸 */
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -56px;
     left: 0;

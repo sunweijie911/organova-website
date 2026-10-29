@@ -21,9 +21,9 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: '部署目标'
+        description: "部署目标"
         required: true
-        default: 'aliyun'
+        default: "aliyun"
         type: choice
         options: [aliyun, aws, both]
 

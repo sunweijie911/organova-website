@@ -41,7 +41,7 @@ export function RichTextEditor({
   return (
     <div className="rich-text-editor overflow-hidden rounded-lg border border-gray-200">
       {/* 工具栏 */}
-      <div className="flex flex-wrap items-center gap-0.5 border-gray-200 border-b bg-gray-50 px-2 py-1.5">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 px-2 py-1.5">
         {/* 文本格式 */}
         <ToolbarButton
           active={editor?.isActive('bold')}

@@ -40,9 +40,7 @@
   cursor: pointer;
   outline: none;
   text-align: left;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus-visible {
     box-shadow: 0 4px 14px 0 rgb(0 0 0 / 0.18);
@@ -120,9 +118,7 @@
   line-height: 1.2;
   color: #4d4f56;
   text-align: left;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
     background: #f5f7fa;

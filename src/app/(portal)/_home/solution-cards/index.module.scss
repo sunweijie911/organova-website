@@ -26,9 +26,7 @@
 .card {
   display: flex;
   padding: 108px 40px;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 20px;
   background: #fff;
   box-shadow: 0 4px 20px 0 rgb(0 0 0 / 0.1);
@@ -96,7 +94,8 @@
     .linkArrow {
       width: 22px;
       height: 22px;
-      filter: invert(43%) sepia(97%) saturate(1388%) hue-rotate(201deg) brightness(101%) contrast(101%);
+      filter: invert(43%) sepia(97%) saturate(1388%) hue-rotate(201deg)
+        brightness(101%) contrast(101%);
     }
 
     &:hover {
