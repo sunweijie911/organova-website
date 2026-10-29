@@ -47,6 +47,16 @@ DOMPurify.addHook('afterSanitizeAttributes', (node) => {
   }
 });
 
+export function sanitizeRichHtml(html: string | null | undefined): string {
+  return DOMPurify.sanitize(html ?? '', {
+    ALLOWED_TAGS,
+    ALLOWED_ATTR,
+    // 禁止 data:/javascript:/vbscript: 等危险协议；http/https/mailto/tel 默认允许
+    ALLOWED_URI_REGEXP:
+      /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+  });
+}
+
 // 渲染来自富文本编辑器（Tiptap）的 HTML，统一走 DOMPurify 消毒，避免存储型 XSS
 export default function SafeHtml({
   html,
@@ -54,13 +64,7 @@ export default function SafeHtml({
   as = 'div',
 }: SafeHtmlProps) {
   const Tag = as;
-  const clean = DOMPurify.sanitize(html ?? '', {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR,
-    // 禁止 data:/javascript:/vbscript: 等危险协议；http/https/mailto/tel 默认允许
-    ALLOWED_URI_REGEXP:
-      /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
-  });
+  const clean = sanitizeRichHtml(html);
   return (
     <Tag
       className={className}
