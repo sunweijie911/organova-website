@@ -6,10 +6,15 @@ import { db } from '@/server/db';
 import { news } from '@/server/db/schema';
 import NewsDetailView from '.';
 
+const INT4_MAX = 2_147_483_647;
+
 // React.cache 让 generateMetadata 与页面渲染共用同一次 DB 查询，
 // 同一请求内只会真正打一次库。
-const getNewsRow = cache(async (id: number) => {
-  if (!Number.isFinite(id)) return null;
+
+const getNewsRow = cache(async (rawId: string) => {
+  if (!/^[1-9]\d{0,9}$/.test(rawId)) return null;
+  const id = Number(rawId);
+  if (id > INT4_MAX) return null;
   const [row] = await db
     .select()
     .from(news)
@@ -31,7 +36,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const row = await getNewsRow(Number(id));
+  const row = await getNewsRow(id);
   if (!row) return { title: 'News' };
 
   const description = row.content
@@ -56,7 +61,7 @@ export default async function NewsDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const row = await getNewsRow(Number(id));
+  const row = await getNewsRow(id);
   if (!row) notFound();
   return <NewsDetailView news={row} />;
 }

@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, ilike, or } from 'drizzle-orm';
+import { after } from 'next/server';
 import { z } from 'zod';
 import type { db as Db } from '@/server/db';
 import { leads } from '@/server/db/schema';
@@ -104,11 +105,13 @@ export const leadsRouter = createTRPCRouter({
         .insert(leads)
         .values({ ...input, source: 'contact', ip })
         .returning({ id: leads.id });
-      // 邮件失败不应阻断写入；通过 email_send_status 留痕，admin 可补救
-      await sendLeadAndRecordStatus(ctx.db, row?.id, {
-        source: 'contact',
-        ...input,
-      });
+      // 响应返回后再发信，SMTP 慢或失败不阻塞表单；通过 email_send_status 留痕，admin 可补救
+      after(() =>
+        sendLeadAndRecordStatus(ctx.db, row?.id, {
+          source: 'contact',
+          ...input,
+        }),
+      );
       return { success: true };
     }),
 
@@ -129,10 +132,12 @@ export const leadsRouter = createTRPCRouter({
         .insert(leads)
         .values({ ...input, source: 'rfq', ip })
         .returning({ id: leads.id });
-      await sendLeadAndRecordStatus(ctx.db, row?.id, {
-        source: 'rfq',
-        ...input,
-      });
+      after(() =>
+        sendLeadAndRecordStatus(ctx.db, row?.id, {
+          source: 'rfq',
+          ...input,
+        }),
+      );
       return { success: true };
     }),
 

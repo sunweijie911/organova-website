@@ -4,6 +4,9 @@ import Image from 'next/image';
 import type { DialogMember } from './dialog';
 import styles from './index.module.scss';
 
+// 对象存储 / CDN 的绝对地址直接加载，不经 next/image 优化（域名白名单在构建期固定）
+export const isRemoteUrl = (src: string) => /^https?:\/\//.test(src);
+
 /**
  * TeamSection — About 页面团队区域
  * Figma 545-6643 起：白底黑字（白色矩形 y=2159 之后区域）
@@ -48,6 +51,7 @@ function MemberCard({
           sizes="(max-width: 1200px) 33vw, 444px"
           src={member.photo || PLACEHOLDER_PHOTO}
           style={{ objectFit: 'cover' }}
+          unoptimized={isRemoteUrl(member.photo ?? '')}
         />
       </div>
 

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect } from 'react';
 import SafeHtml from '@/components/SafeHtml';
+import { isRemoteUrl } from '.';
 import styles from './dialog.module.scss';
 
 /**
@@ -92,6 +93,7 @@ export default function TeamMemberDialog({ member, onClose }: DialogProps) {
             sizes="(max-width: 1200px) 50vw, 543px"
             src={member.photo || PLACEHOLDER_PHOTO}
             style={{ objectFit: 'cover' }}
+            unoptimized={isRemoteUrl(member.photo ?? '')}
           />
         </div>
       </div>

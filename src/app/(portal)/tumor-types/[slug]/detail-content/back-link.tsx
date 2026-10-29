@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { MouseEvent } from 'react';
 import { SvgIcon } from '@/components/SvgIcon';
+import { canGoBackInApp } from '@/context/portal-layout-context';
 import styles from './index.module.scss';
 
 /**
@@ -16,7 +17,7 @@ export function BackLink() {
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     // 有上一条站内历史时阻止默认跳转，改用 back() 以恢复滚动位置
-    if (window.history.length > 1) {
+    if (canGoBackInApp()) {
       e.preventDefault();
       router.back();
     }
