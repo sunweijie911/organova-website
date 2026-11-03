@@ -5,12 +5,11 @@
 #   仅手动触发 (workflow_dispatch) → 选择目标
 #
 # GitHub 配置步骤:
-#   在 Settings → Environments 中创建两个环境:
-#     - aliyun-production
-#     - aws-production
-#   每个环境中配置对应 Secrets:
+#   在 Settings → Secrets and variables → Actions 中配置仓库级 Secrets:
 #     ALIYUN_HOST / ALIYUN_USER / ALIYUN_PATH / ALIYUN_SSH_KEY
 #     AWS_HOST    / AWS_USER    / AWS_PATH    / AWS_SSH_KEY
+#   部署 job 使用的 Environments（aliyun-production / aws-production）首次运行时自动创建，
+#   可在 Settings → Environments 中为其配置审批人或分支限制
 #
 # 注意: 迁移由 Docker CMD 自动执行 (node migrate.mjs)，无需 CI 单独处理
 # 注意: 阿里云 ECS 自建 Postgres 需用宿主 IP 而非 localhost，详见 README
