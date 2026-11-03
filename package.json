@@ -78,7 +78,7 @@
     "isomorphic-dompurify": "^4.6.0",
     "nanoid": "^6.0.2",
     "next": "^16.4.3",
-    "nodemailer": "^10.3.0",
+    "nodemailer": "^10.3.1",
     "postgres": "^3.4.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
