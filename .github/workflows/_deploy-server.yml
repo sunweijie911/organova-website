@@ -96,6 +96,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
+          command_timeout: 30m
           envs: REGISTRY_TOKEN,IMAGE_APP,IMAGE_NGINX,ENABLE_HTTPS
           script: |
             set -e
