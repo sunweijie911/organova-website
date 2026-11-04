@@ -1,5 +1,5 @@
 # 可复用的单台服务器部署工作流
-# 被 build-deploy.yml 中的 deploy-aliyun / deploy-aws 调用
+# 被 build-deploy.yml 中的 deploy-aliyun / deploy-aws / deploy-tencent 调用
 name: Deploy to Server
 
 on:
@@ -10,11 +10,11 @@ on:
         required: true
         type: string
       registry:
-        description: "镜像仓库地址（如 ghcr.io）"
+        description: "镜像仓库地址（如 ghcr.io、ccr.ccs.tencentyun.com）"
         required: true
         type: string
-      actor:
-        description: "执行部署的 GitHub 用户名"
+      registry_username:
+        description: "镜像仓库登录用户名"
         required: true
         type: string
       image_app:
@@ -50,6 +50,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     concurrency:
       group: deploy-${{ inputs.environment }}
       cancel-in-progress: false
@@ -108,7 +109,8 @@ jobs:
               rm -f docker-compose.https.yml nginx.https.conf
             fi
             chmod +x ./manage.sh
-            echo "${REGISTRY_TOKEN}" | docker login "${{ inputs.registry }}" -u "${{ inputs.actor }}" --password-stdin
+            trap 'docker logout "${{ inputs.registry }}" >/dev/null 2>&1 || true' EXIT
+            echo "${REGISTRY_TOKEN}" | docker login "${{ inputs.registry }}" -u "${{ inputs.registry_username }}" --password-stdin
             ./manage.sh pull-deploy "${IMAGE_APP}" "${IMAGE_NGINX}"
         env:
           REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}

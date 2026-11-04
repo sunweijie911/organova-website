@@ -27,6 +27,8 @@ RUN mkdir -p drizzle/meta
 ENV SKIP_ENV_VALIDATION=1
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# app 与 nginx 镜像分别构建，需使用同一 buildId 才能对上 /_next/static 路径
+ARG BUILD_ID=""
 RUN pnpm build
 
 # Compile seed scripts for production (no tsx in runner)

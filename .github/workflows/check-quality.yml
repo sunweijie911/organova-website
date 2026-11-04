@@ -17,6 +17,7 @@ jobs:
   setup:
     name: Setup
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       node-modules-cache-key: ${{ steps.cache-key.outputs.value }}
     steps:
@@ -40,6 +41,7 @@ jobs:
     name: Lint
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
@@ -60,6 +62,7 @@ jobs:
     name: Type Check
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
@@ -80,6 +83,7 @@ jobs:
     name: Unit Tests
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:18
@@ -118,6 +122,7 @@ jobs:
     name: E2E Tests
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     services:
       postgres:
         image: postgres:18
@@ -170,6 +175,7 @@ jobs:
     name: Build
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       SKIP_ENV_VALIDATION: 1
     steps:
